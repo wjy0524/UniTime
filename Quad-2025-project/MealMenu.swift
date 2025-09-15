@@ -6,8 +6,13 @@
 //
 import Foundation
 
+struct MealCategory: Codable {
+    var category: String
+    var items: [String]
+}
+
 struct MealMenu: Codable {
-    var breakfast: [String]?
-    var lunch: [String]?
-    var dinner: [String]?
+    var breakfast: [MealCategory]?
+    var lunch: [MealCategory]?
+    var dinner: [MealCategory]?
 }

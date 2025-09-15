@@ -17,24 +17,36 @@ struct DiningMenuView: View {
                 List {
                     if let breakfast = menu.breakfast {
                         Section(header: Text("🍳 Breakfast")) {
-                            ForEach(breakfast, id: \.self) { item in
-                                Text(item)
+                            ForEach(breakfast, id: \.category) { category in
+                                Section(header: Text("-- \(category.category) --")) {
+                                    ForEach(category.items, id: \.self) { item in
+                                        Text(item)
+                                    }
+                                }
                             }
                         }
                     }
 
                     if let lunch = menu.lunch {
                         Section(header: Text("🥗 Lunch")) {
-                            ForEach(lunch, id: \.self) { item in
-                                Text(item)
+                            ForEach(lunch, id: \.category) { category in
+                                Section(header: Text("-- \(category.category) --")) {
+                                    ForEach(category.items, id: \.self) { item in
+                                        Text(item)
+                                    }
+                                }
                             }
                         }
                     }
 
                     if let dinner = menu.dinner {
                         Section(header: Text("🍽 Dinner")) {
-                            ForEach(dinner, id: \.self) { item in
-                                Text(item)
+                            ForEach(dinner, id: \.category) { category in
+                                Section(header: Text("-- \(category.category) --")) {
+                                    ForEach(category.items, id: \.self) { item in
+                                        Text(item)
+                                    }
+                                }
                             }
                         }
                     }
