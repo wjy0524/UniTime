@@ -1,0 +1,41 @@
+//
+//  HomeView.swift
+//  Quad-2025-project
+//
+//  Created by Jaeyeon Won on 9/8/25.
+//
+
+// HomeView.swift
+import SwiftUI
+
+struct HomeView: View {
+    var body: some View {
+        NavigationStack {
+            VStack(spacing: 20) {
+                Text("Welcome to Quad")
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+                    .padding()
+
+                Text("Your UT Schedule & Dining Helper")
+                    .font(.subheadline)
+                    .foregroundColor(.gray)
+
+                NavigationLink(destination: DiningHallSelectionView()) {
+                    Text("🍽 UT Dining Menu")
+                        .font(.headline)
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                        .background(Color.orange.opacity(0.8))
+                        .foregroundColor(.white)
+                        .cornerRadius(12)
+                        .padding(.horizontal)
+                }
+
+                Spacer()
+            }
+            .navigationTitle("Home")
+        }
+    }
+}
+
