@@ -21,6 +21,7 @@ struct HomeView: View {
                     .font(.subheadline)
                     .foregroundColor(.gray)
 
+                // 🔹 Dining 메뉴 버튼
                 NavigationLink(destination: DiningHallSelectionView()) {
                     Text("🍽 UT Dining Menu")
                         .font(.headline)
@@ -32,10 +33,23 @@ struct HomeView: View {
                         .padding(.horizontal)
                 }
 
+                // 🔹 GPA 계산기 버튼
+                NavigationLink(destination: GPAFullView()) {
+                    Text("🎓 GPA Calculator")
+                        .font(.headline)
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                        .background(Color.blue.opacity(0.8))
+                        .foregroundColor(.white)
+                        .cornerRadius(12)
+                        .padding(.horizontal)
+                }
+
                 Spacer()
             }
             .navigationTitle("Home")
         }
     }
 }
+
 
