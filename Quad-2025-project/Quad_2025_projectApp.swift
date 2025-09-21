@@ -23,7 +23,7 @@ struct Quad_2025_projectApp: App {
 
   var body: some Scene {
     WindowGroup {
-      AuthGateView()  //이미 
+        SplashView()  //이미 
     }
   }
 }
