@@ -27,14 +27,21 @@ class DiningViewModel: ObservableObject {
             }
             
             if let snapshot = snapshot {
-                do {
-                    let data = try snapshot.data(as: MealMenu.self)
-                    DispatchQueue.main.async {
-                        self.menu = data
+                if snapshot.exists {
+                    do {
+                        let data = try snapshot.data(as: MealMenu.self)
+                        DispatchQueue.main.async {
+                            self.menu = data
+                            self.errorMessage = nil // 성공 시 에러 초기화
+                        }
+                    } catch {
+                        DispatchQueue.main.async {
+                            self.errorMessage = "Parse error: \(error.localizedDescription)"
+                        }
                     }
-                } catch {
+                } else {
                     DispatchQueue.main.async {
-                        self.errorMessage = "Parse error: \(error.localizedDescription)"
+                        self.errorMessage = "🍳 Today's menu will be updated at 7 AM."
                     }
                 }
             }
