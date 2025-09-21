@@ -29,7 +29,7 @@ struct LoginView: View {
 
     var body: some View {
         VStack(spacing: 20) {
-            Text("UT Schedule")
+            Text("UniTime")
                 .font(.largeTitle)
                 .bold()
 

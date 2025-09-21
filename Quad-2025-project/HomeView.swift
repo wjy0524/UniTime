@@ -12,14 +12,11 @@ struct HomeView: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: 20) {
-                Text("Welcome to Quad")
+                Text("Welcome to UniTime")
                     .font(.largeTitle)
                     .fontWeight(.bold)
                     .padding()
 
-                Text("Your UT Schedule & Dining Helper")
-                    .font(.subheadline)
-                    .foregroundColor(.gray)
 
                 // 🔹 Dining 메뉴 버튼
                 NavigationLink(destination: DiningHallSelectionView()) {
@@ -40,6 +37,17 @@ struct HomeView: View {
                         .padding()
                         .frame(maxWidth: .infinity)
                         .background(Color.blue.opacity(0.8))
+                        .foregroundColor(.white)
+                        .cornerRadius(12)
+                        .padding(.horizontal)
+                }
+                
+                NavigationLink(destination: CalendarKitView()) {
+                    Text("📅 My Calendar")
+                        .font(.headline)
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                        .background(Color.purple.opacity(0.8))
                         .foregroundColor(.white)
                         .cornerRadius(12)
                         .padding(.horizontal)

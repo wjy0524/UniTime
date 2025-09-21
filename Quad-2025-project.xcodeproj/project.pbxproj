@@ -16,6 +16,7 @@
 		1578016A2E6F472D00B7FCB9 /* FirebasePerformance in Frameworks */ = {isa = PBXBuildFile; productRef = 157801692E6F472D00B7FCB9 /* FirebasePerformance */; };
 		1578016C2E6F472D00B7FCB9 /* FirebaseRemoteConfig in Frameworks */ = {isa = PBXBuildFile; productRef = 1578016B2E6F472D00B7FCB9 /* FirebaseRemoteConfig */; };
 		1578016E2E6F472D00B7FCB9 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 1578016D2E6F472D00B7FCB9 /* FirebaseStorage */; };
+		D7C7169C2E7FD3500086FA22 /* CalendarKit in Frameworks */ = {isa = PBXBuildFile; productRef = D7C7169B2E7FD3500086FA22 /* CalendarKit */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -69,6 +70,7 @@
 				1578016E2E6F472D00B7FCB9 /* FirebaseStorage in Frameworks */,
 				157801622E6F472D00B7FCB9 /* FirebaseCrashlytics in Frameworks */,
 				157801642E6F472D00B7FCB9 /* FirebaseFirestore in Frameworks */,
+				D7C7169C2E7FD3500086FA22 /* CalendarKit in Frameworks */,
 				1578015E2E6F472D00B7FCB9 /* FirebaseAnalytics in Frameworks */,
 				157801602E6F472D00B7FCB9 /* FirebaseAuth in Frameworks */,
 				157801662E6F472D00B7FCB9 /* FirebaseInAppMessaging-Beta in Frameworks */,
@@ -142,6 +144,7 @@
 				157801692E6F472D00B7FCB9 /* FirebasePerformance */,
 				1578016B2E6F472D00B7FCB9 /* FirebaseRemoteConfig */,
 				1578016D2E6F472D00B7FCB9 /* FirebaseStorage */,
+				D7C7169B2E7FD3500086FA22 /* CalendarKit */,
 			);
 			productName = "Quad-2025-project";
 			productReference = 157801222E6F423700B7FCB9 /* Quad-2025-project.app */;
@@ -227,6 +230,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				1578015C2E6F472D00B7FCB9 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				D7C7169A2E7FD3500086FA22 /* XCRemoteSwiftPackageReference "CalendarKit" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 157801232E6F423700B7FCB9 /* Products */;
@@ -626,6 +630,14 @@
 				minimumVersion = 12.2.0;
 			};
 		};
+		D7C7169A2E7FD3500086FA22 /* XCRemoteSwiftPackageReference "CalendarKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/richardtop/CalendarKit";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.1.11;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -673,6 +685,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 1578015C2E6F472D00B7FCB9 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseStorage;
+		};
+		D7C7169B2E7FD3500086FA22 /* CalendarKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D7C7169A2E7FD3500086FA22 /* XCRemoteSwiftPackageReference "CalendarKit" */;
+			productName = CalendarKit;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
