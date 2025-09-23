@@ -8,6 +8,12 @@
 import UIKit
 import SwiftUI
 import CalendarKit
+<<<<<<< HEAD
+=======
+import FirebaseFirestore
+import FirebaseAuth
+
+>>>>>>> 755c2ac (Save my local work)
 
 class CalendarViewController: UIViewController {
     // MARK: - State
@@ -243,10 +249,52 @@ class CalendarViewController: UIViewController {
     }
 
     private func loadEvents() {
+<<<<<<< HEAD
         if let data = UserDefaults.standard.data(forKey: "savedEvents"),
            let decoded = try? JSONDecoder().decode([EventModel].self, from: data) {
             customEvents = decoded
         }
+=======
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+        let db = Firestore.firestore()
+        
+        // Load own events
+        db.collection("users").document(uid).collection("events")
+            .addSnapshotListener { snapshot, error in
+                if let docs = snapshot?.documents {
+                    let decoded = docs.compactMap { try? $0.data(as: EventModel.self) }
+                    self.customEvents = decoded
+                }
+            }
+        
+        // Load accepted shared events (linked)
+        db.collection("shares")
+            .whereField("toUser", isEqualTo: uid)
+            .whereField("status", isEqualTo: "accepted")
+            .addSnapshotListener { snapshot, error in
+                guard let docs = snapshot?.documents else { return }
+                
+                for doc in docs {
+                    let data = doc.data()
+                    let fromUser = data["fromUser"] as? String ?? ""
+                    let eventId = data["eventId"] as? String ?? ""
+                    
+                    db.collection("users").document(fromUser)
+                      .collection("events").document(eventId)
+                      .addSnapshotListener { eventSnap, error in
+                          if let eventData = try? eventSnap?.data(as: EventModel.self) {
+                              if !self.customEvents.contains(where: { $0.id == eventData.id }) {
+                                  self.customEvents.append(eventData)
+                              } else {
+                                  if let idx = self.customEvents.firstIndex(where: { $0.id == eventData.id }) {
+                                      self.customEvents[idx] = eventData
+                                  }
+                              }
+                          }
+                      }
+                }
+            }
+>>>>>>> 755c2ac (Save my local work)
     }
 }
 
@@ -338,7 +386,10 @@ extension CalendarViewController: DayViewDelegate {
         })
 
         // ❌ Delete 버튼
+<<<<<<< HEAD
         // ❌ Delete 버튼
+=======
+>>>>>>> 755c2ac (Save my local work)
         if !model.repeatDays.isEmpty {
             // 반복 이벤트 → ask choice
             alert.addAction(UIAlertAction(title: "Delete This Event Only", style: .destructive) { _ in
@@ -375,6 +426,15 @@ extension CalendarViewController: DayViewDelegate {
 
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         present(alert, animated: true)
+<<<<<<< HEAD
+=======
+        
+        // ✉️ Share 버튼
+        alert.addAction(UIAlertAction(title: "Share this schedule", style: .default) { _ in
+            self.promptShare(for: model)
+        })
+
+>>>>>>> 755c2ac (Save my local work)
     }
 
 
@@ -412,4 +472,51 @@ extension CalendarViewController: DayViewDelegate {
         print("Updated event: \(event.text ?? "")")
     }
     
+<<<<<<< HEAD
+=======
+    private func promptShare(for event: EventModel) {
+        let alert = UIAlertController(title: "Share Schedule",
+                                      message: "Enter recipient's email:",
+                                      preferredStyle: .alert)
+        
+        alert.addTextField { textField in
+            textField.placeholder = "example@utexas.edu"
+            textField.keyboardType = .emailAddress
+        }
+        
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        alert.addAction(UIAlertAction(title: "Send", style: .default) { _ in
+            guard let email = alert.textFields?.first?.text, !email.isEmpty,
+                  let user = Auth.auth().currentUser else { return }
+            
+            let db = Firestore.firestore()
+            
+            // 🔑 Lookup recipient UID by email
+            db.collection("users").whereField("email", isEqualTo: email).getDocuments { snapshot, error in
+                if let doc = snapshot?.documents.first {
+                    let recipientUid = doc.documentID
+                    
+                    let shareData: [String: Any] = [
+                        "fromUser": user.uid,
+                        "toUser": recipientUid,
+                        "eventId": event.id.uuidString,
+                        "status": "pending",
+                        "createdAt": Timestamp(date: Date())
+                    ]
+                    
+                    db.collection("shares").addDocument(data: shareData) { error in
+                        if let error = error {
+                            print("Failed to share: \(error)")
+                        } else {
+                            print("Share request sent to \(email)")
+                        }
+                    }
+                }
+            }
+        })
+        
+        present(alert, animated: true)
+    }
+    
+>>>>>>> 755c2ac (Save my local work)
 }

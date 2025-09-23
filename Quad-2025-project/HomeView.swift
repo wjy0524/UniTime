@@ -52,6 +52,20 @@ struct HomeView: View {
                         .cornerRadius(12)
                         .padding(.horizontal)
                 }
+<<<<<<< HEAD
+=======
+                
+                NavigationLink(destination: ShareRequestsView()) {
+                    Text("🤝 Share Requests")
+                        .font(.headline)
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                        .background(Color.green.opacity(0.8))
+                        .foregroundColor(.white)
+                        .cornerRadius(12)
+                        .padding(.horizontal)
+                }
+>>>>>>> 755c2ac (Save my local work)
 
                 Spacer()
             }
