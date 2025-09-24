@@ -8,12 +8,9 @@
 import UIKit
 import SwiftUI
 import CalendarKit
-<<<<<<< HEAD
-=======
 import FirebaseFirestore
 import FirebaseAuth
 
->>>>>>> 755c2ac (Save my local work)
 
 class CalendarViewController: UIViewController {
     // MARK: - State
@@ -249,12 +246,10 @@ class CalendarViewController: UIViewController {
     }
 
     private func loadEvents() {
-<<<<<<< HEAD
         if let data = UserDefaults.standard.data(forKey: "savedEvents"),
            let decoded = try? JSONDecoder().decode([EventModel].self, from: data) {
             customEvents = decoded
         }
-=======
         guard let uid = Auth.auth().currentUser?.uid else { return }
         let db = Firestore.firestore()
         
@@ -294,7 +289,6 @@ class CalendarViewController: UIViewController {
                       }
                 }
             }
->>>>>>> 755c2ac (Save my local work)
     }
 }
 
@@ -354,13 +348,13 @@ extension CalendarViewController: DayViewDelegate {
         guard let event = eventView.descriptor as? Event,
               let eventID = event.userInfo as? UUID,
               let model = customEvents.first(where: { $0.id == eventID }) else { return }
-
+        
         let alert = UIAlertController(
             title: event.text,
             message: nil,
             preferredStyle: .actionSheet
         )
-
+        
         // 📝 Edit 버튼
         alert.addAction(UIAlertAction(title: "Edit", style: .default) { _ in
             let editView = AddEventView(
@@ -384,28 +378,23 @@ extension CalendarViewController: DayViewDelegate {
             hosting.modalPresentationStyle = .formSheet
             self.present(hosting, animated: true)
         })
-
-        // ❌ Delete 버튼
-<<<<<<< HEAD
-        // ❌ Delete 버튼
-=======
->>>>>>> 755c2ac (Save my local work)
+        
         if !model.repeatDays.isEmpty {
             // 반복 이벤트 → ask choice
             alert.addAction(UIAlertAction(title: "Delete This Event Only", style: .destructive) { _ in
                 if let idx = self.customEvents.firstIndex(where: { $0.id == eventID }) {
                     var updated = self.customEvents[idx]
-
+                    
                     // 👇 Add current day into excludedDates
                     let dayToDelete = Calendar.current.startOfDay(for: self.selectedDate)
                     updated.excludedDates.append(dayToDelete)
-
+                    
                     self.customEvents[idx] = updated
                     self.saveEvents()
                     self.dayVC.dayView.reloadData()
                 }
             })
-
+            
             alert.addAction(UIAlertAction(title: "Delete All Future Events", style: .destructive) { _ in
                 if let idx = self.customEvents.firstIndex(where: { $0.id == eventID }) {
                     var updated = self.customEvents[idx]
@@ -423,57 +412,51 @@ extension CalendarViewController: DayViewDelegate {
                 self.dayVC.dayView.reloadData()
             })
         }
-
+        
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         present(alert, animated: true)
-<<<<<<< HEAD
-=======
-        
         // ✉️ Share 버튼
         alert.addAction(UIAlertAction(title: "Share this schedule", style: .default) { _ in
             self.promptShare(for: model)
         })
-
->>>>>>> 755c2ac (Save my local work)
+        
     }
-
-
-
+    
+    
+    
     func dayViewDidLongPressEventView(_ eventView: EventView) {
         // optional: maybe open edit view
     }
-
+    
     func dayView(dayView: DayView, didTapTimelineAt date: Date) {
         print("Tapped timeline at \(date)")
     }
-
+    
     func dayView(dayView: DayView, didLongPressTimelineAt date: Date) {
         print("Long pressed timeline at \(date)")
     }
-
+    
     func dayViewDidBeginDragging(dayView: DayView) {
         print("Began dragging")
     }
-
+    
     func dayViewDidTransitionCancel(dayView: DayView) {
         print("Transition cancelled")
     }
-
+    
     func dayView(dayView: DayView, willMoveTo date: Date) {
         print("Will move to \(date)")
     }
-
+    
     func dayView(dayView: DayView, didMoveTo date: Date) {
         selectedDate = date
         print("Did move to \(date)")
     }
-
+    
     func dayView(dayView: DayView, didUpdate event: EventDescriptor) {
         print("Updated event: \(event.text ?? "")")
     }
     
-<<<<<<< HEAD
-=======
     private func promptShare(for event: EventModel) {
         let alert = UIAlertController(title: "Share Schedule",
                                       message: "Enter recipient's email:",
@@ -518,5 +501,4 @@ extension CalendarViewController: DayViewDelegate {
         present(alert, animated: true)
     }
     
->>>>>>> 755c2ac (Save my local work)
 }
