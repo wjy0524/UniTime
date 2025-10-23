@@ -4,50 +4,84 @@ struct DiningMenuView: View {
     let hall: String
     @StateObject private var viewModel = DiningViewModel()
     
+    // 🍳 끼니별 색상 + 아이콘
+    private let mealColors: [String: Color] = [
+        "breakfast": .orange,
+        "lunch": .blue,
+        "dinner": .purple
+    ]
+    private let mealIcons: [String: String] = [
+        "breakfast": "🍳",
+        "lunch": "🥗",
+        "dinner": "🍝"
+    ]
+    
+    // 🔹 섹션 펼침 상태
+    @State private var expandedMeals: [String: Bool] = [
+        "breakfast": true,
+        "lunch": true,
+        "dinner": true
+    ]
+    
     var body: some View {
         ZStack {
             Color(.systemGroupedBackground).ignoresSafeArea()
             
             if !viewModel.categories.isEmpty {
                 ScrollView {
-                    VStack(spacing: 20) {
-                        // 끼니별 정렬된 섹션
+                    VStack(spacing: 24) {
                         ForEach(groupedByMeal(), id: \.key) { meal, categories in
                             VStack(alignment: .leading, spacing: 14) {
-                                
-                                // 🍳 끼니 제목
-                                Text(meal.uppercased())
-                                    .font(.title3.bold())
-                                    .foregroundColor(.white)
+                                // 🍳 섹션 헤더 (토글 버튼)
+                                Button {
+                                    withAnimation(.easeInOut(duration: 0.25)) {
+                                        expandedMeals[meal]?.toggle()
+                                    }
+                                } label: {
+                                    HStack {
+                                        Text("\(mealIcons[meal] ?? "🍽️") \(meal.uppercased())")
+                                            .font(.title3.bold())
+                                            .foregroundColor(.white)
+                                        Spacer()
+                                        Image(systemName: (expandedMeals[meal] ?? false) ? "chevron.up" : "chevron.down")
+                                            .foregroundColor(.white.opacity(0.9))
+                                            .font(.system(size: 16, weight: .semibold))
+                                    }
                                     .padding(.horizontal, 14)
-                                    .padding(.vertical, 6)
-                                    .background(colorForMeal(meal))
+                                    .padding(.vertical, 10)
+                                    .background(mealColors[meal] ?? .gray)
                                     .cornerRadius(10)
-                                    .padding(.leading, 6)
+                                    .shadow(color: (mealColors[meal] ?? .gray).opacity(0.3), radius: 3, x: 0, y: 1)
+                                }
+                                .padding(.horizontal, 10)
                                 
-                                // 🍽 끼니 내 카테고리 카드 묶음
-                                VStack(alignment: .leading, spacing: 16) {
-                                    ForEach(categories.sorted(by: { $0.key < $1.key }), id: \.key) { category, items in
-                                        VStack(alignment: .leading, spacing: 10) {
-                                            // 카테고리 제목
-                                            Text(category.replacingOccurrences(of: "_", with: " ").uppercased())
-                                                .font(.headline)
-                                                .foregroundColor(.primary.opacity(0.7))
-                                            
-                                            // 각 음식 아이템
-                                            ForEach(items, id: \.name) { food in
-                                                NavigationLink(destination: FoodDetailView(food: food)) {
-                                                    mealRow(for: food)
+                                // 🍽 끼니 내부 카테고리
+                                if expandedMeals[meal] ?? true {
+                                    VStack(alignment: .leading, spacing: 16) {
+                                        ForEach(categories.sorted(by: { $0.key < $1.key }), id: \.key) { category, items in
+                                            VStack(alignment: .leading, spacing: 10) {
+                                                // 📦 카테고리 제목
+                                                Text(category.replacingOccurrences(of: "_", with: " ").uppercased())
+                                                    .font(.headline)
+                                                    .foregroundColor(.primary.opacity(0.7))
+                                                
+                                                // 🍱 음식 카드
+                                                ForEach(items, id: \.name) { food in
+                                                    NavigationLink(destination: FoodDetailView(food: food)) {
+                                                        mealRow(for: food)
+                                                    }
+                                                    .buttonStyle(PlainButtonStyle())
                                                 }
                                             }
+                                            .padding()
+                                            .background(Color.white.opacity(0.9))
+                                            .cornerRadius(16)
+                                            .shadow(color: .black.opacity(0.05), radius: 3, x: 0, y: 0)
                                         }
-                                        .padding()
-                                        .background(Color.white.opacity(0.85))
-                                        .cornerRadius(16)
-                                        .shadow(color: .black.opacity(0.05), radius: 3, x: 0, y: 0)
                                     }
+                                    .padding(.horizontal, 14)
+                                    .transition(.opacity.combined(with: .move(edge: .top)))
                                 }
-                                .padding(.horizontal, 12)
                             }
                         }
                     }
@@ -60,6 +94,7 @@ struct DiningMenuView: View {
                     .padding()
             } else {
                 ProgressView("Loading menu…")
+                    .tint(.orange)
                     .padding()
             }
         }
@@ -77,7 +112,7 @@ extension DiningMenuView {
     private func groupedByMeal() -> [(key: String, value: [String: [FoodItem]])] {
         let mealOrder = ["breakfast", "lunch", "dinner"]
         
-        // 1️⃣ 끼니 이름별 그룹화 (예: "breakfast" → ["breakfast_bakery", "breakfast_fruit"])
+        // 1️⃣ 끼니 이름별 그룹화
         let grouped = Dictionary(grouping: viewModel.categories.keys) { key in
             key.split(separator: "_").first.map(String.init) ?? "other"
         }
@@ -94,24 +129,11 @@ extension DiningMenuView {
             return (key: meal, value: categoryDict)
         }
 
-        // 3️⃣ 끼니 순서에 따라 정렬
+        // 3️⃣ 끼니 순서 정렬
         return converted.sorted { lhs, rhs in
             let leftIndex = mealOrder.firstIndex(of: lhs.key) ?? 99
             let rightIndex = mealOrder.firstIndex(of: rhs.key) ?? 99
             return leftIndex < rightIndex
-        }
-    }
-
-
-
-    
-    /// 🔹 끼니별 색상
-    private func colorForMeal(_ meal: String) -> Color {
-        switch meal.lowercased() {
-        case "breakfast": return .orange
-        case "lunch": return .blue
-        case "dinner": return .purple
-        default: return .gray
         }
     }
     
