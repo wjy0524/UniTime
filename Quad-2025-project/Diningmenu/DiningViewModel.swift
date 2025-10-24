@@ -17,9 +17,7 @@ class DiningViewModel: ObservableObject {
     func fetchMenu(hall: String) {
         Task {
             do {
-                let today = ISO8601DateFormatter().string(from: Date()).prefix(10)
-                let docId = "\(hall)_\(today)"
-                let docRef = db.collection("meals").document(String(docId))
+                let docRef = db.collection("meals").document(hall)
                 let snapshot = try await docRef.getDocument()
                 
                 guard let data = try? snapshot.data(as: DiningCategories.self),

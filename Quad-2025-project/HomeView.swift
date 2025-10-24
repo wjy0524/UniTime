@@ -19,7 +19,7 @@ struct HomeView: View {
 
 
                 // 🔹 Dining 메뉴 버튼
-                NavigationLink(destination: DiningHallSelectionView()) {
+                NavigationLink(destination: DiningHomeView()) {
                     Text("🍽 UT Dining Menu")
                         .font(.headline)
                         .padding()
