@@ -63,26 +63,51 @@ struct DashboardView: View {
 
 extension DashboardView {
     var headerSection: some View {
-        HStack {
-            VStack(alignment: .leading, spacing: 4) {
+        HStack(alignment: .center) {
+
+            VStack(alignment: .leading, spacing: 6) {
+
                 Text(greetingMessage())
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
+                    .font(.system(size: 28, weight: .bold))
+
                 Text(formattedDate())
+                    .font(.subheadline)
                     .foregroundColor(.secondary)
             }
+
             Spacer()
-            
-            Image(systemName: "person.crop.circle.fill")
-                .resizable()
-                .frame(width: 48, height: 48)
-                .foregroundColor(.blue)
+
+            NavigationLink {
+                PublicProfileView(viewModel: ProfileViewModel())
+            } label: {
+                ZStack {
+                    Circle()
+                        .fill(LinearGradient(
+                            colors: [Color("UTAustinOrange").opacity(0.8),
+                                     Color.orange.opacity(0.6)],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        ))
+                        .frame(width: 54, height: 54)
+                        .shadow(color: .black.opacity(0.15), radius: 5, y: 3)
+
+                    Image(systemName: "person.fill")
+                        .font(.system(size: 28, weight: .semibold))
+                        .foregroundColor(.white)
+                }
+            }
+            .buttonStyle(.plain)
         }
-        .padding()
-        .background(.ultraThinMaterial)
-        .cornerRadius(16)
+        .padding(20)
+        .background(
+            RoundedRectangle(cornerRadius: 22)
+                .fill(.ultraThinMaterial)
+                .shadow(color: .black.opacity(0.05), radius: 10, y: 4)
+        )
     }
 }
+
+
 
 ////////////////////////////////////////////////////////////
 // MARK: - TODAY’S SCHEDULE
