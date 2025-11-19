@@ -1,3 +1,4 @@
+
 //
 //  GPAViewModel.swift
 //  Quad-2025-project
@@ -19,45 +20,43 @@ struct GPAEntry: Identifiable {
     let gpa: Double
 }
 
-
 class GPAViewModel: ObservableObject {
     @Published var courses: [Course] = []
     private let db = Firestore.firestore()
     
-    private let gradePoints: [String: Double] = [
+    let gradePoints: [String: Double] = [
         "A": 4.0, "A-": 3.7,
         "B+": 3.3, "B": 3.0, "B-": 2.7,
         "C+": 2.3, "C": 2.0, "C-": 1.7,
         "D+": 1.3, "D": 1.0, "F": 0.0
     ]
     
-    // MARK: - Firebase Helpers
+    // MARK: - Firebase
     private var userId: String? {
         Auth.auth().currentUser?.uid
     }
     
-    // 🔹 Firestore에서 과목 불러오기
+    // MARK: - Load Courses from Firebase
     func fetchCourses() {
         guard let uid = userId else { return }
+        
         db.collection("users").document(uid).collection("courses")
-            .order(by: "semesterOrder") // 학기 순서대로 정렬 (추가 필드 필요)
+            .order(by: "semesterOrder")
             .getDocuments { snapshot, error in
                 if let error = error {
                     print("❌ Error fetching courses: \(error.localizedDescription)")
                     return
                 }
-                if let docs = snapshot?.documents {
-                    self.courses = docs.compactMap { doc in
-                        try? doc.data(as: Course.self)
-                    }
-                }
+                self.courses = snapshot?.documents.compactMap { doc in
+                    try? doc.data(as: Course.self)
+                } ?? []
             }
     }
     
-    // 🔹 Firestore에 과목 추가
+    // MARK: - Add Course
     func addCourse(_ course: Course) {
         guard let uid = userId else { return }
-        let courseId = course.id ?? UUID().uuidString   // ✅ nil이면 새 ID 생성
+        let courseId = course.id ?? UUID().uuidString
         
         do {
             try db.collection("users").document(uid)
@@ -66,18 +65,18 @@ class GPAViewModel: ObservableObject {
                 .setData(from: course)
             
             var newCourse = course
-            newCourse.id = courseId   // ✅ Firestore에 저장된 ID 반영
+            newCourse.id = courseId
             courses.append(newCourse)
             
         } catch {
             print("❌ Error adding course: \(error.localizedDescription)")
         }
     }
-
-    // 🔹 Firestore에서 과목 수정
+    
+    // MARK: - Update Course
     func updateCourse(_ updated: Course) {
         guard let uid = userId else { return }
-        guard let courseId = updated.id else { return }   // ✅ id 없으면 수정 불가
+        guard let courseId = updated.id else { return }
         
         do {
             try db.collection("users").document(uid)
@@ -93,25 +92,25 @@ class GPAViewModel: ObservableObject {
             print("❌ Error updating course: \(error.localizedDescription)")
         }
     }
-
-    // 🔹 Firestore에서 과목 삭제
+    
+    // MARK: - Delete Course
     func deleteCourse(_ course: Course) {
         guard let uid = userId else { return }
-        guard let courseId = course.id else { return }   // ✅ id 없으면 삭제 불가
+        guard let courseId = course.id else { return }
         
         db.collection("users").document(uid)
             .collection("courses")
             .document(courseId)
             .delete { error in
                 if let error = error {
-                    print("❌ Error deleting course: \(error.localizedDescription)")
+                    print("❌ Error deleting: \(error.localizedDescription)")
                 } else {
                     self.courses.removeAll { $0.id == course.id }
                 }
             }
     }
     
-    // MARK: - GPA 계산
+    // MARK: - Semester GPA
     func gpaForSemester(_ semester: Semester) -> GPASummary? {
         let semesterCourses = courses.filter { $0.semester == semester }
         guard !semesterCourses.isEmpty else { return nil }
@@ -133,27 +132,57 @@ class GPAViewModel: ObservableObject {
             }
         }
         
-        let overallGPA = totalCredits > 0 ? totalPoints / Double(totalCredits) : 0.0
-        let majorGPA = majorCredits > 0 ? majorPoints / Double(majorCredits) : 0.0
-        
-        return GPASummary(overallGPA: overallGPA, majorGPA: majorGPA, totalCredits: totalCredits)
+        return GPASummary(
+            overallGPA: totalCredits > 0 ? totalPoints / Double(totalCredits) : 0.0,
+            majorGPA: majorCredits > 0 ? majorPoints / Double(majorCredits) : 0.0,
+            totalCredits: totalCredits
+        )
     }
     
-    func gpaHistory() -> [GPAEntry] {
-        var history: [GPAEntry] = []
-        for sem in Semester.allCases {
-            if let summary = gpaForSemester(sem) {
-                history.append(GPAEntry(semester: sem.rawValue, gpa: summary.overallGPA))
-            }
+    // MARK: - Overall GPA for Dashboard
+    var overallGPA: Double {
+        let total = courses.reduce((points: 0.0, credits: 0)) { acc, course in
+            guard let gp = gradePoints[course.grade] else { return acc }
+            return (
+                acc.points + gp * Double(course.credits),
+                acc.credits + course.credits
+            )
         }
-        return history
+        return total.credits > 0 ? total.points / Double(total.credits) : 0.0
+    }
+    
+    var majorGPA: Double {
+        let majorCourses = courses.filter { $0.isMajor }
+        
+        let total = majorCourses.reduce((points: 0.0, credits: 0)) { acc, course in
+            guard let gp = gradePoints[course.grade] else { return acc }
+            return (
+                acc.points + gp * Double(course.credits),
+                acc.credits + course.credits
+            )
+        }
+        return total.credits > 0 ? total.points / Double(total.credits) : 0.0
+    }
+    
+    var totalCompletedCredits: Int {
+        courses.reduce(0) { $0 + $1.credits }
+    }
+    
+    // MARK: - History Chart Data
+    func gpaHistory() -> [GPAEntry] {
+        Semester.allCases.compactMap { sem in
+            if let summary = gpaForSemester(sem) {
+                return GPAEntry(semester: sem.rawValue, gpa: summary.overallGPA)
+            }
+            return nil
+        }
     }
     
     func coursesForSemester(_ semester: Semester) -> [Course] {
-        courses.filter { $0.semester == semester }
+        courses
+            .filter { $0.semester == semester }
+            .sorted { $0.semesterOrder < $1.semesterOrder }
     }
-    
-    // GPA 타입 정의
-
 }
+
 

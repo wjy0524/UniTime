@@ -43,9 +43,22 @@
 		1578013A2E6F423800B7FCB9 /* Quad-2025-projectUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Quad-2025-projectUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		15D9B6992ECC43030034A320 /* Exceptions for "Quad-2025-project" folder in "Quad-2025-project" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				UIComponents/ShadcnCard.swift,
+			);
+			target = 157801212E6F423700B7FCB9 /* Quad-2025-project */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		157801242E6F423700B7FCB9 /* Quad-2025-project */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				15D9B6992ECC43030034A320 /* Exceptions for "Quad-2025-project" folder in "Quad-2025-project" target */,
+			);
 			path = "Quad-2025-project";
 			sourceTree = "<group>";
 		};

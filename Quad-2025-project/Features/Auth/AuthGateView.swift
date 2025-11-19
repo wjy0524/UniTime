@@ -16,7 +16,7 @@ struct AuthGateView: View {
     var body: some View {
         Group {
             if isLoggedIn {
-                HomeView()   // ✅ 로그인 성공 → 메인 페이지
+                MainTabView()   // ✅ 로그인 성공 → 메인 페이지
             } else if showLogin {
                 AuthView(isLoggedIn: $isLoggedIn)  // ✅ 로그인/회원가입 UI
             } else {

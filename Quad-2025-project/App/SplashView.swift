@@ -12,10 +12,12 @@ struct SplashView: View {
     @State private var fadeOut = false
     @State private var scaleUp = false
     @State private var animateGradient = false
+    @EnvironmentObject var gpaVM: GPAViewModel   // 🔥 추가
 
     var body: some View {
         if isActive {
             AuthGateView()
+                .environmentObject(gpaVM)   // ← 필요
         } else {
             ZStack {
                 // 🔹 애니메이팅 그라데이션 배경

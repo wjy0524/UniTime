@@ -20,10 +20,13 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 @main
 struct Quad_2025_projectApp: App {
   @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
+    
+  @StateObject var gpaVM = GPAViewModel()   // 🔥 하나만 생성
 
   var body: some Scene {
     WindowGroup {
-        SplashView()  //이미 
+        SplashView()  //이미
+            .environmentObject(gpaVM)   // 🔥 모든 화면에 공유
     }
   }
 }
