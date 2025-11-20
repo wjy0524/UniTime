@@ -65,36 +65,33 @@ struct DashboardView: View {
 extension DashboardView {
     var headerSection: some View {
         HStack(alignment: .center) {
-
+            
+            // LEFT — Greeting / Date
             VStack(alignment: .leading, spacing: 6) {
-
                 Text(greetingMessage())
                     .font(.system(size: 28, weight: .bold))
-
                 Text(formattedDate())
                     .font(.subheadline)
                     .foregroundColor(.secondary)
             }
-
+            
             Spacer()
-
-            // 🔍 SEARCH BUTTON
+            
+            // RIGHT — Search Button
             NavigationLink {
                 SearchUserView()
             } label: {
-                Image(systemName: "magnifyingglass")
-                    .font(.system(size: 22, weight: .semibold))
-                    .foregroundColor(Color("UTAustinOrange"))
-                    .frame(width: 44, height: 44)
-                    .background(
-                        Circle()
-                            .fill(Color(.systemBackground))
-                            .shadow(color: .black.opacity(0.1), radius: 3, y: 2)
-                    )
+                headerIcon(system: "magnifyingglass")
             }
-            .padding(.trailing, 8)
+            
+            // RIGHT — Settings Button
+            NavigationLink {
+                SettingsView()
+            } label: {
+                headerIcon(system: "gearshape.fill")
+            }
 
-            // 👤 PROFILE BUTTON
+            // RIGHT — Profile Button
             NavigationLink {
                 PublicProfileView(targetUid: Auth.auth().currentUser?.uid ?? "")
             } label: {
@@ -123,6 +120,7 @@ extension DashboardView {
                 .shadow(color: .black.opacity(0.05), radius: 10, y: 4)
         )
     }
+
 }
 
 
@@ -380,3 +378,14 @@ extension DashboardView {
 }
 
 
+func headerIcon(system: String) -> some View {
+    Image(systemName: system)
+        .font(.system(size: 20, weight: .semibold))
+        .foregroundColor(Color("UTAustinOrange"))
+        .frame(width: 44, height: 44)
+        .background(
+            Circle()
+                .fill(Color(.systemBackground))
+                .shadow(color: .black.opacity(0.1), radius: 3, y: 2)
+        )
+}
