@@ -57,7 +57,7 @@ struct UserLikedPostsView: View {
             .padding(.horizontal)
             // Firestore를 1번만 호출
             .task {
-                await viewModel.fetchLikedPosts()
+                await viewModel.fetchLikedPosts(for: viewModel.targetUid)
             }
         }
     }

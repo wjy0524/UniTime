@@ -17,6 +17,7 @@ struct QuadUser: Codable, Identifiable {
     var uid: String
 
     var username: String
+    let username_lower: String
     var major: String
     var year: String
     var email: String
@@ -25,4 +26,7 @@ struct QuadUser: Codable, Identifiable {
     var profileImageURL: String
 
     var identifier: String { id ?? uid }
+    
+    
+
 }

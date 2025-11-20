@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Charts
+import FirebaseAuth
 
 struct DashboardView: View {
     @Environment(\.colorScheme) var colorScheme
@@ -77,8 +78,25 @@ extension DashboardView {
 
             Spacer()
 
+            // 🔍 SEARCH BUTTON
             NavigationLink {
-                PublicProfileView(viewModel: ProfileViewModel())
+                SearchUserView()
+            } label: {
+                Image(systemName: "magnifyingglass")
+                    .font(.system(size: 22, weight: .semibold))
+                    .foregroundColor(Color("UTAustinOrange"))
+                    .frame(width: 44, height: 44)
+                    .background(
+                        Circle()
+                            .fill(Color(.systemBackground))
+                            .shadow(color: .black.opacity(0.1), radius: 3, y: 2)
+                    )
+            }
+            .padding(.trailing, 8)
+
+            // 👤 PROFILE BUTTON
+            NavigationLink {
+                PublicProfileView(targetUid: Auth.auth().currentUser?.uid ?? "")
             } label: {
                 ZStack {
                     Circle()
@@ -106,6 +124,7 @@ extension DashboardView {
         )
     }
 }
+
 
 
 
@@ -140,7 +159,7 @@ extension DashboardView {
                 }
             }
             
-            NavigationLink(destination: CalendarKitView()) {
+            NavigationLink(destination: CalendarView()) {
                 Text("Open Full Calendar →")
                     .font(.subheadline)
                     .foregroundColor(.blue)
@@ -245,7 +264,7 @@ extension DashboardView {
             LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 4), spacing: 16) {
                 quickActionItem("📘", "GPA") { GPAFullView() }
                 quickActionItem("🍽", "Dining") { DiningHomeView() }
-                quickActionItem("📅", "Calendar") { CalendarKitView() }
+                quickActionItem("📅", "Calendar") { CalendarView() }
                 quickActionItem("🤝", "Share") { ShareRequestsView() }
             }
         }

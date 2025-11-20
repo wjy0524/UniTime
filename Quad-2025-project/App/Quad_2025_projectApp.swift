@@ -7,26 +7,43 @@
 
 import SwiftUI
 import FirebaseCore
-
+import UserNotifications
 
 class AppDelegate: NSObject, UIApplicationDelegate {
-  func application(_ application: UIApplication,
-                   didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
-    FirebaseApp.configure()
-    return true
-  }
+
+    func application(_ application: UIApplication,
+                     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
+
+        FirebaseApp.configure()
+
+        // 🔥 Push Notification Permission 요청
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
+            if granted {
+                print("🔔 Notification permission granted")
+            } else {
+                print("❌ Notification permission denied")
+            }
+        }
+
+        return true
+    }
 }
 
 @main
 struct Quad_2025_projectApp: App {
-  @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
-    
-  @StateObject var gpaVM = GPAViewModel()   // 🔥 하나만 생성
 
-  var body: some Scene {
-    WindowGroup {
-        SplashView()  //이미
-            .environmentObject(gpaVM)   // 🔥 모든 화면에 공유
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
+
+    // 🔥 글로벌 ViewModel 들
+    @StateObject var gpaVM = GPAViewModel()
+    @StateObject var eventVM = EventViewModel()   // ⬅️ 새로 추가
+
+    var body: some Scene {
+        WindowGroup {
+            SplashView()
+                .environmentObject(gpaVM)
+                .environmentObject(eventVM)   // ⬅️ 캘린더 전체 공유
+        }
     }
-  }
 }
+

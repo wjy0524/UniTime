@@ -28,42 +28,45 @@ class ProfileViewModel: ObservableObject {
     @Published var bio: String = ""
     @Published var profileImageURL: String = ""
 
-    // ⭐ 바로 여기!
     @Published var userPosts: [Post] = []
     @Published var likedPosts: [Post] = []
 
-    // ⭐ 여기에 넣어야 함
     @Published var postsCount: Int = 0
     @Published var followersCount: Int = 0
     @Published var followingCount: Int = 0
 
     private let db = Firestore.firestore()
 
-    private var uid: String? {
-        Auth.auth().currentUser?.uid
+    // ⭐️ 현재 보고 있는 프로필의 UID
+    let targetUid: String
+
+    // MARK: - 내 계정 UID
+    var myUid: String {
+        Auth.auth().currentUser?.uid ?? ""
     }
 
-    var userId: String {
-        uid ?? ""
-    }
-
-    // MARK: - Init
-    init() {
+    // MARK: - Init for other user profile
+    init(uid: String) {
+        self.targetUid = uid
         Task {
-            await loadProfile()
-            await fetchUserPosts()
-            await fetchLikedPosts()
+            await loadProfile(for: uid)
+            await fetchStats(for: uid)
+            await fetchUserPosts(for: uid)
+            await fetchLikedPosts(for: uid)
         }
     }
 
-    // MARK: - Load Profile
-    func loadProfile() async {
-        guard let uid else { return }
+    // MARK: - Init for MY profile
+    convenience init() {
+        let uid = Auth.auth().currentUser?.uid ?? ""
+        self.init(uid: uid)
+    }
 
+    // MARK: - Load Profile
+    func loadProfile(for uid: String) async {
         do {
             let snapshot = try await db.collection("users").document(uid).getDocument()
             let data = try snapshot.data(as: QuadUser.self)
-
 
             self.user = data
             self.username = data.username
@@ -79,22 +82,62 @@ class ProfileViewModel: ObservableObject {
         }
     }
 
+    // MARK: - Load Stats (followers, following)
+    func fetchStats(for uid: String) async {
+        await fetchFollowersCount(for: uid)
+        await fetchFollowingCount(for: uid)
+    }
+
+    func fetchFollowersCount(for uid: String) async {
+        do {
+            let snap = try await db.collection("users")
+                .document(uid)
+                .collection("followers")
+                .getDocuments()
+
+            self.followersCount = snap.documents.count
+
+        } catch {
+            print("❌ fetchFollowersCount error:", error)
+        }
+    }
+
+    func fetchFollowingCount(for uid: String) async {
+        do {
+            let snap = try await db.collection("users")
+                .document(uid)
+                .collection("following")
+                .getDocuments()
+
+            self.followingCount = snap.documents.count
+
+        } catch {
+            print("❌ fetchFollowingCount error:", error)
+        }
+    }
+
+    // MARK: - Refresh externally
+    func refreshStats() async {
+        await fetchStats(for: targetUid)
+    }
+
     // MARK: - Update Profile
     func updateProfile(profileImage: UIImage?) async {
 
-        guard let uid else { return }
+        guard myUid == targetUid else { return }  // 내 프로필만 수정 가능
 
         var imageURL = profileImageURL
 
         if let img = profileImage {
-            if let url = await uploadProfileImage(img, uid: uid) {
+            if let url = await uploadProfileImage(img, uid: myUid) {
                 imageURL = url
             }
         }
 
         let updatedUser = QuadUser(
-            uid: uid,
+            uid: myUid,
             username: username,
+            username_lower: username.lowercased(),   // 🔥 추가
             major: major,
             year: year,
             email: email,
@@ -104,7 +147,7 @@ class ProfileViewModel: ObservableObject {
         )
 
         do {
-            try db.collection("users").document(uid).setData(from: updatedUser)
+            try db.collection("users").document(myUid).setData(from: updatedUser)
             self.user = updatedUser
         } catch {
             print("❌ Failed saving profile:", error)
@@ -126,18 +169,17 @@ class ProfileViewModel: ObservableObject {
         }
     }
 
-    // MARK: - Fetch User Posts
-    func fetchUserPosts() async {
+    // MARK: - Fetch Posts
+    func fetchUserPosts(for uid: String) async {
         do {
             let snap = try await db.collection("posts")
-                .whereField("authorId", isEqualTo: userId)
+                .whereField("authorId", isEqualTo: uid)
                 .getDocuments()
 
             self.userPosts = snap.documents.compactMap {
                 try? $0.data(as: Post.self)
             }
 
-            // ⭐ 여기서 카운트 업데이트!
             self.postsCount = self.userPosts.count
 
         } catch {
@@ -145,13 +187,13 @@ class ProfileViewModel: ObservableObject {
         }
     }
 
-    // MARK: - Fetch Liked Posts
-    func fetchLikedPosts() async {
-
+    // MARK: - Fetch Likes
+    func fetchLikedPosts(for uid: String) async {
         do {
-            let snap = try await db.collection("likes")
-                .document(userId)
-                .collection("userLikes")
+            let snap = try await db
+                .collection("users")
+                .document(uid)
+                .collection("likes")
                 .getDocuments()
 
             let ids = snap.documents.map { $0.documentID }

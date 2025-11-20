@@ -55,7 +55,7 @@ struct UserPostsView: View {
             .padding(.horizontal)
             // Load posts ONCE
             .task {
-                await viewModel.fetchUserPosts()
+                await viewModel.fetchUserPosts(for: viewModel.targetUid)
             }
         }
     }
