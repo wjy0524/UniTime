@@ -12,19 +12,19 @@ import FirebaseAuth
 struct DashboardView: View {
     @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject var gpaVM: GPAViewModel   // 🔥 실제 GPA 데이터 사용
-    
+
     // MARK: - Static Data (일정/식단/스터디)
     let todaysEvents: [(time: String, title: String)] = [
         ("10:00 AM", "ECE 312 Lecture"),
         ("4:00 PM", "Team Project Meeting"),
         ("7:00 PM", "Study Session")
     ]
-    
+
     let diningMenu = [
         "Panda Express: Orange Chicken",
         "Jester City Limits: Pasta Bar"
     ]
-    
+
     let studyData: [StudyHours] = [
         .init(day: "Mon", hours: 2.5),
         .init(day: "Tue", hours: 3.0),
@@ -34,7 +34,7 @@ struct DashboardView: View {
         .init(day: "Sat", hours: 1.5),
         .init(day: "Sun", hours: 3.5)
     ]
-    
+
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -65,7 +65,7 @@ struct DashboardView: View {
 extension DashboardView {
     var headerSection: some View {
         HStack(alignment: .center) {
-            
+
             // LEFT — Greeting / Date
             VStack(alignment: .leading, spacing: 6) {
                 Text(greetingMessage())
@@ -74,16 +74,16 @@ extension DashboardView {
                     .font(.subheadline)
                     .foregroundColor(.secondary)
             }
-            
+
             Spacer()
-            
+
             // RIGHT — Search Button
             NavigationLink {
                 SearchUserView()
             } label: {
                 headerIcon(system: "magnifyingglass")
             }
-            
+
             // RIGHT — Settings Button
             NavigationLink {
                 SettingsView()
@@ -135,7 +135,7 @@ extension DashboardView {
         VStack(alignment: .leading, spacing: 12) {
             Text("Today’s Schedule")
                 .font(.headline)
-            
+
             if todaysEvents.isEmpty {
                 Text("No events today 🎉")
                     .foregroundColor(.secondary)
@@ -147,16 +147,16 @@ extension DashboardView {
                             .font(.subheadline)
                             .fontWeight(.semibold)
                             .frame(width: 90, alignment: .leading)
-                        
+
                         Text(event.title)
                             .font(.subheadline)
-                        
+
                         Spacer()
                     }
                     .padding(.vertical, 4)
                 }
             }
-            
+
             NavigationLink(destination: CalendarView()) {
                 Text("Open Full Calendar →")
                     .font(.subheadline)
@@ -189,13 +189,13 @@ extension DashboardView {
                     Text("Current GPA")
                         .font(.subheadline)
                         .foregroundColor(.secondary)
-                    
+
                     Text(String(format: "%.2f", gpa))
                         .font(.largeTitle)
                         .bold()
                 }
                 Spacer()
-                
+
                 Chart {
                     SectorMark(
                         angle: .value("Progress", gpa / 4.0),
@@ -230,12 +230,12 @@ extension DashboardView {
         VStack(alignment: .leading, spacing: 12) {
             Text("Dining Today")
                 .font(.headline)
-            
+
             ForEach(diningMenu, id: \.self) { menu in
                 HStack { Text(menu); Spacer() }
                     .padding(.vertical, 4)
             }
-            
+
             NavigationLink(destination: DiningHomeView()) {
                 Text("View Full Dining Menu →")
                     .font(.subheadline)
@@ -258,7 +258,7 @@ extension DashboardView {
         VStack(alignment: .leading, spacing: 12) {
             Text("Quick Actions")
                 .font(.headline)
-            
+
             LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 4), spacing: 16) {
                 quickActionItem("📘", "GPA") { GPAFullView() }
                 quickActionItem("🍽", "Dining") { DiningHomeView() }
@@ -271,7 +271,7 @@ extension DashboardView {
         .cornerRadius(16)
         .shadow(color: .black.opacity(0.05), radius: 8)
     }
-    
+
     func quickActionItem<Destination: View>(
         _ icon: String,
         _ title: String,
@@ -305,7 +305,7 @@ extension DashboardView {
         VStack(alignment: .leading, spacing: 12) {
             Text("Weekly Study Hours")
                 .font(.headline)
-            
+
             Chart(studyData) { item in
                 LineMark(
                     x: .value("Day", item.day),
@@ -315,7 +315,7 @@ extension DashboardView {
                 .interpolationMethod(.catmullRom)
             }
             .frame(height: 150)
-            
+
             Button("Track My Study →") {}
                 .foregroundColor(.blue)
                 .font(.subheadline)
@@ -336,13 +336,13 @@ extension DashboardView {
         VStack(alignment: .leading, spacing: 12) {
             Text("Recent Share Requests")
                 .font(.headline)
-            
+
             VStack(alignment: .leading, spacing: 8) {
                 Text("• Looking for someone to share ECE 302 notes.")
                 Text("• Anyone want to exchange M 408D review sheets?")
             }
             .foregroundColor(.secondary)
-            
+
             NavigationLink(destination: ShareRequestsView()) {
                 Text("View All →")
                     .font(.subheadline)
@@ -369,7 +369,7 @@ extension DashboardView {
         default: return "Good evening, Jaeyeon"
         }
     }
-    
+
     func formattedDate() -> String {
         let formatter = DateFormatter()
         formatter.dateFormat = "EEEE, MMM d"
