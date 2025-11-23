@@ -8,8 +8,8 @@
 import SwiftUI
 
 extension Color {
-    init?(hex: String) {
-        var hexString = hex.trimmingCharacters(in: .whitespacesAndNewlines)
+    init?(hexStr: String) {
+        var hexString = hexStr.trimmingCharacters(in: .whitespacesAndNewlines)
         
         // "#" 제거
         if hexString.hasPrefix("#") {
