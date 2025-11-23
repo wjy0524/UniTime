@@ -40,3 +40,6 @@ GoogleService-Info.plist
 
 # User-specific
 *.xcuserdatad
+
+#Firebase API
+GoogleService-Info.plist
