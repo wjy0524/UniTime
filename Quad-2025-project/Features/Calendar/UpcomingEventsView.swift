@@ -39,8 +39,8 @@ struct UpcomingEventsView: View {
                 Text(event.type)
                     .font(.caption)
                     .padding(4)
-                    .background(Color(hex: event.colorHex).opacity(0.2))
-                    .foregroundColor(Color(hex: event.colorHex))
+                    .background((Color(hexStr: event.colorHex) ?? .orange).opacity(0.2))
+                    .foregroundColor(Color(hexStr: event.colorHex) ?? .orange)
                     .cornerRadius(4)
             }
 

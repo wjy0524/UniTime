@@ -5,24 +5,20 @@
 //  Created by Jaeyeon Won on 11/18/25.
 //
 
-import SwiftUI
 import Charts
 import FirebaseAuth
+import SwiftUI
 
 struct DashboardView: View {
     @Environment(\.colorScheme) var colorScheme
-    @EnvironmentObject var gpaVM: GPAViewModel   // 🔥 실제 GPA 데이터 사용
+    @EnvironmentObject var gpaVM: GPAViewModel  // 🔥 실제 GPA 데이터 사용
+    @EnvironmentObject var eventVM: EventViewModel  // 🔥 실제 이벤트 데이터 사용
 
-    // MARK: - Static Data (일정/식단/스터디)
-    let todaysEvents: [(time: String, title: String)] = [
-        ("10:00 AM", "ECE 312 Lecture"),
-        ("4:00 PM", "Team Project Meeting"),
-        ("7:00 PM", "Study Session")
-    ]
+    // MARK: - Static Data (식단/스터디)
 
     let diningMenu = [
         "Panda Express: Orange Chicken",
-        "Jester City Limits: Pasta Bar"
+        "Jester City Limits: Pasta Bar",
     ]
 
     let studyData: [StudyHours] = [
@@ -32,7 +28,7 @@ struct DashboardView: View {
         .init(day: "Thu", hours: 2.0),
         .init(day: "Fri", hours: 4.0),
         .init(day: "Sat", hours: 1.5),
-        .init(day: "Sun", hours: 3.5)
+        .init(day: "Sun", hours: 3.5),
     ]
 
     var body: some View {
@@ -41,7 +37,7 @@ struct DashboardView: View {
                 VStack(spacing: 24) {
                     headerSection
                     todayScheduleCard
-                    gpaCard     // 🔥 실제 GPA 반영됨
+                    gpaCard  // 🔥 실제 GPA 반영됨
                     diningCard
                     quickActions
                     weeklyChartCard
@@ -52,7 +48,8 @@ struct DashboardView: View {
             }
             .navigationTitle("Dashboard")
             .onAppear {
-                gpaVM.fetchCourses()   // 🔥 GPA 데이터 로드
+                gpaVM.fetchCourses()  // 🔥 GPA 데이터 로드
+                eventVM.startListening()  // 🔥 이벤트 데이터 로드
             }
         }
     }
@@ -97,12 +94,16 @@ extension DashboardView {
             } label: {
                 ZStack {
                     Circle()
-                        .fill(LinearGradient(
-                            colors: [Color("UTAustinOrange").opacity(0.8),
-                                     Color.orange.opacity(0.6)],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        ))
+                        .fill(
+                            LinearGradient(
+                                colors: [
+                                    Color("UTAustinOrange").opacity(0.8),
+                                    Color.orange.opacity(0.6),
+                                ],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                        )
                         .frame(width: 54, height: 54)
                         .shadow(color: .black.opacity(0.15), radius: 5, y: 3)
 
@@ -123,9 +124,6 @@ extension DashboardView {
 
 }
 
-
-
-
 ////////////////////////////////////////////////////////////
 // MARK: - TODAY’S SCHEDULE
 ////////////////////////////////////////////////////////////
@@ -133,27 +131,48 @@ extension DashboardView {
 extension DashboardView {
     var todayScheduleCard: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Today’s Schedule")
+            Text("Today's Schedule")
                 .font(.headline)
 
             if todaysEvents.isEmpty {
                 Text("No events today 🎉")
                     .foregroundColor(.secondary)
+                    .font(.subheadline)
                     .padding(.vertical, 8)
             } else {
-                ForEach(todaysEvents, id: \.time) { event in
-                    HStack {
-                        Text(event.time)
+                ForEach(todaysEvents) { event in
+                    HStack(spacing: 12) {
+                        // Time
+                        Text(formatEventTime(event.date))
                             .font(.subheadline)
                             .fontWeight(.semibold)
                             .frame(width: 90, alignment: .leading)
+                            .foregroundColor(.secondary)
 
-                        Text(event.title)
-                            .font(.subheadline)
+                        // Event info
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(event.title)
+                                .font(.subheadline)
+                                .fontWeight(.medium)
+
+                            if !event.location.isEmpty {
+                                Text(event.location)
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
+                        }
 
                         Spacer()
+
+                        // Color indicator
+                        Circle()
+                            .fill(Color(hexStr: event.colorHex) ?? .orange)
+                            .frame(width: 10, height: 10)
                     }
-                    .padding(.vertical, 4)
+                    .padding(.vertical, 6)
+                    .padding(.horizontal, 8)
+                    .background((Color(hexStr: event.colorHex) ?? .orange).opacity(0.1))
+                    .cornerRadius(8)
                 }
             }
 
@@ -164,9 +183,24 @@ extension DashboardView {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color(.systemGray6).opacity(colorScheme == .dark ? 0.3 : 0.5))
         .cornerRadius(16)
         .shadow(color: .black.opacity(0.05), radius: 8)
+    }
+
+    // MARK: - Helper: Today's Events
+
+    var todaysEvents: [Event] {
+        let calendar = Calendar.current
+        return eventVM.events.filter { event in
+            calendar.isDate(event.date, inSameDayAs: Date())
+        }
+    }
+
+    func formatEventTime(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.timeStyle = .short
+        return formatter.string(from: date)
     }
 }
 
@@ -232,8 +266,11 @@ extension DashboardView {
                 .font(.headline)
 
             ForEach(diningMenu, id: \.self) { menu in
-                HStack { Text(menu); Spacer() }
-                    .padding(.vertical, 4)
+                HStack {
+                    Text(menu)
+                    Spacer()
+                }
+                .padding(.vertical, 4)
             }
 
             NavigationLink(destination: DiningHomeView()) {
@@ -376,7 +413,6 @@ extension DashboardView {
         return formatter.string(from: Date())
     }
 }
-
 
 func headerIcon(system: String) -> some View {
     Image(systemName: system)

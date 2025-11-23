@@ -5,9 +5,9 @@
 //  Created by Jaeyeon Won on 11/19/25.
 //
 
-import Foundation
 import FirebaseAuth
 import FirebaseFirestore
+import Foundation
 
 @MainActor
 final class EventViewModel: ObservableObject {
@@ -15,7 +15,7 @@ final class EventViewModel: ObservableObject {
     private let db = Firestore.firestore()
     private var listener: ListenerRegistration?
 
-    private var uid: String? {
+    var uid: String? {
         Auth.auth().currentUser?.uid
     }
 
@@ -29,7 +29,7 @@ final class EventViewModel: ObservableObject {
             .whereFilter(
                 .orFilter([
                     .whereField("ownerId", isEqualTo: uid),
-                    .whereField("sharedWith", arrayContains: uid)
+                    .whereField("sharedWith", arrayContains: uid),
                 ])
             )
             .order(by: "date")
@@ -39,7 +39,6 @@ final class EventViewModel: ObservableObject {
                 }
             }
     }
-
 
     func addEvent(_ event: Event) {
         guard let uid else { return }
@@ -54,7 +53,6 @@ final class EventViewModel: ObservableObject {
             print("❌ Error adding event:", error)
         }
     }
-
 
     func deleteEvent(_ event: Event) {
         guard let id = event.id else { return }
@@ -73,10 +71,8 @@ final class EventViewModel: ObservableObject {
         }
     }
 
-
     func events(on date: Date) -> [Event] {
         let cal = Calendar.current
         return events.filter { cal.isDate($0.date, inSameDayAs: date) }
     }
 }
-
