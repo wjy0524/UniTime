@@ -5,97 +5,80 @@
 //  Created by Jaeyeon Won on 11/18/25.
 //
 
-//
-//  TimetableView.swift
-//  Quad-2025-project
-//
-
 import SwiftUI
-
-struct CourseTime: Identifiable {
-    let id = UUID()
-    let day: Int          // 0–4 (Mon–Fri)
-    let startTime: Int    // minutes from midnight
-    let endTime: Int      // minutes from midnight
-}
-
-struct CourseItem: Identifiable {
-    let id = UUID()
-    let name: String
-    let code: String
-    let instructor: String
-    let location: String
-    let color: Color
-    let times: [CourseTime]
-}
+import UniformTypeIdentifiers
 
 struct TimetableView: View {
+    @StateObject private var viewModel = TimetableViewModel()
+    @State private var showingImportOptions = false
+    @State private var showingFileImporter = false
+    @State private var importType: ImportType = .json
+    @State private var selectedTimeSlot: TimeSlot?
 
-    // --------------------------
-    // MOCK COURSES (Matches React)
-    // --------------------------
-    let courses: [CourseItem] = [
-        CourseItem(
-            name: "Data Structures",
-            code: "CS301",
-            instructor: "Dr. Smith",
-            location: "ENG 204",
-            color: .blue,
-            times: [
-                CourseTime(day: 0, startTime: 540, endTime: 630),
-                CourseTime(day: 2, startTime: 540, endTime: 630)
-            ]
-        ),
-        CourseItem(
-            name: "Calculus II",
-            code: "MATH202",
-            instructor: "Prof. Johnson",
-            location: "MATH 101",
-            color: .green,
-            times: [
-                CourseTime(day: 0, startTime: 660, endTime: 750),
-                CourseTime(day: 2, startTime: 660, endTime: 750),
-                CourseTime(day: 4, startTime: 660, endTime: 750)
-            ]
-        ),
-        CourseItem(
-            name: "Physics Lab",
-            code: "PHYS201",
-            instructor: "Dr. Lee",
-            location: "SCI 305",
-            color: .purple,
-            times: [
-                CourseTime(day: 2, startTime: 840, endTime: 1020)
-            ]
-        ),
-        CourseItem(
-            name: "English Literature",
-            code: "ENG105",
-            instructor: "Prof. Davis",
-            location: "HUM 150",
-            color: .orange,
-            times: [
-                CourseTime(day: 1, startTime: 780, endTime: 870),
-                CourseTime(day: 3, startTime: 780, endTime: 870)
-            ]
-        )
-    ]
-    
+    enum ImportType {
+        case json, csv
+    }
+
+    struct TimeSlot {
+        let day: Int
+        let hour: Int
+    }
+
     let days = ["Mon", "Tue", "Wed", "Thu", "Fri"]
-    let hours = Array(8...21) // 8 AM → 9 PM (14 hours)
+    let hours = Array(8...21)  // 8 AM → 9 PM (14 hours)
+    let columnWidth: CGFloat = 90  // Fixed width for each day column
 
     var body: some View {
         ScrollView {
             VStack(spacing: 24) {
-                
+
                 // Header
                 HStack {
                     Text("My Timetable")
                         .font(.title2)
                         .bold()
                     Spacer()
-                    Button {
-                        // TODO: Add Course Action
+
+                    Menu {
+                        Button {
+                            viewModel.showingAddSheet = true
+                        } label: {
+                            Label("Add Course Manually", systemImage: "plus")
+                        }
+
+                        Button {
+                            showingImportOptions = true
+                        } label: {
+                            Label("Import from File", systemImage: "square.and.arrow.down")
+                        }
+
+                        if !viewModel.courses.isEmpty {
+                            Divider()
+
+                            Menu {
+                                Button {
+                                    exportJSON()
+                                } label: {
+                                    Label("Export as JSON", systemImage: "doc.text")
+                                }
+
+                                Button {
+                                    exportCSV()
+                                } label: {
+                                    Label("Export as CSV", systemImage: "tablecells")
+                                }
+                            } label: {
+                                Label("Export", systemImage: "square.and.arrow.up")
+                            }
+
+                            Divider()
+
+                            Button(role: .destructive) {
+                                viewModel.clearAll()
+                            } label: {
+                                Label("Clear All", systemImage: "trash")
+                            }
+                        }
                     } label: {
                         Label("Add", systemImage: "plus")
                             .padding(.horizontal, 10)
@@ -107,26 +90,114 @@ struct TimetableView: View {
                 }
                 .padding(.horizontal)
 
-                // Timetable grid
-                ScrollView(.horizontal) {
-                    timetableGrid
-                        .padding(.horizontal)
-                }
+                // Empty State or Timetable grid
+                if viewModel.courses.isEmpty {
+                    emptyStateView
+                } else {
+                    ScrollView(.horizontal) {
+                        timetableGrid
+                            .padding(.horizontal)
+                    }
 
-                // Course List
-                courseList
+                    // Course List
+                    courseList
+                }
             }
             .padding(.vertical, 20)
         }
         .navigationTitle("Timetable")
+        .sheet(isPresented: $viewModel.showingAddSheet) {
+            CourseFormView(viewModel: viewModel)
+        }
+        .sheet(isPresented: $viewModel.showingEditSheet) {
+            if let course = viewModel.selectedCourse {
+                CourseFormView(viewModel: viewModel, courseToEdit: course)
+            }
+        }
+        .confirmationDialog("Import Timetable", isPresented: $showingImportOptions) {
+            Button("Import JSON File") {
+                importType = .json
+                showingFileImporter = true
+            }
+
+            Button("Import CSV File") {
+                importType = .csv
+                showingFileImporter = true
+            }
+
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("Choose file format to import")
+        }
+        .fileImporter(
+            isPresented: $showingFileImporter,
+            allowedContentTypes: importType == .json ? [.json] : [.commaSeparatedText],
+            allowsMultipleSelection: false
+        ) { result in
+            handleFileImport(result)
+        }
+        .alert("Error", isPresented: $viewModel.showingError) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(viewModel.errorMessage ?? "An unknown error occurred")
+        }
+        .sheet(item: $selectedTimeSlot) { slot in
+            quickAddCourseView(for: slot)
+        }
     }
 }
 
 extension TimetableView {
 
-    // --------------------------
-    // TIMETABLE GRID
-    // --------------------------
+    // MARK: - Empty State
+    var emptyStateView: some View {
+        VStack(spacing: 20) {
+            Image(systemName: "calendar.badge.plus")
+                .font(.system(size: 60))
+                .foregroundColor(.gray)
+
+            Text("No Courses Yet")
+                .font(.title2)
+                .bold()
+
+            Text("Add your courses manually or import from a file")
+                .font(.subheadline)
+                .foregroundColor(.secondary)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal)
+
+            VStack(spacing: 12) {
+                Button {
+                    viewModel.showingAddSheet = true
+                } label: {
+                    Label("Add Course", systemImage: "plus.circle.fill")
+                        .font(.headline)
+                        .foregroundColor(.white)
+                        .padding()
+                        .frame(maxWidth: 250)
+                        .background(Color.blue)
+                        .cornerRadius(12)
+                }
+
+                Button {
+                    showingImportOptions = true
+                } label: {
+                    Label("Import File", systemImage: "square.and.arrow.down")
+                        .font(.headline)
+                        .foregroundColor(.blue)
+                        .padding()
+                        .frame(maxWidth: 250)
+                        .background(Color.blue.opacity(0.1))
+                        .cornerRadius(12)
+                }
+            }
+            .padding(.top)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 60)
+    }
+
+    // MARK: - TIMETABLE GRID
     var timetableGrid: some View {
         VStack(spacing: 0) {
 
@@ -138,7 +209,7 @@ extension TimetableView {
                 ForEach(days, id: \.self) { day in
                     Text(day)
                         .font(.subheadline)
-                        .frame(maxWidth: .infinity)
+                        .frame(width: columnWidth)
                         .foregroundColor(.primary)
                 }
             }
@@ -149,14 +220,18 @@ extension TimetableView {
                 HStack(spacing: 2) {
                     timeLabel(hour)
 
-                    ForEach(0..<5) { dayIndex in
+                    ForEach(0..<5, id: \.self) { dayIndex in
                         ZStack {
                             Rectangle()
                                 .stroke(Color.gray.opacity(0.2))
+                                .background(Color(white: 1.0))
+                                .onTapGesture {
+                                    selectedTimeSlot = TimeSlot(day: dayIndex, hour: hour)
+                                }
 
                             courseBlocks(day: dayIndex, hour: hour)
                         }
-                        .frame(height: 60)
+                        .frame(width: columnWidth, height: 60)
                     }
                 }
             }
@@ -178,15 +253,9 @@ extension TimetableView {
         return "\(display) \(suffix)"
     }
 
-    // --------------------------
-    // CLASS BLOCKS PER SLOT
-    // --------------------------
+    // MARK: - CLASS BLOCKS PER SLOT
     func courseBlocks(day: Int, hour: Int) -> some View {
-        let inThisHour = courses.filter { course in
-            course.times.contains { t in
-                t.day == day && hour == t.startTime / 60
-            }
-        }
+        let inThisHour = viewModel.getCourses(for: day, hour: hour)
 
         return ForEach(inThisHour) { course in
             if let time = course.times.first(where: { $0.day == day }) {
@@ -203,10 +272,13 @@ extension TimetableView {
                         .opacity(0.8)
                 }
                 .padding(6)
-                .frame(maxWidth: .infinity, maxHeight: duration * 60)   // 60px per hour
+                .frame(maxWidth: .infinity, maxHeight: duration * 60)  // 60px per hour
                 .background(course.color.opacity(0.85))
                 .foregroundColor(.white)
                 .cornerRadius(6)
+                .onTapGesture {
+                    viewModel.selectCourseForEditing(course)
+                }
             }
         }
     }
@@ -214,16 +286,14 @@ extension TimetableView {
 
 extension TimetableView {
 
-    // --------------------------
-    // COURSE LIST
-    // --------------------------
+    // MARK: - COURSE LIST
     var courseList: some View {
         VStack(alignment: .leading, spacing: 16) {
             Text("Enrolled Courses")
                 .font(.headline)
                 .padding(.horizontal)
 
-            ForEach(courses) { course in
+            ForEach(viewModel.courses) { course in
                 HStack(spacing: 12) {
                     Circle()
                         .fill(course.color)
@@ -236,18 +306,162 @@ extension TimetableView {
                         Text("\(course.instructor) • \(course.location)")
                             .font(.caption)
                             .foregroundColor(.secondary)
+
+                        // Show times
+                        Text(formatCourseTimes(course.times))
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
                     }
 
                     Spacer()
 
-                    Button("Edit") {}
-                        .foregroundColor(.secondary)
+                    Menu {
+                        Button {
+                            viewModel.selectCourseForEditing(course)
+                        } label: {
+                            Label("Edit", systemImage: "pencil")
+                        }
+
+                        Button(role: .destructive) {
+                            viewModel.deleteCourse(course)
+                        } label: {
+                            Label("Delete", systemImage: "trash")
+                        }
+                    } label: {
+                        Image(systemName: "ellipsis.circle")
+                            .foregroundColor(.secondary)
+                    }
                 }
                 .padding()
-                .background(Color(.systemGray6))
+                .background(Color.gray.opacity(0.1))
                 .cornerRadius(12)
                 .padding(.horizontal)
             }
         }
+    }
+
+    func formatCourseTimes(_ times: [CourseTime]) -> String {
+        let grouped = Dictionary(grouping: times, by: { $0.day })
+        let sorted = grouped.sorted { $0.key < $1.key }
+
+        return sorted.map { day, times in
+            let dayName = days[day]
+            let timeStrings = times.map { time in
+                formatTime(time.startTime) + "-" + formatTime(time.endTime)
+            }.joined(separator: ", ")
+            return "\(dayName): \(timeStrings)"
+        }.joined(separator: " • ")
+    }
+
+    func formatTime(_ minutes: Int) -> String {
+        let hour = minutes / 60
+        let minute = minutes % 60
+        let displayHour = hour == 0 ? 12 : (hour > 12 ? hour - 12 : hour)
+        let suffix = hour >= 12 ? "PM" : "AM"
+        if minute == 0 {
+            return "\(displayHour)\(suffix)"
+        }
+        return String(format: "%d:%02d%@", displayHour, minute, suffix)
+    }
+}
+
+extension TimetableView {
+
+    // MARK: - Import/Export Functions
+
+    func handleFileImport(_ result: Result<[URL], Error>) {
+        switch result {
+        case .success(let urls):
+            guard let url = urls.first else { return }
+
+            do {
+                let data = try Data(contentsOf: url)
+
+                if importType == .json {
+                    viewModel.importFromJSON(data)
+                } else {
+                    viewModel.importFromCSV(data)
+                }
+            } catch {
+                viewModel.errorMessage = "Failed to read file: \(error.localizedDescription)"
+                viewModel.showingError = true
+            }
+
+        case .failure(let error):
+            viewModel.errorMessage = "Failed to select file: \(error.localizedDescription)"
+            viewModel.showingError = true
+        }
+    }
+
+    func exportJSON() {
+        guard let data = viewModel.exportToJSON() else { return }
+        saveFile(data: data, filename: "timetable.json", contentType: .json)
+    }
+
+    func exportCSV() {
+        let csvString = viewModel.exportToCSV()
+        guard let data = csvString.data(using: String.Encoding.utf8) else { return }
+        saveFile(data: data, filename: "timetable.csv", contentType: .commaSeparatedText)
+    }
+
+    func saveFile(data: Data, filename: String, contentType: UTType) {
+        FileExportHelper.shareFile(data: data, filename: filename, contentType: contentType) {
+            errorMessage in
+            viewModel.errorMessage = errorMessage
+            viewModel.showingError = true
+        }
+    }
+
+    // MARK: - Quick Add from Time Slot
+
+    func quickAddCourseView(for slot: TimeSlot) -> some View {
+        NavigationView {
+            VStack(spacing: 20) {
+                Image(systemName: "calendar.badge.plus")
+                    .font(.system(size: 50))
+                    .foregroundColor(.blue)
+
+                Text("Add Course")
+                    .font(.title2)
+                    .bold()
+
+                Text("Selected: \(days[slot.day]) at \(formatHour(slot.hour))")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+
+                Button {
+                    selectedTimeSlot = nil
+                    viewModel.showingAddSheet = true
+                } label: {
+                    Label("Create New Course", systemImage: "plus.circle.fill")
+                        .font(.headline)
+                        .foregroundColor(.white)
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                        .background(Color.blue)
+                        .cornerRadius(12)
+                }
+                .padding(.horizontal)
+
+                Spacer()
+            }
+            .padding()
+            .navigationTitle("Quick Add")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("Cancel") {
+                        selectedTimeSlot = nil
+                    }
+                }
+            }
+        }
+    }
+}
+
+// MARK: - TimeSlot Identifiable
+extension TimetableView.TimeSlot: Identifiable {
+    var id: String {
+        "\(day)-\(hour)"
     }
 }
