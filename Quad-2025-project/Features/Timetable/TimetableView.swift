@@ -26,7 +26,6 @@ struct TimetableView: View {
 
     let days = ["Mon", "Tue", "Wed", "Thu", "Fri"]
     let hours = Array(8...21)  // 8 AM → 9 PM (14 hours)
-    let columnWidth: CGFloat = 90  // Fixed width for each day column
 
     var body: some View {
         ScrollView {
@@ -94,10 +93,8 @@ struct TimetableView: View {
                 if viewModel.courses.isEmpty {
                     emptyStateView
                 } else {
-                    ScrollView(.horizontal) {
-                        timetableGrid
-                            .padding(.horizontal)
-                    }
+                    timetableGrid
+                        .padding(.horizontal)
 
                     // Course List
                     courseList
@@ -199,50 +196,59 @@ extension TimetableView {
 
     // MARK: - TIMETABLE GRID
     var timetableGrid: some View {
-        VStack(spacing: 0) {
+        GeometryReader { geometry in
+            let timeColumnWidth: CGFloat = 50
+            let availableWidth = geometry.size.width - timeColumnWidth
+            let columnWidth = availableWidth / 5
 
-            // Days header
-            HStack(spacing: 2) {
-                Text("Time")
-                    .frame(width: 60)
+            ScrollView {
+                VStack(spacing: 0) {
 
-                ForEach(days, id: \.self) { day in
-                    Text(day)
-                        .font(.subheadline)
-                        .frame(width: columnWidth)
-                        .foregroundColor(.primary)
-                }
-            }
-            .padding(.vertical, 8)
+                    // Days header
+                    HStack(spacing: 0) {
+                        Text("Time")
+                            .frame(width: timeColumnWidth)
+                            .font(.caption)
 
-            // Rows by hour
-            ForEach(hours, id: \.self) { hour in
-                HStack(spacing: 2) {
-                    timeLabel(hour)
-
-                    ForEach(0..<5, id: \.self) { dayIndex in
-                        ZStack {
-                            Rectangle()
-                                .stroke(Color.gray.opacity(0.2))
-                                .background(Color(white: 1.0))
-                                .onTapGesture {
-                                    selectedTimeSlot = TimeSlot(day: dayIndex, hour: hour)
-                                }
-
-                            courseBlocks(day: dayIndex, hour: hour)
+                        ForEach(days, id: \.self) { day in
+                            Text(day)
+                                .font(.caption)
+                                .frame(width: columnWidth)
+                                .foregroundColor(.primary)
                         }
-                        .frame(width: columnWidth, height: 60)
+                    }
+                    .padding(.vertical, 8)
+
+                    ForEach(hours, id: \.self) { hour in
+                        HStack(spacing: 0) {
+                            timeLabel(hour, width: timeColumnWidth)
+
+                            ForEach(0..<5, id: \.self) { dayIndex in
+                                ZStack {
+                                    Rectangle()
+                                        .stroke(Color.gray.opacity(0.2))
+                                        .background(Color(white: 1.0))
+                                        .onTapGesture {
+                                            selectedTimeSlot = TimeSlot(day: dayIndex, hour: hour)
+                                        }
+
+                                    courseBlocks(
+                                        day: dayIndex, hour: hour, columnWidth: columnWidth)
+                                }
+                                .frame(width: columnWidth, height: 60)
+                            }
+                        }
                     }
                 }
             }
         }
+        .frame(height: 600)  // Fixed height for the timetable grid
     }
 
-    // Time Label
-    func timeLabel(_ hour: Int) -> some View {
+    func timeLabel(_ hour: Int, width: CGFloat) -> some View {
         Text(formatHour(hour))
-            .frame(width: 60)
-            .font(.caption)
+            .frame(width: width)
+            .font(.caption2)
             .foregroundColor(.secondary)
     }
 
@@ -254,28 +260,34 @@ extension TimetableView {
     }
 
     // MARK: - CLASS BLOCKS PER SLOT
-    func courseBlocks(day: Int, hour: Int) -> some View {
+    func courseBlocks(day: Int, hour: Int, columnWidth: CGFloat) -> some View {
         let inThisHour = viewModel.getCourses(for: day, hour: hour)
 
         return ForEach(inThisHour) { course in
             if let time = course.times.first(where: { $0.day == day }) {
                 let duration = CGFloat(time.endTime - time.startTime) / 60
 
-                VStack(alignment: .leading, spacing: 2) {
+                VStack(alignment: .leading, spacing: 1) {
                     Text(course.code)
                         .bold()
-                        .font(.caption)
+                        .font(.system(size: min(columnWidth * 0.12, 11)))
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.7)
                     Text(course.name)
-                        .font(.caption2)
+                        .font(.system(size: min(columnWidth * 0.1, 9)))
+                        .lineLimit(2)
+                        .minimumScaleFactor(0.7)
                     Text(course.location)
-                        .font(.caption2)
+                        .font(.system(size: min(columnWidth * 0.09, 8)))
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.7)
                         .opacity(0.8)
                 }
-                .padding(6)
+                .padding(4)
                 .frame(maxWidth: .infinity, maxHeight: duration * 60)  // 60px per hour
                 .background(course.color.opacity(0.85))
                 .foregroundColor(.white)
-                .cornerRadius(6)
+                .cornerRadius(4)
                 .onTapGesture {
                     viewModel.selectCourseForEditing(course)
                 }
@@ -286,7 +298,6 @@ extension TimetableView {
 
 extension TimetableView {
 
-    // MARK: - COURSE LIST
     var courseList: some View {
         VStack(alignment: .leading, spacing: 16) {
             Text("Enrolled Courses")
@@ -463,5 +474,16 @@ extension TimetableView {
 extension TimetableView.TimeSlot: Identifiable {
     var id: String {
         "\(day)-\(hour)"
+    }
+}
+
+// MARK: - TimetableView Canvas Preview
+struct TimetableView_Previews: PreviewProvider {
+    static var previews: some View {
+        NavigationView {
+            TimetableView()
+        }
+        .environmentObject(GPAViewModel())
+        .environmentObject(EventViewModel())
     }
 }
