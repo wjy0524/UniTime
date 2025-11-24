@@ -6,6 +6,15 @@
       parallelizeBuildables = "YES"
       buildImplicitDependencies = "YES"
       buildArchitectures = "Automatic">
+      <PreActions>
+         <ExecutionAction
+            ActionType = "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction">
+            <ActionContent
+               title = "Run Script"
+               scriptText = "custom_sim=`xcrun simctl list | grep &#x2018;&lt;simulator_name&gt;&#x2019; | awk -F&#x2019;[()]&#x2019; &#x2018;{print $2}&#x2019;`&#10;&#10;if [ ! -z &#x201c;${custom_sim}&#x201d; ] &amp;&amp; [ &#x201c;${TARGET_DEVICE_IDENTIFIER}&#x201d; = &#x201c;${custom_sim}&#x201d; ]; then&#10;&#10;/bin/sh multipleSimulatorsStartup.sh &amp;&#10;&#10;fi&#10;">
+            </ActionContent>
+         </ExecutionAction>
+      </PreActions>
       <BuildActionEntries>
          <BuildActionEntry
             buildForTesting = "YES"

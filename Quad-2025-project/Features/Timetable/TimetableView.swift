@@ -14,6 +14,9 @@ struct TimetableView: View {
     @State private var showingFileImporter = false
     @State private var importType: ImportType = .json
     @State private var selectedTimeSlot: TimeSlot?
+    @State private var showingShareSearch = false
+    @State private var showingShareRequests = false
+    @StateObject private var shareViewModel = TimetableShareViewModel.shared
 
     enum ImportType {
         case json, csv
@@ -36,7 +39,38 @@ struct TimetableView: View {
                     Text("My Timetable")
                         .font(.title2)
                         .bold()
+
                     Spacer()
+
+                    Button {
+                        showingShareRequests = true
+                    } label: {
+                        ZStack(alignment: .topTrailing) {
+                            Image(systemName: "tray.fill")
+                                .font(.system(size: 18, weight: .semibold))
+                                .foregroundColor(Color("UTAustinOrange"))
+                                .frame(width: 40, height: 40)
+                                .background(
+                                    Circle()
+                                        .fill(Color(.systemBackground))
+                                        .shadow(color: .black.opacity(0.1), radius: 3, y: 2)
+                                )
+
+                            if shareViewModel.shareRequests.count > 0 {
+                                ZStack {
+                                    Circle()
+                                        .fill(Color.red)
+                                        .frame(width: 18, height: 18)
+
+                                    Text("\(min(shareViewModel.shareRequests.count, 99))")
+                                        .font(.system(size: 10, weight: .bold))
+                                        .foregroundColor(.white)
+                                }
+                                .offset(x: 6, y: -6)
+                            }
+                        }
+                    }
+                    .buttonStyle(.plain)
 
                     Menu {
                         Button {
@@ -52,6 +86,12 @@ struct TimetableView: View {
                         }
 
                         if !viewModel.courses.isEmpty {
+                            Button {
+                                showingShareSearch = true
+                            } label: {
+                                Label("Share Timetable", systemImage: "person.2.fill")
+                            }
+
                             Divider()
 
                             Menu {
@@ -140,6 +180,12 @@ struct TimetableView: View {
         }
         .sheet(item: $selectedTimeSlot) { slot in
             quickAddCourseView(for: slot)
+        }
+        .sheet(isPresented: $showingShareSearch) {
+            TimetableShareSearchView(timetableViewModel: viewModel)
+        }
+        .sheet(isPresented: $showingShareRequests) {
+            TimetableShareRequestsView()
         }
     }
 }

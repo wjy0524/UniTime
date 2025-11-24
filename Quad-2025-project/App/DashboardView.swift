@@ -13,6 +13,8 @@ struct DashboardView: View {
     @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject var gpaVM: GPAViewModel  // 🔥 실제 GPA 데이터 사용
     @EnvironmentObject var eventVM: EventViewModel  // 🔥 실제 이벤트 데이터 사용
+    @StateObject private var notificationVM = NotificationViewModel()
+    @State private var showingNotifications = false
 
     // MARK: - Static Data (식단/스터디)
 
@@ -51,6 +53,9 @@ struct DashboardView: View {
                 gpaVM.fetchCourses()  // 🔥 GPA 데이터 로드
                 eventVM.startListening()  // 🔥 이벤트 데이터 로드
             }
+            .sheet(isPresented: $showingNotifications) {
+                NotificationView()
+            }
         }
     }
 }
@@ -73,6 +78,29 @@ extension DashboardView {
             }
 
             Spacer()
+
+            // RIGHT — Notification Button
+            Button {
+                showingNotifications = true
+            } label: {
+                ZStack(alignment: .topTrailing) {
+                    headerIcon(system: "heart")
+
+                    if notificationVM.unreadCount > 0 {
+                        ZStack {
+                            Circle()
+                                .fill(Color.red)
+                                .frame(width: 18, height: 18)
+
+                            Text("\(min(notificationVM.unreadCount, 99))")
+                                .font(.system(size: 10, weight: .bold))
+                                .foregroundColor(.white)
+                        }
+                        .offset(x: 8, y: -8)
+                    }
+                }
+            }
+            .buttonStyle(.plain)
 
             // RIGHT — Search Button
             NavigationLink {

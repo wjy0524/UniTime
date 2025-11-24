@@ -55,4 +55,5 @@ struct MainTabView: View {
     MainTabView()
         .environmentObject(AuthenticationManager())
         .environmentObject(GPAViewModel())
+        .environmentObject(EventViewModel())
 }
