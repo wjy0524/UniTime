@@ -102,9 +102,7 @@ struct ShareRequestCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            // Header with user info
             HStack(spacing: 12) {
-                // Profile Image
                 if let imageURL = request.fromUserProfileImage, let url = URL(string: imageURL) {
                     AsyncImage(url: url) { image in
                         image
@@ -150,7 +148,6 @@ struct ShareRequestCard: View {
                 Spacer()
             }
 
-            // Course count and preview toggle
             HStack {
                 Text(
                     "\(request.timetableCourses.count) course\(request.timetableCourses.count == 1 ? "" : "s")"
@@ -175,7 +172,6 @@ struct ShareRequestCard: View {
                 }
             }
 
-            // Expanded course list
             if isExpanded {
                 VStack(alignment: .leading, spacing: 8) {
                     ForEach(request.timetableCourses) { course in
@@ -203,7 +199,6 @@ struct ShareRequestCard: View {
                 .padding(.top, 4)
             }
 
-            // Action buttons
             HStack(spacing: 12) {
                 Button(action: onDecline) {
                     Text("Decline")

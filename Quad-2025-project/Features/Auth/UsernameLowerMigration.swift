@@ -10,15 +10,11 @@ import FirebaseFirestore
 import Foundation
 import SwiftUI
 
-/// Utility to ensure all users have the username_lower field for search functionality
 class UsernameLowerMigration {
 
     private let db = Firestore.firestore()
 
     // MARK: - Migrate Current User
-
-    /// Migrates the currently logged-in user's username to include username_lower field
-    /// Call this when user logs in or in your app's initialization
     func migrateCurrentUser(completion: ((Bool) -> Void)? = nil) {
         guard let userId = Auth.auth().currentUser?.uid else {
             print("❌ No user logged in")
@@ -43,14 +39,12 @@ class UsernameLowerMigration {
                 return
             }
 
-            // Check if username_lower already exists
             if data["username_lower"] != nil {
                 print("✅ username_lower already exists for: \(username)")
                 completion?(true)
                 return
             }
 
-            // Add username_lower field
             userRef.updateData([
                 "username_lower": username.lowercased()
             ]) { error in
@@ -65,10 +59,6 @@ class UsernameLowerMigration {
         }
     }
 
-    // MARK: - Batch Migration (Admin Only)
-
-    /// Migrates all users in the database (use with caution, requires admin privileges)
-    /// This should only be run once, typically from a script or admin panel
     func migrateAllUsers(completion: @escaping (Int, Int) -> Void) {
         db.collection("users").getDocuments { [weak self] snapshot, error in
             guard let self = self else { return }
@@ -127,7 +117,6 @@ class UsernameLowerMigration {
 
     // MARK: - Verification
 
-    /// Verifies that the current user has the username_lower field
     func verifyCurrentUser(completion: @escaping (Bool, String?) -> Void) {
         guard let userId = Auth.auth().currentUser?.uid else {
             completion(false, "No user logged in")
@@ -165,7 +154,6 @@ class UsernameLowerMigration {
 
     // MARK: - Test Search
 
-    /// Tests if search works with a given query
     func testSearch(query: String, completion: @escaping ([String]) -> Void) {
         let searchText = query.lowercased()
 
@@ -191,9 +179,6 @@ class UsernameLowerMigration {
     }
 }
 
-// MARK: - SwiftUI Integration
-
-/// View modifier to automatically migrate username_lower on app launch
 struct UsernameLowerMigrationModifier: ViewModifier {
     @State private var hasMigrated = false
 
@@ -210,43 +195,7 @@ struct UsernameLowerMigrationModifier: ViewModifier {
 }
 
 extension View {
-    /// Automatically migrates the current user's username_lower field on appear
     func migrateUsernameLower() -> some View {
         modifier(UsernameLowerMigrationModifier())
     }
 }
-
-// MARK: - Usage Examples
-/*
-
- // Example 1: Migrate current user on login
- UsernameLowerMigration().migrateCurrentUser { success in
-     if success {
-         print("Migration successful!")
-     }
- }
-
- // Example 2: Use as view modifier
- struct ContentView: View {
-     var body: some View {
-         Text("Hello")
-             .migrateUsernameLower()
-     }
- }
-
- // Example 3: Verify current user
- UsernameLowerMigration().verifyCurrentUser { hasField, message in
-     print(message ?? "")
- }
-
- // Example 4: Test search
- UsernameLowerMigration().testSearch(query: "john") { usernames in
-     print("Found users: \(usernames)")
- }
-
- // Example 5: Batch migrate all users (admin only - use carefully!)
- UsernameLowerMigration().migrateAllUsers { updated, total in
-     print("Migrated \(updated) of \(total) users")
- }
-
- */

@@ -5,8 +5,8 @@
 //  Created on Notification Feature Implementation
 //
 
-import Foundation
 import FirebaseFirestore
+import Foundation
 
 // MARK: - Notification Type
 enum NotificationType: String, Codable {
@@ -68,7 +68,6 @@ struct AppNotification: Identifiable, Codable {
     let timestamp: Date
     var isRead: Bool
 
-    // Optional metadata for specific notification types
     var timetableShareId: String?
     var postId: String?
     var eventId: String?
@@ -122,11 +121,11 @@ struct AppNotification: Identifiable, Codable {
         type = try container.decode(NotificationType.self, forKey: .type)
         fromUserId = try container.decode(String.self, forKey: .fromUserId)
         fromUsername = try container.decode(String.self, forKey: .fromUsername)
-        fromUserProfileImage = try container.decodeIfPresent(String.self, forKey: .fromUserProfileImage)
+        fromUserProfileImage = try container.decodeIfPresent(
+            String.self, forKey: .fromUserProfileImage)
         toUserId = try container.decode(String.self, forKey: .toUserId)
         message = try container.decode(String.self, forKey: .message)
 
-        // Handle Firestore Timestamp
         if let firestoreTimestamp = try? container.decode(Timestamp.self, forKey: .timestamp) {
             timestamp = firestoreTimestamp.dateValue()
         } else {
@@ -172,8 +171,7 @@ struct TimetableShareRequest: Identifiable, Codable {
     let toUsername: String
     let timestamp: Date
     var status: ShareStatus
-    let timetableCourses: [TimetableCourse]  // Snapshot of shared timetable
-
+    let timetableCourses: [TimetableCourse]
     enum ShareStatus: String, Codable {
         case pending = "pending"
         case accepted = "accepted"
@@ -219,7 +217,8 @@ struct TimetableShareRequest: Identifiable, Codable {
         _id = try container.decode(DocumentID<String>.self, forKey: .id)
         fromUserId = try container.decode(String.self, forKey: .fromUserId)
         fromUsername = try container.decode(String.self, forKey: .fromUsername)
-        fromUserProfileImage = try container.decodeIfPresent(String.self, forKey: .fromUserProfileImage)
+        fromUserProfileImage = try container.decodeIfPresent(
+            String.self, forKey: .fromUserProfileImage)
         toUserId = try container.decode(String.self, forKey: .toUserId)
         toUsername = try container.decode(String.self, forKey: .toUsername)
 
