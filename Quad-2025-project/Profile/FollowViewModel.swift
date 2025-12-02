@@ -9,9 +9,9 @@
 //  FollowViewModel.swift
 //
 
-import Foundation
-import FirebaseFirestore
 import FirebaseAuth
+import FirebaseFirestore
+import Foundation
 
 @MainActor
 class FollowViewModel: ObservableObject {
@@ -26,7 +26,12 @@ class FollowViewModel: ObservableObject {
 
     // MARK: - Follow
     func follow(targetUid: String) async {
-        guard myUid != targetUid else { return }
+        guard myUid != targetUid else {
+            print("⚠️ FOLLOW: Cannot follow yourself")
+            return
+        }
+
+        print("🔔 FOLLOW: Starting to follow user: \(targetUid)")
 
         do {
             try await db.collection("users")
@@ -35,7 +40,7 @@ class FollowViewModel: ObservableObject {
                 .document(targetUid)
                 .setData([
                     "uid": targetUid,
-                    "timestamp": FieldValue.serverTimestamp()
+                    "timestamp": FieldValue.serverTimestamp(),
                 ])
 
             try await db.collection("users")
@@ -44,15 +49,20 @@ class FollowViewModel: ObservableObject {
                 .document(myUid)
                 .setData([
                     "uid": myUid,
-                    "timestamp": FieldValue.serverTimestamp()
+                    "timestamp": FieldValue.serverTimestamp(),
                 ])
 
+            print("✅ FOLLOW: Successfully created follow relationship")
+
             // 🔥 Send follow notification
+            print("🔔 FOLLOW: Sending notification to \(targetUid)")
             let notificationVM = NotificationViewModel()
             notificationVM.sendFollowNotification(toUserId: targetUid)
+            print("✅ FOLLOW: Notification function called")
 
         } catch {
-            print("❌ Follow error:", error)
+            print("❌ FOLLOW ERROR: \(error.localizedDescription)")
+            print("🔥 Full error: \(error)")
         }
     }
 
@@ -150,6 +160,5 @@ class FollowViewModel: ObservableObject {
             return []
         }
     }
-
 
 }

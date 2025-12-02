@@ -32,7 +32,12 @@ class NotificationViewModel: ObservableObject {
     // MARK: - Fetch Notifications
 
     func startListening() {
-        guard let userId = Auth.auth().currentUser?.uid else { return }
+        guard let userId = Auth.auth().currentUser?.uid else {
+            print("❌ NOTIFICATIONS: No authenticated user found")
+            return
+        }
+
+        print("✅ NOTIFICATIONS: Starting to listen for user: \(userId)")
 
         listener = db.collection("notifications")
             .whereField("toUserId", isEqualTo: userId)
@@ -41,19 +46,48 @@ class NotificationViewModel: ObservableObject {
                 guard let self = self else { return }
 
                 if let error = error {
+                    print("❌ NOTIFICATIONS ERROR: \(error.localizedDescription)")
+                    print("🔥 Full error: \(error)")
+
+                    // Check if it's an index error
+                    if error.localizedDescription.contains("index") {
+                        print("⚠️ THIS IS AN INDEX ERROR - You need to create a composite index")
+                        print(
+                            "📋 Index needed: notifications collection with fields: toUserId (Ascending), timestamp (Descending)"
+                        )
+                    }
+
                     self.errorMessage =
                         "Failed to load notifications: \(error.localizedDescription)"
                     self.showingError = true
                     return
                 }
 
-                guard let documents = snapshot?.documents else { return }
+                print("✅ NOTIFICATIONS: Query successful")
+                print("📊 Number of documents: \(snapshot?.documents.count ?? 0)")
+
+                guard let documents = snapshot?.documents else {
+                    print("⚠️ NOTIFICATIONS: No documents in snapshot")
+                    return
+                }
 
                 self.notifications = documents.compactMap { doc in
-                    try? doc.data(as: AppNotification.self)
+                    do {
+                        let notification = try doc.data(as: AppNotification.self)
+                        print(
+                            "✅ Decoded notification: \(notification.type.rawValue) - \(notification.message)"
+                        )
+                        return notification
+                    } catch {
+                        print("❌ Failed to decode notification \(doc.documentID): \(error)")
+                        return nil
+                    }
                 }
 
                 self.unreadCount = self.notifications.filter { !$0.isRead }.count
+                print(
+                    "✅ NOTIFICATIONS: Loaded \(self.notifications.count) notifications, \(self.unreadCount) unread"
+                )
             }
     }
 
@@ -113,14 +147,30 @@ class NotificationViewModel: ObservableObject {
         postId: String? = nil,
         eventId: String? = nil
     ) {
-        guard let currentUserId = Auth.auth().currentUser?.uid else { return }
+        guard let currentUserId = Auth.auth().currentUser?.uid else {
+            print("❌ SEND NOTIFICATION: No current user")
+            return
+        }
+
+        print("🔔 SEND NOTIFICATION: Preparing \(type.rawValue) notification to \(toUserId)")
 
         // Fetch current user info
         db.collection("users").document(currentUserId).getDocument { [weak self] snapshot, error in
-            guard let self = self,
-                let data = snapshot?.data(),
+            guard let self = self else { return }
+
+            if let error = error {
+                print(
+                    "❌ SEND NOTIFICATION: Failed to fetch user data - \(error.localizedDescription)"
+                )
+                return
+            }
+
+            guard let data = snapshot?.data(),
                 let username = data["username"] as? String
-            else { return }
+            else {
+                print("❌ SEND NOTIFICATION: No username found in user document")
+                return
+            }
 
             let profileImageURL = data["profileImageURL"] as? String
 
@@ -136,10 +186,16 @@ class NotificationViewModel: ObservableObject {
                 eventId: eventId
             )
 
+            print("📝 SEND NOTIFICATION: Created notification object from \(username)")
+
             do {
-                try self.db.collection("notifications").addDocument(from: notification)
+                let docRef = try self.db.collection("notifications").addDocument(from: notification)
+                print(
+                    "✅ SEND NOTIFICATION: Successfully saved to Firestore with ID: \(docRef.documentID)"
+                )
             } catch {
-                print("Error sending notification: \(error.localizedDescription)")
+                print("❌ SEND NOTIFICATION ERROR: \(error.localizedDescription)")
+                print("🔥 Full error: \(error)")
             }
         }
     }
@@ -239,14 +295,35 @@ class NotificationViewModel: ObservableObject {
     // MARK: - Post Notifications
 
     func sendPostLikeNotification(toUserId: String, postId: String) {
-        guard let currentUserId = Auth.auth().currentUser?.uid else { return }
-        guard currentUserId != toUserId else { return }  // Don't notify yourself
+        guard let currentUserId = Auth.auth().currentUser?.uid else {
+            print("❌ POST LIKE NOTIFICATION: No current user")
+            return
+        }
+        guard currentUserId != toUserId else {
+            print("⚠️ POST LIKE NOTIFICATION: Not sending to self")
+            return
+        }
+
+        print("🔔 POST LIKE NOTIFICATION: Attempting to send to \(toUserId)")
 
         db.collection("users").document(currentUserId).getDocument { [weak self] snapshot, error in
-            guard let self = self,
-                let data = snapshot?.data(),
+            guard let self = self else { return }
+
+            if let error = error {
+                print(
+                    "❌ POST LIKE NOTIFICATION: Failed to fetch username - \(error.localizedDescription)"
+                )
+                return
+            }
+
+            guard let data = snapshot?.data(),
                 let username = data["username"] as? String
-            else { return }
+            else {
+                print("❌ POST LIKE NOTIFICATION: No username found for current user")
+                return
+            }
+
+            print("✅ POST LIKE NOTIFICATION: Sending notification from \(username) to \(toUserId)")
 
             self.sendNotification(
                 type: .postLike,
@@ -258,14 +335,36 @@ class NotificationViewModel: ObservableObject {
     }
 
     func sendPostCommentNotification(toUserId: String, postId: String) {
-        guard let currentUserId = Auth.auth().currentUser?.uid else { return }
-        guard currentUserId != toUserId else { return }  // Don't notify yourself
+        guard let currentUserId = Auth.auth().currentUser?.uid else {
+            print("❌ POST COMMENT NOTIFICATION: No current user")
+            return
+        }
+        guard currentUserId != toUserId else {
+            print("⚠️ POST COMMENT NOTIFICATION: Not sending to self")
+            return
+        }
+
+        print("🔔 POST COMMENT NOTIFICATION: Attempting to send to \(toUserId)")
 
         db.collection("users").document(currentUserId).getDocument { [weak self] snapshot, error in
-            guard let self = self,
-                let data = snapshot?.data(),
+            guard let self = self else { return }
+
+            if let error = error {
+                print(
+                    "❌ POST COMMENT NOTIFICATION: Failed to fetch username - \(error.localizedDescription)"
+                )
+                return
+            }
+
+            guard let data = snapshot?.data(),
                 let username = data["username"] as? String
-            else { return }
+            else {
+                print("❌ POST COMMENT NOTIFICATION: No username found for current user")
+                return
+            }
+
+            print(
+                "✅ POST COMMENT NOTIFICATION: Sending notification from \(username) to \(toUserId)")
 
             self.sendNotification(
                 type: .postComment,
