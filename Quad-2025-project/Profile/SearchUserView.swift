@@ -5,8 +5,8 @@
 //  Created by Jaeyeon Won on 11/19/25.
 //
 
-import SwiftUI
 import Kingfisher
+import SwiftUI
 
 struct SearchUserView: View {
 
@@ -18,7 +18,7 @@ struct SearchUserView: View {
                 TextField("Search username…", text: $vm.query)
                     .textFieldStyle(.roundedBorder)
                     .padding()
-                    .onChange(of: vm.query) { _ in
+                    .onChange(of: vm.query) {
                         Task { await vm.search() }
                     }
 
@@ -28,7 +28,8 @@ struct SearchUserView: View {
                     } label: {
                         HStack {
                             if let url = URL(string: user.profileImageURL),
-                               !user.profileImageURL.isEmpty {
+                                !user.profileImageURL.isEmpty
+                            {
                                 KFImage(url)
                                     .resizable()
                                     .scaledToFill()

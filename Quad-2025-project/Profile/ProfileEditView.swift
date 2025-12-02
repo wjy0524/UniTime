@@ -1,3 +1,4 @@
+import PhotosUI
 //
 //  ProfileEditView.swift
 //  Quad-2025-project
@@ -5,7 +6,6 @@
 //  Created by Jaeyeon Won on 11/19/25.
 //
 import SwiftUI
-import PhotosUI
 
 struct ProfileEditView: View {
 
@@ -33,7 +33,7 @@ struct ProfileEditView: View {
                         EditableBioCard(text: $viewModel.bio)
                     }
                     .padding(.horizontal)
-                    
+
                 }
                 .padding(.top, 20)
             }
@@ -58,7 +58,6 @@ struct ProfileEditView: View {
     }
 }
 
-
 // MARK: - Profile Image Section
 extension ProfileEditView {
     var profileImageSection: some View {
@@ -70,7 +69,9 @@ extension ProfileEditView {
                     .frame(width: 110, height: 110)
                     .clipShape(Circle())
                     .shadow(radius: 4)
-            } else if let url = URL(string: viewModel.profileImageURL), !viewModel.profileImageURL.isEmpty {
+            } else if let url = URL(string: viewModel.profileImageURL),
+                !viewModel.profileImageURL.isEmpty
+            {
                 AsyncImage(url: url) { img in
                     img.resizable()
                 } placeholder: {
@@ -95,10 +96,11 @@ extension ProfileEditView {
                     .foregroundColor(Color("UTAustinOrange"))
                     .font(.subheadline.bold())
             }
-            .onChange(of: selectedPhoto) { newItem in
+            .onChange(of: selectedPhoto) {
                 Task {
-                    if let data = try? await newItem?.loadTransferable(type: Data.self),
-                       let uiImage = UIImage(data: data) {
+                    if let data = try? await selectedPhoto?.loadTransferable(type: Data.self),
+                        let uiImage = UIImage(data: data)
+                    {
                         profileImage = uiImage
                     }
                 }
@@ -106,7 +108,6 @@ extension ProfileEditView {
         }
     }
 }
-
 
 // MARK: - Edit Field Card (Reusable)
 struct EditableInputCard: View {
@@ -129,7 +130,6 @@ struct EditableInputCard: View {
         }
     }
 }
-
 
 // MARK: - Bio Card
 struct EditableBioCard: View {

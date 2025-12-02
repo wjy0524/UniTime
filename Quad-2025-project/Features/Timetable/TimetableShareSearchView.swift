@@ -68,8 +68,8 @@ struct TimetableShareSearchView: View {
             TextField("Search users by username...", text: $searchText)
                 .textFieldStyle(.plain)
                 .autocapitalization(.none)
-                .onChange(of: searchText) { newValue in
-                    performSearch(query: newValue)
+                .onChange(of: searchText) {
+                    performSearch(query: searchText)
                 }
 
             if !searchText.isEmpty {

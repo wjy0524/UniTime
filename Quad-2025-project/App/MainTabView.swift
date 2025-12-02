@@ -34,11 +34,11 @@ struct MainTabView: View {
                     Text("Timetable")
                 }
 
-            GPAFullView()
+            MarketplaceView()
                 .environmentObject(authManager)
                 .tabItem {
-                    Image(systemName: "graduationcap.fill")
-                    Text("GPA")
+                    Image(systemName: "cart.fill")
+                    Text("Marketplace")
                 }
 
             DiningHomeView()

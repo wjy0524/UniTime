@@ -1,3 +1,4 @@
+import PhotosUI
 //
 //  CreatePostView.swift
 //  Quad-2025-project
@@ -5,7 +6,6 @@
 //  Created by Jaeyeon Won on 11/20/25.
 //
 import SwiftUI
-import PhotosUI
 
 struct CreatePostView: View {
     @Environment(\.dismiss) var dismiss
@@ -31,17 +31,20 @@ struct CreatePostView: View {
                     }
                 }
 
-                PhotosPicker(selection: $selectedItems,
-                             matching: .images,
-                             photoLibrary: .shared()) {
+                PhotosPicker(
+                    selection: $selectedItems,
+                    matching: .images,
+                    photoLibrary: .shared()
+                ) {
                     Text("Select Images")
                 }
-                .onChange(of: selectedItems) { items in
+                .onChange(of: selectedItems) {
                     Task {
                         images.removeAll()
-                        for item in items {
+                        for item in selectedItems {
                             if let data = try? await item.loadTransferable(type: Data.self),
-                               let img = UIImage(data: data) {
+                                let img = UIImage(data: data)
+                            {
                                 images.append(img)
                             }
                         }

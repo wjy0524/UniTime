@@ -16,7 +16,7 @@ struct SearchPostsView: View {
                 TextField("Search posts…", text: $vm.query)
                     .textFieldStyle(.roundedBorder)
                     .padding()
-                    .onChange(of: vm.query) { _ in
+                    .onChange(of: vm.query) {
                         Task { await vm.search() }
                     }
 

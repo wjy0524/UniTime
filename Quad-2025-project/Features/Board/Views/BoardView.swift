@@ -25,8 +25,8 @@ struct BoardView: View {
                                 .padding(.vertical, 6)
                                 .background(
                                     vm.selectedCategory == cat
-                                    ? Color("UTAustinOrange").opacity(0.2)
-                                    : Color(.systemGray6)
+                                        ? Color("UTAustinOrange").opacity(0.2)
+                                        : Color(.systemGray6)
                                 )
                                 .cornerRadius(10)
                                 .onTapGesture {
@@ -46,7 +46,7 @@ struct BoardView: View {
                 }
                 .pickerStyle(.segmented)
                 .padding()
-                .onChange(of: vm.selectedSort) { _ in
+                .onChange(of: vm.selectedSort) {
                     vm.reset()
                     Task { await vm.fetchMore() }
                 }
