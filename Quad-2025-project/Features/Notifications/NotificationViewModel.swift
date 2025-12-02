@@ -22,7 +22,7 @@ class NotificationViewModel: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
 
     init() {
-        startListening()
+        // Don't auto-start listening - let caller decide
     }
 
     deinit {
@@ -154,10 +154,11 @@ class NotificationViewModel: ObservableObject {
 
         print("🔔 SEND NOTIFICATION: Preparing \(type.rawValue) notification to \(toUserId)")
 
-        // Fetch current user info
-        db.collection("users").document(currentUserId).getDocument { [weak self] snapshot, error in
-            guard let self = self else { return }
+        // Create a direct reference to avoid self issues
+        let db = Firestore.firestore()
 
+        // Fetch current user info
+        db.collection("users").document(currentUserId).getDocument { snapshot, error in
             if let error = error {
                 print(
                     "❌ SEND NOTIFICATION: Failed to fetch user data - \(error.localizedDescription)"
@@ -189,7 +190,7 @@ class NotificationViewModel: ObservableObject {
             print("📝 SEND NOTIFICATION: Created notification object from \(username)")
 
             do {
-                let docRef = try self.db.collection("notifications").addDocument(from: notification)
+                let docRef = try db.collection("notifications").addDocument(from: notification)
                 print(
                     "✅ SEND NOTIFICATION: Successfully saved to Firestore with ID: \(docRef.documentID)"
                 )
@@ -203,36 +204,84 @@ class NotificationViewModel: ObservableObject {
     // MARK: - Handle Follow Notification
 
     func sendFollowNotification(toUserId: String) {
-        guard let currentUserId = Auth.auth().currentUser?.uid else { return }
+        guard let currentUserId = Auth.auth().currentUser?.uid else {
+            print("❌ FOLLOW NOTIFICATION: No current user")
+            return
+        }
 
-        db.collection("users").document(currentUserId).getDocument { [weak self] snapshot, error in
-            guard let self = self,
-                let data = snapshot?.data(),
+        print("🔔 FOLLOW NOTIFICATION: Attempting to send to \(toUserId)")
+
+        let db = Firestore.firestore()
+
+        db.collection("users").document(currentUserId).getDocument { snapshot, error in
+            if let error = error {
+                print(
+                    "❌ FOLLOW NOTIFICATION: Failed to fetch username - \(error.localizedDescription)"
+                )
+                return
+            }
+
+            guard let data = snapshot?.data(),
                 let username = data["username"] as? String
-            else { return }
+            else {
+                print("❌ FOLLOW NOTIFICATION: No username found")
+                return
+            }
 
-            self.sendNotification(
+            print("✅ FOLLOW NOTIFICATION: Sending notification from \(username) to \(toUserId)")
+
+            // Create notification directly
+            let notification = AppNotification(
                 type: .follow,
+                fromUserId: currentUserId,
+                fromUsername: username,
+                fromUserProfileImage: data["profileImageURL"] as? String,
                 toUserId: toUserId,
                 message: "\(username) started following you"
             )
+
+            do {
+                let docRef = try db.collection("notifications").addDocument(from: notification)
+                print("✅ FOLLOW: Notification saved with ID: \(docRef.documentID)")
+            } catch {
+                print("❌ FOLLOW: Failed to save notification - \(error)")
+            }
         }
     }
 
     func sendFollowAcceptedNotification(toUserId: String) {
         guard let currentUserId = Auth.auth().currentUser?.uid else { return }
 
-        db.collection("users").document(currentUserId).getDocument { [weak self] snapshot, error in
-            guard let self = self,
-                let data = snapshot?.data(),
+        let db = Firestore.firestore()
+
+        db.collection("users").document(currentUserId).getDocument { snapshot, error in
+            if let error = error {
+                print(
+                    "❌ FOLLOW ACCEPTED NOTIFICATION: Failed to fetch username - \(error.localizedDescription)"
+                )
+                return
+            }
+
+            guard let data = snapshot?.data(),
                 let username = data["username"] as? String
             else { return }
 
-            self.sendNotification(
+            // Create notification directly
+            let notification = AppNotification(
                 type: .followAccepted,
+                fromUserId: currentUserId,
+                fromUsername: username,
+                fromUserProfileImage: data["profileImageURL"] as? String,
                 toUserId: toUserId,
                 message: "\(username) accepted your follow request"
             )
+
+            do {
+                try db.collection("notifications").addDocument(from: notification)
+                print("✅ FOLLOW ACCEPTED: Notification saved")
+            } catch {
+                print("❌ FOLLOW ACCEPTED: Failed to save notification - \(error)")
+            }
         }
     }
 
@@ -306,9 +355,9 @@ class NotificationViewModel: ObservableObject {
 
         print("🔔 POST LIKE NOTIFICATION: Attempting to send to \(toUserId)")
 
-        db.collection("users").document(currentUserId).getDocument { [weak self] snapshot, error in
-            guard let self = self else { return }
+        let db = Firestore.firestore()
 
+        db.collection("users").document(currentUserId).getDocument { snapshot, error in
             if let error = error {
                 print(
                     "❌ POST LIKE NOTIFICATION: Failed to fetch username - \(error.localizedDescription)"
@@ -325,12 +374,23 @@ class NotificationViewModel: ObservableObject {
 
             print("✅ POST LIKE NOTIFICATION: Sending notification from \(username) to \(toUserId)")
 
-            self.sendNotification(
+            // Create notification directly
+            let notification = AppNotification(
                 type: .postLike,
+                fromUserId: currentUserId,
+                fromUsername: username,
+                fromUserProfileImage: data["profileImageURL"] as? String,
                 toUserId: toUserId,
                 message: "\(username) liked your post",
                 postId: postId
             )
+
+            do {
+                let docRef = try db.collection("notifications").addDocument(from: notification)
+                print("✅ POST LIKE: Notification saved with ID: \(docRef.documentID)")
+            } catch {
+                print("❌ POST LIKE: Failed to save notification - \(error)")
+            }
         }
     }
 
@@ -346,9 +406,9 @@ class NotificationViewModel: ObservableObject {
 
         print("🔔 POST COMMENT NOTIFICATION: Attempting to send to \(toUserId)")
 
-        db.collection("users").document(currentUserId).getDocument { [weak self] snapshot, error in
-            guard let self = self else { return }
+        let db = Firestore.firestore()
 
+        db.collection("users").document(currentUserId).getDocument { snapshot, error in
             if let error = error {
                 print(
                     "❌ POST COMMENT NOTIFICATION: Failed to fetch username - \(error.localizedDescription)"
@@ -366,12 +426,23 @@ class NotificationViewModel: ObservableObject {
             print(
                 "✅ POST COMMENT NOTIFICATION: Sending notification from \(username) to \(toUserId)")
 
-            self.sendNotification(
+            // Create notification directly
+            let notification = AppNotification(
                 type: .postComment,
+                fromUserId: currentUserId,
+                fromUsername: username,
+                fromUserProfileImage: data["profileImageURL"] as? String,
                 toUserId: toUserId,
                 message: "\(username) commented on your post",
                 postId: postId
             )
+
+            do {
+                let docRef = try db.collection("notifications").addDocument(from: notification)
+                print("✅ POST COMMENT: Notification saved with ID: \(docRef.documentID)")
+            } catch {
+                print("❌ POST COMMENT: Failed to save notification - \(error)")
+            }
         }
     }
 }
