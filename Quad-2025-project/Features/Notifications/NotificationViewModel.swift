@@ -235,4 +235,44 @@ class NotificationViewModel: ObservableObject {
             )
         }
     }
+
+    // MARK: - Post Notifications
+
+    func sendPostLikeNotification(toUserId: String, postId: String) {
+        guard let currentUserId = Auth.auth().currentUser?.uid else { return }
+        guard currentUserId != toUserId else { return }  // Don't notify yourself
+
+        db.collection("users").document(currentUserId).getDocument { [weak self] snapshot, error in
+            guard let self = self,
+                let data = snapshot?.data(),
+                let username = data["username"] as? String
+            else { return }
+
+            self.sendNotification(
+                type: .postLike,
+                toUserId: toUserId,
+                message: "\(username) liked your post",
+                postId: postId
+            )
+        }
+    }
+
+    func sendPostCommentNotification(toUserId: String, postId: String) {
+        guard let currentUserId = Auth.auth().currentUser?.uid else { return }
+        guard currentUserId != toUserId else { return }  // Don't notify yourself
+
+        db.collection("users").document(currentUserId).getDocument { [weak self] snapshot, error in
+            guard let self = self,
+                let data = snapshot?.data(),
+                let username = data["username"] as? String
+            else { return }
+
+            self.sendNotification(
+                type: .postComment,
+                toUserId: toUserId,
+                message: "\(username) commented on your post",
+                postId: postId
+            )
+        }
+    }
 }

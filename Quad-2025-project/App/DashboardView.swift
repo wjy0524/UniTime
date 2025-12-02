@@ -453,3 +453,10 @@ func headerIcon(system: String) -> some View {
                 .shadow(color: .black.opacity(0.1), radius: 3, y: 2)
         )
 }
+#Preview {
+    NavigationStack {
+        DashboardView()
+    }
+    .environmentObject(GPAViewModel())      // mock / sample GPA VM
+    .environmentObject(EventViewModel())    // mock / sample Event VM
+}

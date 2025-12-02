@@ -16,18 +16,18 @@ import FirebaseAuth
 @MainActor
 class FollowViewModel: ObservableObject {
     private let db = Firestore.firestore()
-    
+
     @Published var followers: [String] = []
     @Published var following: [String] = []
-    
+
     var myUid: String {
         Auth.auth().currentUser?.uid ?? ""
     }
-    
+
     // MARK: - Follow
     func follow(targetUid: String) async {
         guard myUid != targetUid else { return }
-        
+
         do {
             try await db.collection("users")
                 .document(myUid)
@@ -37,7 +37,7 @@ class FollowViewModel: ObservableObject {
                     "uid": targetUid,
                     "timestamp": FieldValue.serverTimestamp()
                 ])
-            
+
             try await db.collection("users")
                 .document(targetUid)
                 .collection("followers")
@@ -46,12 +46,16 @@ class FollowViewModel: ObservableObject {
                     "uid": myUid,
                     "timestamp": FieldValue.serverTimestamp()
                 ])
-            
+
+            // 🔥 Send follow notification
+            let notificationVM = NotificationViewModel()
+            notificationVM.sendFollowNotification(toUserId: targetUid)
+
         } catch {
             print("❌ Follow error:", error)
         }
     }
-    
+
     // MARK: - Unfollow
     func unfollow(targetUid: String) async {
         do {
@@ -60,18 +64,18 @@ class FollowViewModel: ObservableObject {
                 .collection("following")
                 .document(targetUid)
                 .delete()
-            
+
             try await db.collection("users")
                 .document(targetUid)
                 .collection("followers")
                 .document(myUid)
                 .delete()
-            
+
         } catch {
             print("❌ Unfollow error:", error)
         }
     }
-    
+
     // MARK: - Load my following list
     func loadFollowing() async {
         do {
@@ -79,13 +83,13 @@ class FollowViewModel: ObservableObject {
                 .document(myUid)
                 .collection("following")
                 .getDocuments()
-            
+
             self.following = snap.documents.map { $0.documentID }
         } catch {
             print("❌ loadFollowing error:", error)
         }
     }
-    
+
     // MARK: - Load my followers
     func loadFollowers() async {
         do {
@@ -93,7 +97,7 @@ class FollowViewModel: ObservableObject {
                 .document(myUid)
                 .collection("followers")
                 .getDocuments()
-            
+
             self.followers = snap.documents.map { $0.documentID }
         } catch {
             print("❌ loadFollowers error:", error)
@@ -107,14 +111,14 @@ class FollowViewModel: ObservableObject {
                 .document(uid)
                 .collection("following")
                 .getDocuments()
-            
+
             return snap.documents.map { $0.documentID }
         } catch {
             print("❌ loadFollowing(of:) error:", error)
             return []
         }
     }
-    
+
     func loadFollowingUsers(of uid: String) async -> [UserMini] {
         do {
             let snap = try await db.collection("users")
@@ -149,4 +153,3 @@ class FollowViewModel: ObservableObject {
 
 
 }
-

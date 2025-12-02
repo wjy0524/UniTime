@@ -5,9 +5,9 @@
 //  Created by Jaeyeon Won on 11/20/25.
 //
 
-import Foundation
-import FirebaseFirestore
 import FirebaseAuth
+import FirebaseFirestore
+import Foundation
 
 @MainActor
 class PostDetailViewModel: ObservableObject {
@@ -15,7 +15,7 @@ class PostDetailViewModel: ObservableObject {
     @Published var commentText = ""
     @Published var likeCount = 0
     @Published var didLike = false
-    @Published var replyingTo: Comment? = nil   // 🔥 대댓글 대상
+    @Published var replyingTo: Comment? = nil  // 🔥 대댓글 대상
     @Published var authorName = ""
 
     let db = Firestore.firestore()
@@ -26,7 +26,7 @@ class PostDetailViewModel: ObservableObject {
 
         // 🔥 authorId → username 변환
         if let username = await fetchUsername(uid: post.authorId) {
-            self.authorName = username    // ⭐️ 추가되는 변수
+            self.authorName = username  // ⭐️ 추가되는 변수
         } else {
             self.authorName = post.authorId
         }
@@ -34,7 +34,6 @@ class PostDetailViewModel: ObservableObject {
         await checkLiked(post)
         await loadComments(post)
     }
-
 
     // MARK: - Likes
     func checkLiked(_ post: Post) async {
@@ -69,12 +68,11 @@ class PostDetailViewModel: ObservableObject {
 
             likeCount += 1
 
-            // 🔥 알림 보내기
-            await sendNotification(
-                to: post.authorId,
-                type: "like_post",
-                postId: id,
-                message: "liked your post."
+            // 🔥 Send notification using main notification system
+            let notificationVM = NotificationViewModel()
+            notificationVM.sendPostLikeNotification(
+                toUserId: post.authorId,
+                postId: id
             )
         }
 
@@ -104,7 +102,6 @@ class PostDetailViewModel: ObservableObject {
         self.comments = loaded
     }
 
-
     func addComment(_ post: Post) async {
         guard !commentText.isEmpty else { return }
         guard let postId = post.id else { return }
@@ -126,20 +123,19 @@ class PostDetailViewModel: ObservableObject {
             .updateData(["commentCount": FieldValue.increment(Int64(1))])
 
         // 🔥 알림 (댓글 or 대댓글)
+        // 🔥 Send notification using main notification system
+        let notificationVM = NotificationViewModel()
         if let parent = replyingTo {
-            await sendNotification(
-                to: parent.authorId,
-                type: "reply_comment",
-                postId: postId,
-                commentId: parent.id,
-                message: "replied to your comment."
+            // Reply to comment notification
+            notificationVM.sendPostCommentNotification(
+                toUserId: parent.authorId,
+                postId: postId
             )
         } else {
-            await sendNotification(
-                to: post.authorId,
-                type: "comment_post",
-                postId: postId,
-                message: "commented on your post."
+            // Comment on post notification
+            notificationVM.sendPostCommentNotification(
+                toUserId: post.authorId,
+                postId: postId
             )
         }
 
@@ -150,7 +146,8 @@ class PostDetailViewModel: ObservableObject {
 
     func likeComment(post: Post, comment: Comment) async {
         guard let postId = post.id,
-              let commentId = comment.id else { return }
+            let commentId = comment.id
+        else { return }
 
         try? await db.collection("posts")
             .document(postId)
@@ -158,42 +155,18 @@ class PostDetailViewModel: ObservableObject {
             .document(commentId)
             .updateData(["likeCount": FieldValue.increment(Int64(1))])
 
-        await sendNotification(
-            to: comment.authorId,
-            type: "like_comment",
-            postId: postId,
-            commentId: commentId,
-            message: "liked your comment."
+        // 🔥 Send notification using main notification system
+        let notificationVM = NotificationViewModel()
+        notificationVM.sendPostCommentNotification(
+            toUserId: comment.authorId,
+            postId: postId
         )
 
         await loadComments(post)
     }
 
-    // MARK: - Notifications
-    func sendNotification(to userId: String,
-                          type: String,
-                          postId: String? = nil,
-                          commentId: String? = nil,
-                          message: String) async {
+    // MARK: - Helper Functions
 
-        guard userId != uid else { return }
-
-        let noti = NotificationItem(
-            type: type,
-            senderId: uid,
-            postId: postId,
-            commentId: commentId,
-            message: message,
-            timestamp: Date(),
-            isRead: false
-        )
-
-        try? _ = db.collection("users")
-            .document(userId)
-            .collection("notifications")
-            .addDocument(from: noti)
-    }
-    
     func fetchUsername(uid: String) async -> String? {
         do {
             let snap = try await db.collection("users")
