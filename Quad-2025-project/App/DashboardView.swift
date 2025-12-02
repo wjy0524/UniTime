@@ -7,6 +7,7 @@
 
 import Charts
 import FirebaseAuth
+import FirebaseFirestore
 import SwiftUI
 
 struct DashboardView: View {
@@ -15,6 +16,7 @@ struct DashboardView: View {
     @EnvironmentObject var eventVM: EventViewModel  // 🔥 실제 이벤트 데이터 사용
     @StateObject private var notificationVM = NotificationViewModel()
     @State private var showingNotifications = false
+    @State private var username: String = ""
 
     // MARK: - Static Data (식단/스터디)
 
@@ -53,6 +55,7 @@ struct DashboardView: View {
                 gpaVM.fetchCourses()  // 🔥 GPA 데이터 로드
                 eventVM.startListening()  // 🔥 이벤트 데이터 로드
                 notificationVM.startListening()  // 🔥 알림 데이터 로드
+                fetchUsername()  // 🔥 사용자 이름 로드
             }
             .sheet(isPresented: $showingNotifications) {
                 NotificationView()
@@ -429,10 +432,11 @@ extension DashboardView {
 extension DashboardView {
     func greetingMessage() -> String {
         let hour = Calendar.current.component(.hour, from: Date())
+        let name = username.isEmpty ? "there" : username
         switch hour {
-        case 5..<12: return "Good morning, Jaeyeon"
-        case 12..<18: return "Good afternoon, Jaeyeon"
-        default: return "Good evening, Jaeyeon"
+        case 5..<12: return "Good morning, \(name)"
+        case 12..<18: return "Good afternoon, \(name)"
+        default: return "Good evening, \(name)"
         }
     }
 
@@ -440,6 +444,26 @@ extension DashboardView {
         let formatter = DateFormatter()
         formatter.dateFormat = "EEEE, MMM d"
         return formatter.string(from: Date())
+    }
+
+    func fetchUsername() {
+        guard let userId = Auth.auth().currentUser?.uid else { return }
+
+        let db = Firestore.firestore()
+        db.collection("users").document(userId).getDocument { snapshot, error in
+            if let error = error {
+                print("❌ Failed to fetch username: \(error.localizedDescription)")
+                return
+            }
+
+            if let data = snapshot?.data(),
+                let fetchedUsername = data["username"] as? String
+            {
+                DispatchQueue.main.async {
+                    self.username = fetchedUsername
+                }
+            }
+        }
     }
 }
 
