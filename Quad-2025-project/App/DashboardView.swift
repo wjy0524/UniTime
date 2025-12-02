@@ -52,6 +52,7 @@ struct DashboardView: View {
             .onAppear {
                 gpaVM.fetchCourses()  // 🔥 GPA 데이터 로드
                 eventVM.startListening()  // 🔥 이벤트 데이터 로드
+                notificationVM.startListening()  // 🔥 알림 데이터 로드
             }
             .sheet(isPresented: $showingNotifications) {
                 NotificationView()
@@ -457,6 +458,6 @@ func headerIcon(system: String) -> some View {
     NavigationStack {
         DashboardView()
     }
-    .environmentObject(GPAViewModel())      // mock / sample GPA VM
-    .environmentObject(EventViewModel())    // mock / sample Event VM
+    .environmentObject(GPAViewModel())  // mock / sample GPA VM
+    .environmentObject(EventViewModel())  // mock / sample Event VM
 }

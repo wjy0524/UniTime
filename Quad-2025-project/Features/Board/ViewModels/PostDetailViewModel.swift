@@ -49,7 +49,13 @@ class PostDetailViewModel: ObservableObject {
     }
 
     func toggleLike(_ post: Post) async {
-        guard let id = post.id else { return }
+        print("🔔 TOGGLE LIKE: Function called for post \(post.id ?? "unknown")")
+        guard let id = post.id else {
+            print("❌ TOGGLE LIKE: Post has no ID")
+            return
+        }
+
+        print("🔔 TOGGLE LIKE: didLike = \(didLike), post author = \(post.authorId)")
 
         if didLike {
             try? await db.collection("posts").document(id)
@@ -69,11 +75,13 @@ class PostDetailViewModel: ObservableObject {
             likeCount += 1
 
             // 🔥 Send notification using main notification system
+            print("🔔 TOGGLE LIKE: Preparing to send notification to \(post.authorId)")
             let notificationVM = NotificationViewModel()
             notificationVM.sendPostLikeNotification(
                 toUserId: post.authorId,
                 postId: id
             )
+            print("✅ TOGGLE LIKE: Notification function called")
         }
 
         didLike.toggle()
