@@ -23,7 +23,6 @@ struct TimetableShareSearchView: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
-                // Search Bar
                 searchBar
 
                 if isSearching {
@@ -164,7 +163,6 @@ struct TimetableShareSearchView: View {
 
         isSearching = true
 
-        // Search for users by username (using username_lower field like main search)
         let searchText = query.lowercased()
 
         db.collection("users")
@@ -172,28 +170,30 @@ struct TimetableShareSearchView: View {
             .whereField("username_lower", isLessThanOrEqualTo: searchText + "~")
             .limit(to: 20)
             .getDocuments { snapshot, error in
-                isSearching = false
+                DispatchQueue.main.async {
+                    isSearching = false
 
-                if let error = error {
-                    print("Search error: \(error.localizedDescription)")
-                    return
-                }
+                    if let error = error {
+                        print("Search error: \(error.localizedDescription)")
+                        return
+                    }
 
-                guard let documents = snapshot?.documents else { return }
+                    guard let documents = snapshot?.documents else { return }
 
-                searchResults = documents.compactMap { doc in
-                    let data = doc.data()
-                    guard let username = data["username"] as? String,
-                        let uid = data["uid"] as? String,
-                        uid != currentUserId  // Don't show current user
-                    else { return nil }
+                    searchResults = documents.compactMap { doc in
+                        let data = doc.data()
+                        guard let username = data["username"] as? String,
+                            let uid = data["uid"] as? String,
+                            uid != currentUserId
+                        else { return nil }
 
-                    return UserSearchResult(
-                        uid: uid,
-                        username: username,
-                        fullName: data["fullName"] as? String,
-                        profileImageURL: data["profileImageURL"] as? String
-                    )
+                        return UserSearchResult(
+                            uid: uid,
+                            username: username,
+                            fullName: data["fullName"] as? String,
+                            profileImageURL: data["profileImageURL"] as? String
+                        )
+                    }
                 }
             }
     }
@@ -213,7 +213,6 @@ struct TimetableShareSearchView: View {
             courses: timetableViewModel.courses
         ) { success in
             if success {
-                // Optionally dismiss or show success
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                     dismiss()
                 }
@@ -242,7 +241,6 @@ struct UserSearchRow: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            // Profile Image
             if let imageURL = user.profileImageURL, let url = URL(string: imageURL) {
                 AsyncImage(url: url) { image in
                     image
@@ -272,7 +270,6 @@ struct UserSearchRow: View {
                     )
             }
 
-            // User Info
             VStack(alignment: .leading, spacing: 4) {
                 Text(user.username)
                     .font(.subheadline)
@@ -287,7 +284,7 @@ struct UserSearchRow: View {
 
             Spacer()
 
-            // Share Button
+            // 공유 키
             if alreadySent {
                 Text("Sent")
                     .font(.caption)

@@ -39,7 +39,6 @@ class TimetableShareViewModel: ObservableObject {
     func startListening() {
         guard let userId = Auth.auth().currentUser?.uid else { return }
 
-        // Listen to incoming share requests
         listener = db.collection("timetableShareRequests")
             .whereField("toUserId", isEqualTo: userId)
             .whereField("status", isEqualTo: TimetableShareRequest.ShareStatus.pending.rawValue)
@@ -103,7 +102,6 @@ class TimetableShareViewModel: ObservableObject {
 
         isLoading = true
 
-        // Fetch current user info
         db.collection("users").document(currentUserId).getDocument { [weak self] snapshot, error in
             guard let self = self else {
                 completion?(false)
@@ -183,7 +181,6 @@ class TimetableShareViewModel: ObservableObject {
                 return
             }
 
-            // Send acceptance notification
             let notificationVM = NotificationViewModel()
             notificationVM.sendTimetableShareAccepted(
                 toUserId: request.fromUserId,
@@ -216,7 +213,6 @@ class TimetableShareViewModel: ObservableObject {
                 return
             }
 
-            // Send decline notification
             let notificationVM = NotificationViewModel()
             notificationVM.sendTimetableShareDeclined(
                 toUserId: request.fromUserId,
@@ -265,6 +261,27 @@ class TimetableShareViewModel: ObservableObject {
 
                 completion(requests)
             }
+    }
+
+    // MARK: - Remove Shared Timetable
+
+    func removeSharedTimetable(_ requestId: String, completion: @escaping (Bool) -> Void) {
+        guard let userId = Auth.auth().currentUser?.uid else {
+            completion(false)
+            return
+        }
+
+        db.collection("timetableShareRequests").document(requestId).delete { error in
+            DispatchQueue.main.async {
+                if let error = error {
+                    print("❌ Failed to remove shared timetable: \(error.localizedDescription)")
+                    completion(false)
+                } else {
+                    print("✅ Successfully removed shared timetable")
+                    completion(true)
+                }
+            }
+        }
     }
 
     // MARK: - Check if already sent request
