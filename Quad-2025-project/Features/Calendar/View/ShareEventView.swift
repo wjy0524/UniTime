@@ -5,32 +5,34 @@
 //  Created by Jaeyeon Won on 11/19/25.
 //
 
-import SwiftUI
-import Kingfisher
 import FirebaseAuth
+import Kingfisher
+import SwiftUI
 
 struct ShareEventView: View {
     let event: Event
     let onShare: (String) -> Void
     @Environment(\.dismiss) var dismiss
 
-    @StateObject private var followVM = FollowViewModel()
-    @State private var followingUsers: [UserMini] = []
+    @ObservedObject private var friendsManager = FriendsManager.shared
+    @State private var friendsList: [UserMini] = []
     @State private var selectedFriend: String?
 
     var body: some View {
         NavigationStack {
             List {
                 Section("Share with") {
-                    if followingUsers.isEmpty {
-                        Text("You are not following anyone yet.")
+                    if friendsList.isEmpty {
+                        Text("You don't have any friends yet.")
                             .foregroundColor(.secondary)
                     } else {
-                        ForEach(followingUsers) { user in
+                        ForEach(friendsList) { user in
                             HStack(spacing: 12) {
-                                
+
                                 // 프로필 이미지
-                                if let url = URL(string: user.profileImageURL), !user.profileImageURL.isEmpty {
+                                if let url = URL(string: user.profileImageURL),
+                                    !user.profileImageURL.isEmpty
+                                {
                                     KFImage(url)
                                         .resizable()
                                         .scaledToFill()
@@ -45,7 +47,7 @@ struct ShareEventView: View {
                                                 .foregroundColor(.white.opacity(0.9))
                                         )
                                 }
-                                
+
                                 VStack(alignment: .leading) {
                                     Text(user.username)
                                         .font(.headline)
@@ -88,8 +90,7 @@ struct ShareEventView: View {
                 }
             }
             .task {
-                let myUid = Auth.auth().currentUser?.uid ?? ""
-                followingUsers = await followVM.loadFollowingUsers(of: myUid)
+                friendsList = await friendsManager.getFriendsList()
             }
         }
     }

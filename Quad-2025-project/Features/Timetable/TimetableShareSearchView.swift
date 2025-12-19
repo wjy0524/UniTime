@@ -2,41 +2,33 @@
 //  TimetableShareSearchView.swift
 //  Quad-2025-project
 //
-//  Created on Timetable Sharing Feature Implementation
+//  Share timetable with friends from unified friends list
 //
 
 import FirebaseAuth
 import FirebaseFirestore
+import Kingfisher
 import SwiftUI
 
 struct TimetableShareSearchView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject private var shareViewModel = TimetableShareViewModel.shared
     @ObservedObject var timetableViewModel: TimetableViewModel
+    @ObservedObject private var friendsManager = FriendsManager.shared
 
-    @State private var searchText: String = ""
-    @State private var searchResults: [UserSearchResult] = []
-    @State private var isSearching: Bool = false
-
-    private let db = Firestore.firestore()
+    @State private var selectedFriend: Friend?
+    @State private var isSharing: Bool = false
 
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
-                searchBar
-
-                if isSearching {
-                    ProgressView()
-                        .padding()
-                } else if searchText.isEmpty {
-                    emptySearchView
-                } else if searchResults.isEmpty {
-                    noResultsView
+                if friendsManager.friends.isEmpty {
+                    emptyFriendsView
                 } else {
-                    userList
+                    friendsList
                 }
             }
-            .navigationTitle("Share Timetable")
+            .navigationTitle("Share with Friends")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -45,10 +37,15 @@ struct TimetableShareSearchView: View {
                     }
                 }
             }
+            .onAppear {
+                friendsManager.startListening()
+            }
             .alert("Success", isPresented: $shareViewModel.showingSuccess) {
-                Button("OK", role: .cancel) {}
+                Button("OK", role: .cancel) {
+                    dismiss()
+                }
             } message: {
-                Text(shareViewModel.successMessage ?? "")
+                Text(shareViewModel.successMessage ?? "Timetable shared successfully!")
             }
             .alert("Error", isPresented: $shareViewModel.showingError) {
                 Button("OK", role: .cancel) {}
@@ -58,264 +55,169 @@ struct TimetableShareSearchView: View {
         }
     }
 
-    // MARK: - Search Bar
+    // MARK: - Empty State
 
-    var searchBar: some View {
-        HStack {
-            Image(systemName: "magnifyingglass")
-                .foregroundColor(.gray)
-
-            TextField("Search users by username...", text: $searchText)
-                .textFieldStyle(.plain)
-                .autocapitalization(.none)
-                .onChange(of: searchText) {
-                    performSearch(query: searchText)
-                }
-
-            if !searchText.isEmpty {
-                Button {
-                    searchText = ""
-                    searchResults = []
-                } label: {
-                    Image(systemName: "xmark.circle.fill")
-                        .foregroundColor(.gray)
-                }
-            }
-        }
-        .padding(12)
-        .background(Color(.systemGray6))
-        .cornerRadius(10)
-        .padding()
-    }
-
-    // MARK: - Empty Search View
-
-    var emptySearchView: some View {
+    var emptyFriendsView: some View {
         VStack(spacing: 20) {
-            Image(systemName: "person.2.fill")
+            Image(systemName: "person.2.slash")
                 .font(.system(size: 60))
-                .foregroundColor(.gray)
+                .foregroundColor(.gray.opacity(0.5))
 
-            Text("Search for Users")
-                .font(.title2)
-                .bold()
+            Text("No Friends Yet")
+                .font(.headline)
+                .foregroundColor(.secondary)
 
-            Text("Find friends to share your timetable with")
+            Text("Add friends from the main Friends page to share your timetable with them")
                 .font(.subheadline)
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal)
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .padding()
     }
 
-    // MARK: - No Results View
+    // MARK: - Friends List
 
-    var noResultsView: some View {
-        VStack(spacing: 20) {
-            Image(systemName: "person.fill.questionmark")
-                .font(.system(size: 60))
-                .foregroundColor(.gray)
-
-            Text("No Users Found")
-                .font(.title2)
-                .bold()
-
-            Text("Try searching with a different username")
-                .font(.subheadline)
-                .foregroundColor(.secondary)
-                .multilineTextAlignment(.center)
-                .padding(.horizontal)
-        }
-        .padding()
-    }
-
-    // MARK: - User List
-
-    var userList: some View {
-        ScrollView {
-            LazyVStack(spacing: 0) {
-                ForEach(searchResults) { user in
-                    UserSearchRow(
-                        user: user,
-                        alreadySent: shareViewModel.hasActiveSentRequest(toUserId: user.uid),
-                        onShare: {
-                            shareWithUser(user)
-                        }
-                    )
-
-                    Divider()
-                        .padding(.leading, 70)
-                }
+    var friendsList: some View {
+        List {
+            ForEach(friendsManager.friends) { friend in
+                FriendRowForSharing(
+                    friend: friend,
+                    isSharing: isSharing,
+                    onShare: {
+                        shareTimetableWith(friend: friend)
+                    }
+                )
             }
         }
+        .listStyle(.plain)
     }
 
-    // MARK: - Search Logic
+    // MARK: - Share Action
 
-    func performSearch(query: String) {
-        guard !query.trimmingCharacters(in: .whitespaces).isEmpty else {
-            searchResults = []
-            return
-        }
-
-        guard let currentUserId = Auth.auth().currentUser?.uid else { return }
-
-        isSearching = true
-
-        let searchText = query.lowercased()
-
-        db.collection("users")
-            .whereField("username_lower", isGreaterThanOrEqualTo: searchText)
-            .whereField("username_lower", isLessThanOrEqualTo: searchText + "~")
-            .limit(to: 20)
-            .getDocuments { snapshot, error in
-                DispatchQueue.main.async {
-                    isSearching = false
-
-                    if let error = error {
-                        print("Search error: \(error.localizedDescription)")
-                        return
-                    }
-
-                    guard let documents = snapshot?.documents else { return }
-
-                    searchResults = documents.compactMap { doc in
-                        let data = doc.data()
-                        guard let username = data["username"] as? String,
-                            let uid = data["uid"] as? String,
-                            uid != currentUserId
-                        else { return nil }
-
-                        return UserSearchResult(
-                            uid: uid,
-                            username: username,
-                            fullName: data["fullName"] as? String,
-                            profileImageURL: data["profileImageURL"] as? String
-                        )
-                    }
-                }
-            }
-    }
-
-    // MARK: - Share with User
-
-    func shareWithUser(_ user: UserSearchResult) {
-        guard !timetableViewModel.courses.isEmpty else {
-            shareViewModel.errorMessage = "You have no courses to share"
+    func shareTimetableWith(friend: Friend) {
+        guard let currentUserId = Auth.auth().currentUser?.uid else {
+            shareViewModel.errorMessage = "Not authenticated"
             shareViewModel.showingError = true
             return
         }
 
-        shareViewModel.sendShareRequest(
-            toUserId: user.uid,
-            toUsername: user.username,
-            courses: timetableViewModel.courses
-        ) { success in
-            if success {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-                    dismiss()
+        isSharing = true
+
+        Task {
+            do {
+                // Get current user info
+                let userDoc = try await db.collection("users").document(currentUserId).getDocument()
+                guard let userData = userDoc.data(),
+                    let currentUsername = userData["username"] as? String
+                else {
+                    throw NSError(
+                        domain: "TimetableShare", code: 1,
+                        userInfo: [NSLocalizedDescriptionKey: "Could not fetch user data"])
+                }
+
+                let currentProfileImage = userData["profileImageURL"] as? String
+
+                // Create share request
+                let shareRequest = TimetableShareRequest(
+                    fromUserId: currentUserId,
+                    fromUsername: currentUsername,
+                    fromUserProfileImage: currentProfileImage,
+                    toUserId: friend.friendId,
+                    toUsername: friend.friendUsername,
+                    timestamp: Date(),
+                    status: .pending,
+                    timetableCourses: timetableViewModel.courses
+                )
+
+                // Save to Firestore
+                try db.collection("timetableShareRequests").addDocument(from: shareRequest)
+
+                await MainActor.run {
+                    shareViewModel.successMessage = "Timetable shared with \(friend.friendUsername)"
+                    shareViewModel.showingSuccess = true
+                    isSharing = false
+                }
+
+                // Send notification
+                let notificationVM = NotificationViewModel()
+                if let requestId = shareRequest.id {
+                    notificationVM.sendTimetableShareRequest(
+                        toUserId: friend.friendId, shareRequestId: requestId)
+                }
+
+            } catch {
+                await MainActor.run {
+                    shareViewModel.errorMessage = "Failed to share: \(error.localizedDescription)"
+                    shareViewModel.showingError = true
+                    isSharing = false
                 }
             }
         }
     }
+
+    private let db = Firestore.firestore()
 }
 
-// MARK: - User Search Result Model
+// MARK: - Friend Row for Sharing
 
-struct UserSearchResult: Identifiable {
-    let uid: String
-    let username: String
-    let fullName: String?
-    let profileImageURL: String?
-
-    var id: String { uid }
-}
-
-// MARK: - User Search Row
-
-struct UserSearchRow: View {
-    let user: UserSearchResult
-    let alreadySent: Bool
+struct FriendRowForSharing: View {
+    let friend: Friend
+    let isSharing: Bool
     let onShare: () -> Void
 
     var body: some View {
         HStack(spacing: 12) {
-            if let imageURL = user.profileImageURL, let url = URL(string: imageURL) {
-                AsyncImage(url: url) { image in
-                    image
-                        .resizable()
-                        .scaledToFill()
-                } placeholder: {
-                    Circle()
-                        .fill(Color.gray.opacity(0.3))
-                }
-                .frame(width: 50, height: 50)
-                .clipShape(Circle())
+            // Profile Image
+            if let imageURL = friend.friendProfileImage, !imageURL.isEmpty,
+                let url = URL(string: imageURL)
+            {
+                KFImage(url)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: 50, height: 50)
+                    .clipShape(Circle())
             } else {
                 Circle()
-                    .fill(
-                        LinearGradient(
-                            colors: [Color.orange.opacity(0.8), Color.red.opacity(0.6)],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
-                    )
+                    .fill(Color.gray.opacity(0.3))
                     .frame(width: 50, height: 50)
                     .overlay(
-                        Text(String(user.username.prefix(1).uppercased()))
-                            .font(.title2)
-                            .bold()
+                        Image(systemName: "person.fill")
                             .foregroundColor(.white)
                     )
             }
 
             VStack(alignment: .leading, spacing: 4) {
-                Text(user.username)
-                    .font(.subheadline)
-                    .fontWeight(.semibold)
+                Text(friend.friendUsername)
+                    .font(.headline)
 
-                if let fullName = user.fullName {
-                    Text(fullName)
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                }
+                Text("Friend")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
             }
 
             Spacer()
 
-            // 공유 키
-            if alreadySent {
-                Text("Sent")
-                    .font(.caption)
-                    .fontWeight(.semibold)
-                    .foregroundColor(.secondary)
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 6)
-                    .background(Color.gray.opacity(0.2))
-                    .cornerRadius(8)
+            if isSharing {
+                ProgressView()
             } else {
-                Button(action: onShare) {
-                    Text("Share")
-                        .font(.caption)
-                        .fontWeight(.semibold)
-                        .foregroundColor(.white)
-                        .padding(.horizontal, 16)
-                        .padding(.vertical, 6)
-                        .background(Color.blue)
-                        .cornerRadius(8)
+                Button {
+                    onShare()
+                } label: {
+                    HStack {
+                        Image(systemName: "calendar.badge.plus")
+                        Text("Share")
+                    }
+                    .font(.subheadline)
+                    .foregroundColor(.white)
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 8)
+                    .background(Color.blue)
+                    .cornerRadius(8)
                 }
             }
         }
-        .padding(.horizontal)
-        .padding(.vertical, 12)
-    }
-}
-
-// MARK: - Preview
-
-struct TimetableShareSearchView_Previews: PreviewProvider {
-    static var previews: some View {
-        TimetableShareSearchView(timetableViewModel: TimetableViewModel())
+        .padding(.vertical, 4)
     }
 }

@@ -15,6 +15,8 @@ struct DashboardView: View {
     @EnvironmentObject var gpaVM: GPAViewModel  // 🔥 실제 GPA 데이터 사용
     @EnvironmentObject var eventVM: EventViewModel  // 🔥 실제 이벤트 데이터 사용
     @StateObject private var notificationVM = NotificationViewModel()
+    @StateObject private var studySessionManager = StudySessionManager()  // 🔥 Study Tracker
+    @ObservedObject private var friendsManager = FriendsManager.shared  // 🔥 Unified Friends
     @State private var showingNotifications = false
     @State private var username: String = ""
 
@@ -25,21 +27,12 @@ struct DashboardView: View {
         "Jester City Limits: Pasta Bar",
     ]
 
-    let studyData: [StudyHours] = [
-        .init(day: "Mon", hours: 2.5),
-        .init(day: "Tue", hours: 3.0),
-        .init(day: "Wed", hours: 1.0),
-        .init(day: "Thu", hours: 2.0),
-        .init(day: "Fri", hours: 4.0),
-        .init(day: "Sat", hours: 1.5),
-        .init(day: "Sun", hours: 3.5),
-    ]
-
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 24) {
                     headerSection
+                    friendsCard  // 🔥 Unified Friends Section
                     todayScheduleCard
                     gpaCard  // 🔥 실제 GPA 반영됨
                     diningCard
@@ -55,6 +48,8 @@ struct DashboardView: View {
                 gpaVM.fetchCourses()  // 🔥 GPA 데이터 로드
                 eventVM.startListening()  // 🔥 이벤트 데이터 로드
                 notificationVM.startListening()  // 🔥 알림 데이터 로드
+                studySessionManager.startListening()  // 🔥 스터디 데이터 로드
+                friendsManager.startListening()  // 🔥 Friends 데이터 로드
                 fetchUsername()  // 🔥 사용자 이름 로드
             }
             .sheet(isPresented: $showingNotifications) {
@@ -237,6 +232,111 @@ extension DashboardView {
 }
 
 ////////////////////////////////////////////////////////////
+// MARK: - FRIENDS CARD
+////////////////////////////////////////////////////////////
+
+extension DashboardView {
+    var friendsCard: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Text("Friends")
+                    .font(.headline)
+
+                Spacer()
+
+                NavigationLink(destination: FriendsView()) {
+                    Text("See All")
+                        .font(.subheadline)
+                        .foregroundColor(.blue)
+                }
+            }
+
+            if friendsManager.friendRequests.isEmpty && friendsManager.friends.isEmpty {
+                HStack(spacing: 12) {
+                    Image(systemName: "person.2")
+                        .font(.title2)
+                        .foregroundColor(.gray.opacity(0.5))
+
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("No friends yet")
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+
+                        Text("Start connecting with people!")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+
+                    Spacer()
+
+                    NavigationLink(destination: SearchFriendsView(friendsManager: friendsManager)) {
+                        Image(systemName: "plus.circle.fill")
+                            .font(.title2)
+                            .foregroundColor(.blue)
+                    }
+                }
+                .padding(.vertical, 8)
+            } else {
+                // Friend Requests
+                if !friendsManager.friendRequests.isEmpty {
+                    NavigationLink(
+                        destination: FriendRequestsListView(friendsManager: friendsManager)
+                    ) {
+                        HStack {
+                            Image(systemName: "envelope.badge.fill")
+                                .foregroundColor(.orange)
+
+                            Text(
+                                "\(friendsManager.friendRequests.count) friend request\(friendsManager.friendRequests.count == 1 ? "" : "s")"
+                            )
+                            .font(.subheadline)
+                            .foregroundColor(.primary)
+
+                            Spacer()
+
+                            Image(systemName: "chevron.right")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                        .padding(.vertical, 8)
+                        .padding(.horizontal, 12)
+                        .background(Color.orange.opacity(0.1))
+                        .cornerRadius(8)
+                    }
+                }
+
+                // Friends Summary
+                HStack(spacing: 20) {
+                    HStack(spacing: 8) {
+                        Image(systemName: "person.2.fill")
+                            .foregroundColor(.blue)
+                        Text("\(friendsManager.friends.count)")
+                            .font(.headline)
+                        Text("Friends")
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                    }
+
+                    NavigationLink(destination: SearchFriendsView(friendsManager: friendsManager)) {
+                        HStack(spacing: 6) {
+                            Image(systemName: "magnifyingglass")
+                            Text("Find More")
+                        }
+                        .font(.subheadline)
+                        .foregroundColor(.blue)
+                    }
+                }
+                .padding(.vertical, 4)
+            }
+        }
+        .padding()
+        .background(Color(.systemBackground))
+        .cornerRadius(16)
+        .shadow(color: .black.opacity(0.05), radius: 8)
+    }
+}
+
+////////////////////////////////////////////////////////////
 // MARK: - GPA CARD
 ////////////////////////////////////////////////////////////
 
@@ -332,7 +432,7 @@ extension DashboardView {
                 quickActionItem("📘", "GPA") { GPAFullView() }
                 quickActionItem("🍽", "Dining") { DiningHomeView() }
                 quickActionItem("📅", "Calendar") { CalendarView() }
-                quickActionItem("🤝", "Share") { ShareRequestsView() }
+                quickActionItem("⏱️", "Study") { StudyTrackerView() }
             }
         }
         .padding()
@@ -363,31 +463,42 @@ extension DashboardView {
 // MARK: - WEEKLY STUDY CHART
 ////////////////////////////////////////////////////////////
 
-struct StudyHours: Identifiable {
-    let id = UUID()
-    let day: String
-    let hours: Double
-}
-
 extension DashboardView {
     var weeklyChartCard: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Weekly Study Hours")
                 .font(.headline)
 
-            Chart(studyData) { item in
-                LineMark(
-                    x: .value("Day", item.day),
-                    y: .value("Hours", item.hours)
-                )
-                .foregroundStyle(.purple)
-                .interpolationMethod(.catmullRom)
+            if studySessionManager.weeklyData.isEmpty
+                || studySessionManager.weeklyData.allSatisfy({ $0.hours == 0 })
+            {
+                VStack(spacing: 8) {
+                    Image(systemName: "chart.line.uptrend.xyaxis")
+                        .font(.largeTitle)
+                        .foregroundColor(.secondary.opacity(0.5))
+                    Text("No study data yet")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                }
+                .frame(height: 150)
+                .frame(maxWidth: .infinity)
+            } else {
+                Chart(studySessionManager.weeklyData) { item in
+                    LineMark(
+                        x: .value("Day", item.day),
+                        y: .value("Hours", item.hours)
+                    )
+                    .foregroundStyle(.purple)
+                    .interpolationMethod(.catmullRom)
+                }
+                .frame(height: 150)
             }
-            .frame(height: 150)
 
-            Button("Track My Study →") {}
-                .foregroundColor(.blue)
-                .font(.subheadline)
+            NavigationLink(destination: StudyTrackerView()) {
+                Text("Track My Study →")
+                    .foregroundColor(.blue)
+                    .font(.subheadline)
+            }
         }
         .padding()
         .background(Color(.systemBackground))
@@ -452,7 +563,7 @@ extension DashboardView {
         let db = Firestore.firestore()
         db.collection("users").document(userId).getDocument { snapshot, error in
             if let error = error {
-                print("❌ Failed to fetch username: \(error.localizedDescription)")
+                print("Failed to fetch username: \(error.localizedDescription)")
                 return
             }
 

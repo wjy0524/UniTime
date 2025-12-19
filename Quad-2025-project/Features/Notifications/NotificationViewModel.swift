@@ -237,7 +237,7 @@ class NotificationViewModel: ObservableObject {
                 fromUsername: username,
                 fromUserProfileImage: data["profileImageURL"] as? String,
                 toUserId: toUserId,
-                message: "\(username) started following you"
+                message: "\(username) requested friend"
             )
 
             do {
@@ -273,7 +273,7 @@ class NotificationViewModel: ObservableObject {
                 fromUsername: username,
                 fromUserProfileImage: data["profileImageURL"] as? String,
                 toUserId: toUserId,
-                message: "\(username) accepted your follow request"
+                message: "\(username) accepted your friend request"
             )
 
             do {

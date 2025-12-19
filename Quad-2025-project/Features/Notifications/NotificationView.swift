@@ -25,6 +25,13 @@ struct NotificationView: View {
             }
             .navigationTitle("Notifications")
             .navigationBarTitleDisplayMode(.inline)
+            .onAppear {
+                viewModel.startListening()
+                // Mark all as read when view appears
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    viewModel.markAllAsRead()
+                }
+            }
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button("Close") {
