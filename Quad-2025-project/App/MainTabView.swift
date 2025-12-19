@@ -9,6 +9,7 @@ import SwiftUI
 
 struct MainTabView: View {
     @EnvironmentObject var authManager: AuthenticationManager
+    @StateObject private var chatViewModel = ChatViewModel()
 
     var body: some View {
         TabView {
@@ -39,6 +40,10 @@ struct MainTabView: View {
                 .tabItem {
                     Image(systemName: "cart.fill")
                     Text("Marketplace")
+                }
+                .badge(chatViewModel.getTotalUnreadCount())
+                .onAppear {
+                    chatViewModel.startListeningToConversations()
                 }
 
             DiningHomeView()

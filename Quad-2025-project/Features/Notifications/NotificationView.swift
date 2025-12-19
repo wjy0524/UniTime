@@ -128,6 +128,9 @@ struct NotificationView: View {
 
         case .eventInvite:
             break
+
+        case .chatMessage:
+            break
         }
     }
 }

@@ -14,6 +14,9 @@ struct ItemDetailView: View {
     @State private var currentImageIndex = 0
     @State private var showingContactSeller = false
     @State private var showingEditListing = false
+    @State private var showingChat = false
+    @State private var chatConversation: ChatConversation?
+    @StateObject private var chatViewModel = ChatViewModel()
 
     var isMyListing: Bool {
         item.sellerId == viewModel.currentUserId
@@ -132,6 +135,11 @@ struct ItemDetailView: View {
             }
             .sheet(isPresented: $showingEditListing) {
                 EditListingView(viewModel: viewModel, item: item)
+            }
+            .sheet(isPresented: $showingChat) {
+                if let conversation = chatConversation {
+                    ChatView(conversation: conversation, chatViewModel: chatViewModel)
+                }
             }
             .safeAreaInset(edge: .bottom) {
                 if !isMyListing && item.isAvailable {
@@ -259,7 +267,7 @@ struct ItemDetailView: View {
 
     var contactSellerButton: some View {
         Button {
-            showingContactSeller = true
+            startConversation()
         } label: {
             HStack {
                 Image(systemName: "message.fill")
@@ -274,13 +282,6 @@ struct ItemDetailView: View {
         }
         .padding()
         .background(Color(.systemBackground))
-        .alert("Contact Seller", isPresented: $showingContactSeller) {
-            Button("OK", role: .cancel) {}
-        } message: {
-            Text(
-                "Messaging feature coming soon! For now, please contact \(item.sellerUsername) through other means."
-            )
-        }
     }
 
     // MARK: - My Listing Buttons
@@ -363,6 +364,44 @@ struct ItemDetailView: View {
         viewModel.deleteItem(itemId) { success in
             if success {
                 dismiss()
+            }
+        }
+    }
+
+    // MARK: - Start Conversation
+
+    func startConversation() {
+        Task {
+            do {
+                // Get seller info
+                let sellerDoc = try await viewModel.db.collection("users").document(item.sellerId)
+                    .getDocument()
+                guard let sellerData = sellerDoc.data(),
+                    let sellerUsername = sellerData["username"] as? String
+                else {
+                    return
+                }
+
+                let sellerImage = sellerData["profileImageURL"] as? String
+
+                let conversationId = try await chatViewModel.getOrCreateConversation(
+                    withUserId: item.sellerId,
+                    otherUsername: sellerUsername,
+                    otherUserImage: sellerImage,
+                    forItem: item
+                )
+
+                // Load the conversation
+                let conversationDoc = try await viewModel.db.collection("chatConversations")
+                    .document(conversationId).getDocument()
+                if let conversation = try? conversationDoc.data(as: ChatConversation.self) {
+                    await MainActor.run {
+                        chatConversation = conversation
+                        showingChat = true
+                    }
+                }
+            } catch {
+                print("❌ Error starting conversation: \(error)")
             }
         }
     }

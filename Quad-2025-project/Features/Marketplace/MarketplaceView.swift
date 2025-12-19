@@ -11,6 +11,7 @@ struct MarketplaceView: View {
     @StateObject private var viewModel = MarketplaceViewModel()
     @State private var showingCreateListing = false
     @State private var showingMyListings = false
+    @State private var showingChats = false
     @State private var selectedItem: MarketplaceItem?
 
     let columns = [
@@ -55,11 +56,21 @@ struct MarketplaceView: View {
                 }
 
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button {
-                        showingCreateListing = true
-                    } label: {
-                        Image(systemName: "plus.circle.fill")
-                            .foregroundColor(Color("UTAustinOrange"))
+                    HStack(spacing: 16) {
+                        Button {
+                            showingChats = true
+                        } label: {
+                            Image(systemName: "message.fill")
+                                .foregroundColor(Color("UTAustinOrange"))
+                        }
+
+                        Button {
+                            showingCreateListing = true
+                        } label: {
+                            Image(systemName: "plus.circle.fill")
+                                .font(.title3)
+                                .foregroundColor(Color("UTAustinOrange"))
+                        }
                     }
                 }
             }
@@ -71,6 +82,9 @@ struct MarketplaceView: View {
             }
             .sheet(item: $selectedItem) { item in
                 ItemDetailView(item: item, viewModel: viewModel)
+            }
+            .sheet(isPresented: $showingChats) {
+                ChatListView()
             }
             .alert("Error", isPresented: $viewModel.showingError) {
                 Button("OK", role: .cancel) {}
@@ -221,32 +235,50 @@ struct ItemCard: View {
         VStack(alignment: .leading, spacing: 8) {
             // Image
             if let firstImageURL = item.imageURLs.first,
-                let url = URL(string: firstImageURL)
-            {
-                AsyncImage(url: url) { image in
-                    image
-                        .resizable()
-                        .scaledToFill()
-                } placeholder: {
-                    Rectangle()
-                        .fill(Color.gray.opacity(0.3))
-                        .overlay(
-                            ProgressView()
-                        )
+               let url = URL(string: firstImageURL) {
+
+                AsyncImage(url: url) { phase in
+                    switch phase {
+                    case .success(let image):
+                        image
+                            .resizable()
+                            .scaledToFill()
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 150)
+                            .clipped()
+
+                    case .failure(_):
+                        Rectangle()
+                            .fill(Color.gray.opacity(0.2))
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 150)
+                            .overlay(
+                                Image(systemName: "photo")
+                                    .font(.largeTitle)
+                                    .foregroundColor(.gray)
+                            )
+
+                    default: // .empty
+                        Rectangle()
+                            .fill(Color.gray.opacity(0.3))
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 150)
+                            .overlay(ProgressView())
+                    }
                 }
-                .frame(height: 150)
-                .clipped()
-                .cornerRadius(12)
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+
             } else {
                 Rectangle()
                     .fill(Color.gray.opacity(0.2))
+                    .frame(maxWidth: .infinity)
                     .frame(height: 150)
                     .overlay(
                         Image(systemName: "photo")
                             .font(.largeTitle)
                             .foregroundColor(.gray)
                     )
-                    .cornerRadius(12)
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
             }
 
             // Title
@@ -275,6 +307,7 @@ struct ItemCard: View {
             }
         }
         .padding(8)
+        .frame(maxWidth: .infinity, alignment: .leading)
         .background(Color(.systemBackground))
         .cornerRadius(12)
         .shadow(color: .black.opacity(0.1), radius: 5, y: 2)

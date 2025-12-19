@@ -18,6 +18,7 @@ enum NotificationType: String, Codable {
     case postLike = "post_like"
     case postComment = "post_comment"
     case eventInvite = "event_invite"
+    case chatMessage = "chat_message"
 
     var icon: String {
         switch self {
@@ -35,6 +36,8 @@ enum NotificationType: String, Codable {
             return "bubble.left.fill"
         case .eventInvite:
             return "calendar.badge.clock"
+        case .chatMessage:
+            return "message.fill"
         }
     }
 
@@ -51,6 +54,8 @@ enum NotificationType: String, Codable {
         case .postComment:
             return "purple"
         case .eventInvite:
+            return "orange"
+        case .chatMessage:
             return "orange"
         }
     }
@@ -71,6 +76,7 @@ struct AppNotification: Identifiable, Codable {
     var timetableShareId: String?
     var postId: String?
     var eventId: String?
+    var conversationId: String?
 
     enum CodingKeys: String, CodingKey {
         case id
@@ -85,6 +91,7 @@ struct AppNotification: Identifiable, Codable {
         case timetableShareId
         case postId
         case eventId
+        case conversationId
     }
 
     init(
@@ -99,7 +106,8 @@ struct AppNotification: Identifiable, Codable {
         isRead: Bool = false,
         timetableShareId: String? = nil,
         postId: String? = nil,
-        eventId: String? = nil
+        eventId: String? = nil,
+        conversationId: String? = nil
     ) {
         self.id = id
         self.type = type
@@ -113,6 +121,7 @@ struct AppNotification: Identifiable, Codable {
         self.timetableShareId = timetableShareId
         self.postId = postId
         self.eventId = eventId
+        self.conversationId = conversationId
     }
 
     init(from decoder: Decoder) throws {
@@ -136,6 +145,7 @@ struct AppNotification: Identifiable, Codable {
         timetableShareId = try container.decodeIfPresent(String.self, forKey: .timetableShareId)
         postId = try container.decodeIfPresent(String.self, forKey: .postId)
         eventId = try container.decodeIfPresent(String.self, forKey: .eventId)
+        conversationId = try container.decodeIfPresent(String.self, forKey: .conversationId)
     }
 
     func encode(to encoder: Encoder) throws {
@@ -152,6 +162,7 @@ struct AppNotification: Identifiable, Codable {
         try container.encodeIfPresent(timetableShareId, forKey: .timetableShareId)
         try container.encodeIfPresent(postId, forKey: .postId)
         try container.encodeIfPresent(eventId, forKey: .eventId)
+        try container.encodeIfPresent(conversationId, forKey: .conversationId)
     }
 
     var timeAgo: String {

@@ -22,7 +22,7 @@ class MarketplaceViewModel: ObservableObject {
     @Published var searchText: String = ""
     @Published var selectedCategory: MarketplaceItem.ItemCategory?
 
-    private let db = Firestore.firestore()
+    let db = Firestore.firestore()
     private let storage = Storage.storage()
     private var listener: ListenerRegistration?
 
