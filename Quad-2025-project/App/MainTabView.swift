@@ -10,48 +10,56 @@ import SwiftUI
 struct MainTabView: View {
     @EnvironmentObject var authManager: AuthenticationManager
     @StateObject private var chatViewModel = ChatViewModel()
-
+    
     var body: some View {
-        TabView {
-
-            DashboardView()
-                .environmentObject(authManager)
-                .tabItem {
-                    Image(systemName: "house.fill")
-                    Text("Home")
+        GeometryReader { geo in
+            ZStack(alignment: .bottomTrailing) {
+                TabView {
+                    DashboardView()
+                        .environmentObject(authManager)
+                        .tabItem {
+                            Image(systemName: "house.fill")
+                            Text("Home")
+                        }
+                    
+                    BoardView()
+                        .environmentObject(authManager)
+                        .tabItem {
+                            Image(systemName: "rectangle.grid.2x2.fill")
+                            Text("Board")
+                        }
+                    
+                    TimetableView()
+                        .environmentObject(authManager)
+                        .tabItem {
+                            Image(systemName: "calendar")
+                            Text("Timetable")
+                        }
+                    
+                    MarketplaceView()
+                        .environmentObject(authManager)
+                        .tabItem {
+                            Image(systemName: "cart.fill")
+                            Text("Marketplace")
+                        }
+                        .badge(chatViewModel.getTotalUnreadCount())
+                        .onAppear {
+                            chatViewModel.startListeningToConversations()
+                        }
+                    
+                    DiningHomeView()
+                        .environmentObject(authManager)
+                        .tabItem {
+                            Image(systemName: "fork.knife")
+                            Text("Dining")
+                        }
                 }
-
-            BoardView()
-                .environmentObject(authManager)
-                .tabItem {
-                    Image(systemName: "rectangle.grid.2x2.fill")
-                    Text("Board")
-                }
-
-            TimetableView()
-                .environmentObject(authManager)
-                .tabItem {
-                    Image(systemName: "calendar")
-                    Text("Timetable")
-                }
-
-            MarketplaceView()
-                .environmentObject(authManager)
-                .tabItem {
-                    Image(systemName: "cart.fill")
-                    Text("Marketplace")
-                }
-                .badge(chatViewModel.getTotalUnreadCount())
-                .onAppear {
-                    chatViewModel.startListeningToConversations()
-                }
-
-            DiningHomeView()
-                .environmentObject(authManager)
-                .tabItem {
-                    Image(systemName: "fork.knife")
-                    Text("Dining")
-                }
+                
+                FloatingAIChatButton()
+                    .padding(.trailing, 0)
+                    .padding(.bottom, geo.safeAreaInsets.bottom + 0) //채팅창 올리고 내리고
+            }
+            .ignoresSafeArea(.keyboard)
         }
     }
 }
