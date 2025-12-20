@@ -235,14 +235,15 @@ struct ItemCard: View {
         VStack(alignment: .leading, spacing: 8) {
             // Image
             if let firstImageURL = item.imageURLs.first,
-               let url = URL(string: firstImageURL) {
+                let url = URL(string: firstImageURL)
+            {
 
                 AsyncImage(url: url) { phase in
                     switch phase {
                     case .success(let image):
                         image
                             .resizable()
-                            .scaledToFill()
+                            .scaledToFit()
                             .frame(maxWidth: .infinity)
                             .frame(height: 150)
                             .clipped()
@@ -258,7 +259,7 @@ struct ItemCard: View {
                                     .foregroundColor(.gray)
                             )
 
-                    default: // .empty
+                    default:  // .empty
                         Rectangle()
                             .fill(Color.gray.opacity(0.3))
                             .frame(maxWidth: .infinity)
