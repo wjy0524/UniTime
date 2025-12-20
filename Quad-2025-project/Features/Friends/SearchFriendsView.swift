@@ -22,6 +22,13 @@ struct SearchFriendsView: View {
                 // Search Bar
                 SearchBar(text: $searchQuery, onCommit: performSearch)
                     .padding()
+                    .onChange(of: searchQuery) { oldValue, newValue in
+                        if !newValue.isEmpty {
+                            performSearch()
+                        } else {
+                            friendsManager.searchResults = []
+                        }
+                    }
 
                 // Results
                 if friendsManager.isLoading {
