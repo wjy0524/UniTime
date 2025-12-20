@@ -187,6 +187,7 @@ struct FriendRowView: View {
     let friend: Friend
     @ObservedObject var friendsManager: FriendsManager
     @State private var showOptions = false
+    @State private var showProfile = false
     @Environment(\.colorScheme) var colorScheme
 
     var body: some View {
@@ -240,7 +241,7 @@ struct FriendRowView: View {
         .shadow(color: .black.opacity(0.05), radius: 4)
         .confirmationDialog("Friend Options", isPresented: $showOptions) {
             Button("View Profile") {
-                // Navigate to profile
+                showProfile = true
             }
 
             Button("Remove Friend", role: .destructive) {
@@ -250,6 +251,11 @@ struct FriendRowView: View {
             }
 
             Button("Cancel", role: .cancel) {}
+        }
+        .sheet(isPresented: $showProfile) {
+            NavigationStack {
+                PublicProfileView(targetUid: friend.friendId)
+            }
         }
     }
 
