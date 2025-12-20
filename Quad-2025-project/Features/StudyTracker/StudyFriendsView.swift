@@ -63,60 +63,87 @@ struct StudyFriendsView: View {
     }
 
     func listenToFriendStatus(friendId: String, username: String) {
-        db.collection("studySessions")
-            .whereField("userId", isEqualTo: friendId)
-            .whereField("isActive", isEqualTo: true)
-            .addSnapshotListener { snapshot, error in
-                if let error = error {
-                    print("❌ Error listening to friend \(username) status: \(error)")
-                    return
+        // First check if friend has sharing enabled
+        db.collection("users").document(friendId).getDocument { snapshot, error in
+
+            // Check privacy setting
+            let shareStudyStatus = snapshot?.data()?["shareStudyStatus"] as? Bool ?? true
+
+            if !shareStudyStatus {
+                print("🔒 Friend \(username) has sharing disabled - not showing study status")
+                DispatchQueue.main.async {
+                    self.friendsStudyStatus[friendId] = FriendStudyStatus(
+                        id: friendId,
+                        userId: friendId,
+                        username: username,
+                        isStudying: false,
+                        currentSessionId: nil,
+                        sessionStartTime: nil,
+                        elapsedTime: 0,
+                        todayTotalTime: 0,
+                        weekTotalTime: 0,
+                        lastUpdated: Date()
+                    )
                 }
+                return
+            }
 
-                print("📡 Snapshot received for \(username)")
-                print("   Documents count: \(snapshot?.documents.count ?? 0)")
+            // Privacy enabled, proceed to listen to study sessions
+            self.db.collection("studySessions")
+                .whereField("userId", isEqualTo: friendId)
+                .whereField("isActive", isEqualTo: true)
+                .addSnapshotListener { snapshot, error in
+                    if let error = error {
+                        print("❌ Error listening to friend \(username) status: \(error)")
+                        return
+                    }
 
-                if let documents = snapshot?.documents, !documents.isEmpty {
-                    // Friend is studying
-                    print("✅ \(username) is STUDYING")
-                    if let session = try? documents.first?.data(as: StudySession.self) {
-                        let elapsed = Date().timeIntervalSince(session.startTime)
-                        print("   Session started: \(session.startTime)")
-                        print("   Elapsed: \(elapsed) seconds")
+                    print("📡 Snapshot received for \(username)")
+                    print("   Documents count: \(snapshot?.documents.count ?? 0)")
 
+                    if let documents = snapshot?.documents, !documents.isEmpty {
+                        // Friend is studying
+                        print("✅ \(username) is STUDYING")
+                        if let session = try? documents.first?.data(as: StudySession.self) {
+                            let elapsed = Date().timeIntervalSince(session.startTime)
+                            print("   Session started: \(session.startTime)")
+                            print("   Elapsed: \(elapsed) seconds")
+
+                            DispatchQueue.main.async {
+                                self.friendsStudyStatus[friendId] = FriendStudyStatus(
+                                    id: friendId,
+                                    userId: friendId,
+                                    username: username,
+                                    isStudying: true,
+                                    currentSessionId: session.id,
+                                    sessionStartTime: session.startTime,
+                                    elapsedTime: elapsed,
+                                    todayTotalTime: 0,
+                                    weekTotalTime: 0,
+                                    lastUpdated: Date()
+                                )
+                            }
+                        }
+                    } else {
+                        // Friend is not studying
+                        print("⏸️ \(username) is NOT studying")
                         DispatchQueue.main.async {
                             self.friendsStudyStatus[friendId] = FriendStudyStatus(
                                 id: friendId,
                                 userId: friendId,
                                 username: username,
-                                isStudying: true,
-                                currentSessionId: session.id,
-                                sessionStartTime: session.startTime,
-                                elapsedTime: elapsed,
+                                isStudying: false,
+                                currentSessionId: nil,
+                                sessionStartTime: nil,
+                                elapsedTime: 0,
                                 todayTotalTime: 0,
                                 weekTotalTime: 0,
                                 lastUpdated: Date()
                             )
                         }
                     }
-                } else {
-                    // Friend is not studying
-                    print("⏸️ \(username) is NOT studying")
-                    DispatchQueue.main.async {
-                        self.friendsStudyStatus[friendId] = FriendStudyStatus(
-                            id: friendId,
-                            userId: friendId,
-                            username: username,
-                            isStudying: false,
-                            currentSessionId: nil,
-                            sessionStartTime: nil,
-                            elapsedTime: 0,
-                            todayTotalTime: 0,
-                            weekTotalTime: 0,
-                            lastUpdated: Date()
-                        )
-                    }
                 }
-            }
+        }
     }
 
     // MARK: - Header Stats

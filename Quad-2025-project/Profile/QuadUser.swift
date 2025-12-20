@@ -9,8 +9,8 @@
 //  QuadUser.swift
 //
 
-import Foundation
 import FirebaseFirestore
+import Foundation
 
 struct QuadUser: Codable, Identifiable {
     @DocumentID var id: String?  // Firestore doc ID
@@ -24,9 +24,8 @@ struct QuadUser: Codable, Identifiable {
     var phone: String
     var bio: String
     var profileImageURL: String
+    var shareStudyStatus: Bool = true  // Privacy setting for sharing study time with friends
 
     var identifier: String { id ?? uid }
-    
-    
 
 }

@@ -164,100 +164,126 @@ class StudyFriendsManager: ObservableObject {
         for friend in friends {
             let friendId = friend.friendId
             print("📡 Setting up listener for friend: \(friend.friendUsername) (ID: \(friendId))")
-            print("   Querying studySessions where userId=\(friendId) AND isActive=true")
 
-            // IMMEDIATE: Check for active sessions right now
-            db.collection("studySessions")
-                .whereField("userId", isEqualTo: friendId)
-                .whereField("isActive", isEqualTo: true)
-                .limit(to: 1)
-                .getDocuments { [weak self] snapshot, error in
-                    guard let self = self else { return }
+            // First check if friend has sharing enabled
+            db.collection("users").document(friendId).getDocument { [weak self] snapshot, error in
+                guard let self = self else { return }
 
-                    if let error = error {
-                        print(
-                            "❌ Initial check error for \(friendId): \(error.localizedDescription)")
-                    } else if let doc = snapshot?.documents.first,
-                        let session = try? doc.data(as: StudySession.self)
-                    {
-                        print("🟢 INITIAL: Friend \(friend.friendUsername) IS STUDYING")
-                        print("   Session ID: \(session.id ?? "unknown")")
-                        print("   Start time: \(session.startTime)")
-                        print(
-                            "   Duration so far: \(Int(Date().timeIntervalSince(session.startTime)))s"
+                // Check privacy setting
+                let shareStudyStatus = snapshot?.data()?["shareStudyStatus"] as? Bool ?? true
+
+                if !shareStudyStatus {
+                    print("🔒 Friend \(friend.friendUsername) has sharing disabled")
+                    Task { @MainActor in
+                        self.updateFriendStatus(
+                            friendId: friendId,
+                            username: friend.friendUsername,
+                            isStudying: false,
+                            sessionId: nil,
+                            startTime: nil
                         )
-                        Task { @MainActor in
-                            self.updateFriendStatus(
-                                friendId: friendId,
-                                username: friend.friendUsername,
-                                isStudying: true,
-                                sessionId: session.id,
-                                startTime: session.startTime
-                            )
-                        }
-                    } else {
-                        print("⚫ INITIAL: Friend \(friend.friendUsername) NOT studying")
-                        print("   No active sessions found")
-                        Task { @MainActor in
-                            self.updateFriendStatus(
-                                friendId: friendId,
-                                username: friend.friendUsername,
-                                isStudying: false,
-                                sessionId: nil,
-                                startTime: nil
-                            )
-                        }
                     }
+                    return
                 }
 
-            // REAL-TIME: Set up listener for changes
-            let listener = db.collection("studySessions")
-                .whereField("userId", isEqualTo: friendId)
-                .whereField("isActive", isEqualTo: true)
-                .addSnapshotListener { [weak self] snapshot, error in
-                    guard let self = self else { return }
+                print("   Querying studySessions where userId=\(friendId) AND isActive=true")
 
-                    if let error = error {
-                        print("❌ Error tracking friend \(friendId): \(error.localizedDescription)")
-                        return
+                // IMMEDIATE: Check for active sessions right now
+                self.db.collection("studySessions")
+                    .whereField("userId", isEqualTo: friendId)
+                    .whereField("isActive", isEqualTo: true)
+                    .limit(to: 1)
+                    .getDocuments { [weak self] snapshot, error in
+                        guard let self = self else { return }
+
+                        if let error = error {
+                            print(
+                                "❌ Initial check error for \(friendId): \(error.localizedDescription)"
+                            )
+                        } else if let doc = snapshot?.documents.first,
+                            let session = try? doc.data(as: StudySession.self)
+                        {
+                            print("🟢 INITIAL: Friend \(friend.friendUsername) IS STUDYING")
+                            print("   Session ID: \(session.id ?? "unknown")")
+                            print("   Start time: \(session.startTime)")
+                            print(
+                                "   Duration so far: \(Int(Date().timeIntervalSince(session.startTime)))s"
+                            )
+                            Task { @MainActor in
+                                self.updateFriendStatus(
+                                    friendId: friendId,
+                                    username: friend.friendUsername,
+                                    isStudying: true,
+                                    sessionId: session.id,
+                                    startTime: session.startTime
+                                )
+                            }
+                        } else {
+                            print("⚫ INITIAL: Friend \(friend.friendUsername) NOT studying")
+                            print("   No active sessions found")
+                            Task { @MainActor in
+                                self.updateFriendStatus(
+                                    friendId: friendId,
+                                    username: friend.friendUsername,
+                                    isStudying: false,
+                                    sessionId: nil,
+                                    startTime: nil
+                                )
+                            }
+                        }
                     }
 
-                    // Check if friend has active session
-                    if let activeSession = snapshot?.documents.first,
-                        let session = try? activeSession.data(as: StudySession.self)
-                    {
-                        print(
-                            "🟢 Friend \(friend.friendUsername) IS STUDYING - Session: \(session.id ?? "unknown")"
-                        )
-                        print("   ⏱️ Started at: \(session.startTime)")
+                // REAL-TIME: Set up listener for changes
+                let listener = self.db.collection("studySessions")
+                    .whereField("userId", isEqualTo: friendId)
+                    .whereField("isActive", isEqualTo: true)
+                    .addSnapshotListener { [weak self] snapshot, error in
+                        guard let self = self else { return }
 
-                        // Friend is studying
-                        Task { @MainActor in
-                            self.updateFriendStatus(
-                                friendId: friendId,
-                                username: friend.friendUsername,
-                                isStudying: true,
-                                sessionId: session.id,
-                                startTime: session.startTime
+                        if let error = error {
+                            print(
+                                "❌ Error tracking friend \(friendId): \(error.localizedDescription)"
                             )
+                            return
                         }
-                    } else {
-                        print("⚫ Friend \(friend.friendUsername) is NOT studying")
 
-                        // Friend is not studying
-                        Task { @MainActor in
-                            self.updateFriendStatus(
-                                friendId: friendId,
-                                username: friend.friendUsername,
-                                isStudying: false,
-                                sessionId: nil,
-                                startTime: nil
+                        // Check if friend has active session
+                        if let activeSession = snapshot?.documents.first,
+                            let session = try? activeSession.data(as: StudySession.self)
+                        {
+                            print(
+                                "🟢 Friend \(friend.friendUsername) IS STUDYING - Session: \(session.id ?? "unknown")"
                             )
+                            print("   ⏱️ Started at: \(session.startTime)")
+
+                            // Friend is studying
+                            Task { @MainActor in
+                                self.updateFriendStatus(
+                                    friendId: friendId,
+                                    username: friend.friendUsername,
+                                    isStudying: true,
+                                    sessionId: session.id,
+                                    startTime: session.startTime
+                                )
+                            }
+                        } else {
+                            print("⚫ Friend \(friend.friendUsername) is NOT studying")
+
+                            // Friend is not studying
+                            Task { @MainActor in
+                                self.updateFriendStatus(
+                                    friendId: friendId,
+                                    username: friend.friendUsername,
+                                    isStudying: false,
+                                    sessionId: nil,
+                                    startTime: nil
+                                )
+                            }
                         }
                     }
-                }
 
-            statusListeners[friendId] = listener
+                self.statusListeners[friendId] = listener
+            }
         }
 
         // Load today and week totals for all friends
@@ -348,8 +374,20 @@ class StudyFriendsManager: ObservableObject {
 
     func loadFriendsStudyTotals() {
         for friend in friends {
-            loadTodayTotal(for: friend.friendId)
-            loadWeekTotal(for: friend.friendId)
+            // Check privacy setting before loading totals
+            db.collection("users").document(friend.friendId).getDocument {
+                [weak self] snapshot, error in
+                guard let self = self else { return }
+
+                let shareStudyStatus = snapshot?.data()?["shareStudyStatus"] as? Bool ?? true
+
+                if shareStudyStatus {
+                    self.loadTodayTotal(for: friend.friendId)
+                    self.loadWeekTotal(for: friend.friendId)
+                } else {
+                    print("🔒 Skipping totals for \(friend.friendUsername) - sharing disabled")
+                }
+            }
         }
     }
 
