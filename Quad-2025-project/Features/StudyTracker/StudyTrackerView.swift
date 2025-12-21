@@ -17,6 +17,7 @@ struct StudyTrackerView: View {
     @State private var showScreenTimePrompt = false
     @State private var showAppPicker = false
     @State private var showStudyFriends = false
+    @State private var showPrivacySettings = false
     @Environment(\.colorScheme) var colorScheme
 
     var body: some View {
@@ -80,6 +81,9 @@ struct StudyTrackerView: View {
             }
             .sheet(isPresented: $showStudyFriends) {
                 StudyFriendsView()
+            }
+            .sheet(isPresented: $showPrivacySettings) {
+                StudyPrivacySettingsView()
             }
             .onAppear {
                 sessionManager.requestNotificationPermission()
@@ -419,6 +423,22 @@ struct StudyTrackerView: View {
                         .padding()
                         .background(Color.purple.opacity(0.1))
                         .foregroundColor(.purple)
+                        .cornerRadius(12)
+                    }
+
+                    Button {
+                        showPrivacySettings = true
+                    } label: {
+                        VStack(spacing: 8) {
+                            Image(systemName: "eye.slash.fill")
+                                .font(.title2)
+                            Text("Privacy")
+                                .font(.caption)
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color.green.opacity(0.1))
+                        .foregroundColor(.green)
                         .cornerRadius(12)
                     }
                 }
