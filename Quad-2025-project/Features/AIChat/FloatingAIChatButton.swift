@@ -37,56 +37,7 @@ struct FloatingAIChatButton: View {
             }
         }
         .sheet(isPresented: $showChat) {
-            AIChatPlaceholderView()
-        }
-    }
-}
-
-struct AIChatPlaceholderView: View {
-    @Environment(\.dismiss) var dismiss
-
-    var body: some View {
-        NavigationView {
-            VStack(spacing: 20) {
-                Spacer()
-
-                Image(systemName: "brain.head.profile")
-                    .font(.system(size: 80))
-                    .foregroundStyle(
-                        LinearGradient(
-                            gradient: Gradient(colors: [.blue, .purple]),
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
-                    )
-
-                Text("AI Assistant")
-                    .font(.title)
-                    .fontWeight(.bold)
-
-                Text("Coming Soon")
-                    .font(.headline)
-                    .foregroundColor(.secondary)
-
-                Text(
-                    "Your personal AI assistant will help you with campus life, academics, and more."
-                )
-                .font(.body)
-                .foregroundColor(.secondary)
-                .multilineTextAlignment(.center)
-                .padding(.horizontal, 40)
-
-                Spacer()
-            }
-            .navigationTitle("AI Chat")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Close") {
-                        dismiss()
-                    }
-                }
-            }
+            AIChatView()
         }
     }
 }
