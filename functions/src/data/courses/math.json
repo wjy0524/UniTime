@@ -1,0 +1,317 @@
+[
+  {
+    "title": "M 301 - College Algebra",
+    "content": "Subjects include a brief review of elementary algebra; linear, quadratic, exponential, and logarithmic functions; polynomials; systems of linear equations; applications. Three lecture hours a week for one semester. May not be counted toward a degree in mathematics. Credit for Mathematics 301 may not be earned after a student has received credit for any calculus course with a grade of C- or better.",
+    "category": "courses"
+  },
+  {
+    "title": "M 302 - Introduction to Mathematics",
+    "content": "Intended primarily for general liberal arts students seeking knowledge of the nature of mathematics as well as training in mathematical thinking and problem solving. Topics include number theory and probability; additional topics are chosen by the instructor. Three lecture hours a week for one semester. A student may not earn credit for Mathematics 302 after having received credit for any calculus course.",
+    "category": "courses"
+  },
+  {
+    "title": "M 303D - Applicable Mathematics",
+    "content": "An entry-level course for the nontechnical student, dealing with some of the techniques that allow mathematics to be applied to a variety of problems. Topics include linear and quadratic equations, systems of linear equations, matrices, probability, statistics, exponential and logarithmic functions, and mathematics of finance. Three lecture hours a week for one semester.",
+    "category": "courses"
+  },
+  {
+    "title": "M 303F - Mathematics of Investment",
+    "content": "Simple and compound interest, equivalent rates, equivalent values, annuities, amortization, sinking funds, bonds, depreciation. Three lecture hours a week for one semester. Prerequisite: Three units of high school mathematics at the level of Algebra I or higher.",
+    "category": "courses"
+  },
+  {
+    "title": "M 305G - Preparation for Calculus",
+    "content": "Study of advanced functions and their graphs and applications, including exponential, logarithmic, and trigonometric functions. Introduction to rates, slopes, and derivatives. Three lecture hours a week for one semester. A student may not earn credit for Mathematics 305G after having received credit for any calculus course with a grade of at least C-. Prerequisite: An appropriate score on the mathematics placement exam.",
+    "category": "courses"
+  },
+  {
+    "title": "M 403K - Calculus I for Business and Economics",
+    "content": "Differential and integral calculus of algebraic, logarithmic, and exponential functions with applications. Three lecture hours and two discussion sessions a week for one semester. May not be counted toward a degree in the College of Natural Sciences. Prerequisite: An appropriate score on the mathematics placement exam.",
+    "category": "courses"
+  },
+  {
+    "title": "M 403L - Calculus II for Business and Economics",
+    "content": "Differential and integral calculus of functions of several variables with applications, infinite series, improper integrals; introductions to probability, differential equations, matrices, systems of linear equations, and linear programming. Three lecture hours and two discussion sessions a week for one semester. Prerequisite: Mathematics 403K, 408C, 308L, or 408N with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "M 408C - Differential and Integral Calculus",
+    "content": "Introduction to the theory and applications of differential and integral calculus of functions of one variable; topics include limits, continuity, differentiation, the mean value theorem and its applications, integration, the fundamental theorem of calculus, and transcendental functions. Three lecture hours and two discussion hours a week for one semester. Prerequisite: An appropriate score on the mathematics placement exam or Mathematics 305G with a grade of at least B-.",
+    "category": "courses"
+  },
+  {
+    "title": "M 408D - Sequences, Series, and Multivariable Calculus",
+    "content": "The theory and applications of sequences and infinite series, including those involving functions of one variable, and an introduction to the theory and applications of differential and integral calculus of functions of several variables; subjects include methods of integration, parametric equations, sequences, infinite series, power series, functions of several variables, partial derivatives, and multiple integrals. Three lecture hours and two discussion hours a week for one semester. Prerequisite: Mathematics 408C, 408L, or 408S with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "M 408K - Differential Calculus",
+    "content": "Introduction to the theory and applications of differential calculus of functions of one variable; topics include limits, continuity, differentiation, and the mean value theorem and its applications. Three lecture hours and two discussion hours a week for one semester. Prerequisite: An appropriate score on the mathematics placement exam or Mathematics 305G with a grade of at least B-.",
+    "category": "courses"
+  },
+  {
+    "title": "M 408L - Integral Calculus",
+    "content": "Introduction to the theory and applications of integral calculus of functions of one variable; topics include integration, the fundamental theorem of calculus, transcendental functions, sequences, and infinite series. Three lecture hours and two discussion hours a week for one semester. Prerequisite: Mathematics 408C, 408K, or 408N with a grade of at least C-, or Mathematics 408R or 408Q with a grade of at least B.",
+    "category": "courses"
+  },
+  {
+    "title": "M 408M - Multivariable Calculus",
+    "content": "Introduction to the theory and applications of differential and integral calculus of functions of several variables. Includes parametric equations, polar coordinates, vectors, vector calculus, functions of several variables, partial derivatives, gradients, and multiple integrals. Three lecture hours and two discussion hours a week for one semester. Prerequisite: Mathematics 408L or 408S with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "M 408N - Differential Calculus for Science",
+    "content": "Restricted to students in the College of Natural Sciences. Introduction to the theory of differential calculus of functions of one variable, and its application to the natural sciences. Subjects may include limits and differentiation, with applications to rates of change, extremes, graphing, and exponential growth and decay. Three lecture hours and two discussion hours a week for one semester. Prerequisite: An appropriate score on the mathematics placement exam or Mathematics 305G with a grade of at least B-.",
+    "category": "courses"
+  },
+  {
+    "title": "M 408Q - Differential and Integral Calculus for Business",
+    "content": "Focus on the key concepts of calculus. These include: using successive approximations to solve problems that cannot be solved directly (Euler's Method), tracking the rate at which quantities are changing (derivatives) using rates of change to find optimal solutions to real-world problems (max/min), computing bulk quantities by adding up the pieces (integration), and understanding functions of several variables by studying one variable at a time. Designed for business students. Three lecture hours and two discussion hours a week for one semester. Prerequisite: An appropriate score on the mathematics placement exam or Mathematics 305G with a grade of at least B-.",
+    "category": "courses"
+  },
+  {
+    "title": "M 408R - Differential and Integral Calculus for the Sciences",
+    "content": "A calculus course for students in the life sciences. Emphasizes representations and analysis of data. Subjects include functions, rates, and derivatives and their applications to problems in biology; differential equations; Riemann integrals; the Euler method; and fundamental theorems of calculus. Three lecture hours and two discussion hours a week for one semester. Prerequisite: An appropriate score on the mathematics placement exam or Mathematics 305G with a grade of at least B-.",
+    "category": "courses"
+  },
+  {
+    "title": "M 408S - Integral Calculus for Science",
+    "content": "Restricted to students in the College of Natural Sciences. Introduction to the theory of integral calculus of functions of one variable, and its applications to the natural sciences. Subjects may include integration and its application to area and volume, and transcendental functions, sequences, and series and their application to numerical methods. Three lecture hours and two discussion hours a week for one semester. Prerequisite: Mathematics 408C, 408K, or 408N with a grade of at least C-, or Mathematics 408R or 408Q with a grade of at least B.",
+    "category": "courses"
+  },
+  {
+    "title": "M 316K - Foundations of Arithmetic",
+    "content": "Restricted to students in a teacher preparation program. An analysis, from an advanced perspective, of the concepts and algorithms of arithmetic, including sets; numbers; numeration systems; definitions, properties, and algorithms of arithmetic operations; and percents, ratios, and proportions. Problem solving is stressed. Three lecture hours a week for one semester.",
+    "category": "courses"
+  },
+  {
+    "title": "M 316L - Foundations of Geometry, Statistics, and Probability",
+    "content": "Restricted to students in a teacher preparation program. An analysis, from an advanced perspective, of the basic concepts and methods of geometry, statistics, and probability, including representation and analysis of data; discrete probability, random events, and conditional probability; measurement; and geometry as approached through similarity and congruence, through coordinates, and through transformations. Problem solving is stressed. Three lecture hours a week for one semester. Prerequisite: Mathematics 316K with a grade of at least C.",
+    "category": "courses"
+  },
+  {
+    "title": "M 325K - Discrete Mathematics",
+    "content": "Provides a transition from the problem-solving approach of Mathematics 408C and 408D to the rigorous approach of advanced courses. Subjects include logic, set theory, relations and functions, combinatorics, and graph theory and graph algorithms. Three lecture hours a week for one semester.",
+    "category": "courses"
+  },
+  {
+    "title": "M 326K - Foundations of Number Systems",
+    "content": "Restricted to students in a teacher preparation program or who have consent of instructor. Study of number-related topics in middle-grade and secondary school mathematics. Topics include place value; meanings of arithmetic operations; analysis of computation methods; historical development of number concepts and notation; and rational, irrational, algebraic, transcendental, and complex numbers. Emphasis is on communicating mathematics, developing pedagogical understanding of concepts and notation, and using both informal reasoning and proof. Three lecture hours a week for one semester. Prerequisite: Mathematics 408D, 408L, or 408S with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "M 427J - Differential Equations with Linear Algebra",
+    "content": "Ordinary differential equations, introduction to vector spaces, linear operators and eigenvalues, systems of linear differential equations, introduction to partial differential equations and Fourier series. Five lecture hours a week for one semester. Prerequisite: Mathematics 408D, 408L, or 408S with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "M 427K - Advanced Calculus for Applications I",
+    "content": "Ordinary and partial differential equations and Fourier series. Five lecture hours a week for one semester. Prerequisite: Mathematics 408D, 408L, or 408S with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "M 427L - Advanced Calculus for Applications II",
+    "content": "Matrices, elements of vector analysis and calculus of functions of several variables, including gradient, divergence, and curl of a vector field, multiple integrals and chain rules, length and area, line and surface integrals, Green's theorems in the plane and space, and, if time permits, complex analysis. Five class hours a week for one semester. Prerequisite: Mathematics 408D, 408L, or 408S with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "M 328K - Introduction to Number Theory",
+    "content": "Provides a transition from the problem-solving approach of Mathematics 408C and 408D to the rigorous approach of advanced courses. Properties of the integers, divisibility, linear and quadratic forms, prime numbers, congruences and residues, quadratic reciprocity, number theoretic functions. Three lecture hours a week for one semester. Prerequisite: Mathematics 325K, 333L, or 341 with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "M 329F - Theory of Interest",
+    "content": "Measurement of interest, present and accumulated value, amortization, sinking funds, bonds, duration, and immunization. Covers the interest-theory portion of an exam of the Society of Actuaries and the Casualty Actuarial Society. Three lecture hours a week for one semester. Prerequisite: Mathematics 408D, 308L, 408L, 408M, or 408S with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "M 333L - Structure of Modern Geometry",
+    "content": "Axiom systems, transformational geometry, introduction to non-Euclidean geometries, and other topics in geometry; use of these ideas in teaching geometry. Three lecture hours a week for one semester.",
+    "category": "courses"
+  },
+  {
+    "title": "M 339D - Introduction to Financial Mathematics for Actuaries",
+    "content": "Covers the financial derivative subjects on the Society of Actuary FM/2 exam: general derivatives, options, hedging, investment strategies, forwards, futures, and swaps. Covers option pricing techniques in the MFE/3F exam: binomial option pricing, Monte Carlo Valuation using risk neutral probabilities, and Black-Scholes. Three lecture hours a week for one semester. Prerequisite: Actuarial Foundations 329 or Mathematics 329F; and Mathematics 362K with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "M 339G - Predictive Analytics",
+    "content": "Designed for students in mathematics and actuarial science. Explore an introduction to predictive modeling that starts with least squares as a foundation and takes a modern approach applicable to classification and prediction in the presence of large datasets. Three lecture hours a week for one semester. Prerequisite: Mathematics 341 or 340L; and Mathematics 358K or 378K with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "M 339J - Probability Models with Actuarial Applications",
+    "content": "Introductory actuarial models for life insurance, property insurance, and annuities. With Mathematics 349P, covers the syllabus for the professional actuarial exam on model construction. Three lecture hours a week for one semester. Prerequisite: Mathematics 358K or 378K with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "M 339U - Actuarial Contingent Payments I",
+    "content": "Intermediate actuarial models for life insurance, property insurance, and annuities. Three lecture hours a week for one semester. Prerequisite: Mathematics 362K with a grade of at least C-; credit with a grade of at least C- or registration for Actuarial Foundations 329 or Mathematics 329F; and credit with a grade of at least C- or registration for Mathematics 340L or 341.",
+    "category": "courses"
+  },
+  {
+    "title": "M 339V - Actuarial Contingent Payments II",
+    "content": "Advanced actuarial models for life insurance, property insurance, and annuities. Three lecture hours a week for one semester. Prerequisite: Actuarial Foundations 329 or Mathematics 329F, and Mathematics 339U with a grade of at least C- in each.",
+    "category": "courses"
+  },
+  {
+    "title": "M 340L - Matrices and Matrix Calculations",
+    "content": "Restricted to non-mathematics majors. Techniques of matrix calculations and applications of linear algebra. Three lecture hours a week for one semester. Prerequisite: Mathematics 408C, 408K, or 408N with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "M 341 - Linear Algebra and Matrix Theory",
+    "content": "Restricted to mathematics majors. Vector spaces, linear transformations, matrices, linear equations, determinants. Some emphasis on rigor and proofs. Three lecture hours a week for one semester. Prerequisite: Mathematics 408D, 408L, or 408S with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "M 343K - Introduction to Algebraic Structures",
+    "content": "Elementary properties of groups, rings, and fields, including symmetric groups, properties of the integers, polynomial rings, elementary field theory. Three lecture hours a week for one semester. Prerequisite: Mathematics 325K, 333L, or Philosophy 313K, and Mathematics 328K or 341 with a grade of at least C- in each.",
+    "category": "courses"
+  },
+  {
+    "title": "M 343L - Applied Number Theory",
+    "content": "Basic properties of integers, including properties of prime numbers, congruences, and primitive roots. Introduction to finite fields and their vector spaces with applications to encryption systems and coding theory. Three lecture hours a week for one semester. Prerequisite: Mathematics 328K or 343K with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "M 343M - Error-Correcting Codes",
+    "content": "Introduction to applications of algebra and number theory to error-correcting codes, including finite fields, error-correcting codes, vector spaces over finite fields, Hamming norm, coding, and decoding. Three lecture hours a week for one semester. Prerequisite: Mathematics 328K or 341 with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "M 346 - Applied Linear Algebra",
+    "content": "Emphasis on diagonalization of linear operators and applications to dynamical systems and ordinary differential equations. Other subjects include inner products and orthogonality, normal mode expansions, vibrating strings and the wave equation, and Fourier series. Three lecture hours a week for one semester. Prerequisite: Mathematics 341 or 340L with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "M 348 - Scientific Computation in Numerical Analysis",
+    "content": "Introduction to mathematical properties of numerical methods and their applications in computational science and engineering. Introduction to object-oriented programming in an advanced language. Study and use of numerical methods for solutions of linear systems of equations; nonlinear least-squares data fitting; numerical integration; and solutions of multidimensional nonlinear equations and systems of initial value ordinary differential equations. Three lecture hours a week for one semester. Prerequisite: Computer Science 303E and Mathematics 341 or 340L with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "M 349P - Actuarial Statistical Estimates",
+    "content": "Statistical estimation procedures for random variables and related quantities in actuarial models. With Mathematics 339J, covers the syllabus for the professional actuarial exam on model construction. Three lecture hours a week for one semester. Prerequisite: Mathematics 339J, and 341 or 340L, with a grade of at least C- in each.",
+    "category": "courses"
+  },
+  {
+    "title": "M 349R - Applied Regression and Time Series",
+    "content": "Introduction to simple and multiple linear regression and to elementary time-series models, including auto-regressive and moving-average models. Emphasizes fitting models to data, evaluating models, and interpreting results. Three lecture hours a week for one semester. Prerequisite: Mathematics 358K or 378K with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "M 358K - Applied Statistics",
+    "content": "Exploratory data analysis, correlation and regression, data collection, sampling distributions, confidence intervals, and hypothesis testing. Three lecture hours a week for one semester. Prerequisite: Mathematics 362K with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "M 361 - Theory of Functions of a Complex Variable",
+    "content": "Elementary theory and applications of analytic functions, series, contour integration, and conformal mappings. Three lecture hours a week for one semester. Prerequisite: Mathematics 427J, 427K, or 427L with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "M 361K - Introduction to Real Analysis",
+    "content": "A rigorous treatment of the real number system, of real sequences, and of limits, continuity, derivatives, and integrals of real-valued functions of one real variable. Three lecture hours a week for one semester. Prerequisite: Mathematics 325K, 333L, or Philosophy 313K, and Mathematics 328K or 341 with a grade of at least C- in each.",
+    "category": "courses"
+  },
+  {
+    "title": "M 362K - Probability I",
+    "content": "An introduction to the mathematical theory of probability, fundamental to further work in probability and statistics, includes basic probability properties, conditional probability and independence, various discrete and continuous random variables, expectation and variance, central limit theorem, and joint probability distributions. Three lecture hours a week for one semester. Prerequisite: Mathematics 408D, 408L, or 408S with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "M 362M - Introduction to Stochastic Processes",
+    "content": "Introduction to Markov chains, birth and death processes, and other topics. Three lecture hours a week for one semester. Prerequisite: Mathematics 362K with a grade of at least B and Mathematics 340L or 341 with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "M 364K - Vector and Tensor Analysis I",
+    "content": "Invariance, vector algebra and calculus, integral theorems, general coordinates, introductory differential geometry and tensor analysis, applications. Three lecture hours a week for one semester. Prerequisite: Mathematics 427J, 427K, or 427L with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "M 364L - Vector and Tensor Analysis II",
+    "content": "Continuation of Mathematics 364K, with emphasis on tensor and extensor analysis. Riemannian geometry and invariance. Three lecture hours a week for one semester. Prerequisite: Mathematics 364K with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "M 365C - Real Analysis I",
+    "content": "A rigorous treatment of the real number system, Euclidean spaces, metric spaces, continuity of functions in metric spaces, differentiation and Riemann integration of real-valued functions of one real variable, and uniform convergence of sequences and series of functions. Three lecture hours a week for one semester. Prerequisite: Mathematics 325K, 333L, or Philosophy 313K, and Mathematics 328K or 341 with a grade of at least C- in each.",
+    "category": "courses"
+  },
+  {
+    "title": "M 365D - Real Analysis II",
+    "content": "Recommended for students planning to undertake graduate work in mathematics. A rigorous treatment of selected topics in real analysis, such as Lebesgue integration, or multivariate integration and differential forms. Three lecture hours a week for one semester. Prerequisite: Mathematics 365C with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "M 365G - Curves and Surfaces",
+    "content": "Calculus applied to curves and surfaces in three dimensions: curvature and torsion of space curves, Gauss map and curvature of surfaces, Gauss theorem, geodesics, and the Gauss-Bonnet theorem. Three lecture hours a week for one semester. Prerequisite: Credit with a grade of at least C- or registration for Mathematics 365C.",
+    "category": "courses"
+  },
+  {
+    "title": "M 367K - Topology I",
+    "content": "An introduction to topology, including sets, functions, cardinal numbers, and the topology of metric spaces. Three lecture hours a week for one semester. Prerequisite: Mathematics 361K or 365C or consent of instructor.",
+    "category": "courses"
+  },
+  {
+    "title": "M 367L - Topology II",
+    "content": "Various topics in topology, primarily of a geometric nature. Three lecture hours a week for one semester. Prerequisite: Mathematics 367K with a grade of at least C- or consent of instructor.",
+    "category": "courses"
+  },
+  {
+    "title": "M 368K - Numerical Methods for Applications",
+    "content": "Continuation of Mathematics 348. Topics include splines, orthogonal polynomials and smoothing of data, iterative solution of systems of linear equations, approximation of eigenvalues, two-point-boundary value problems, numerical approximation of partial differential equations, signal processing, optimization, and Monte Carlo methods. Three lecture hours a week for one semester. Prerequisite: Mathematics 348 with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "M 372 - Fourier Series and Boundary Value Problems",
+    "content": "Discussion of differential equations of mathematical physics and representation of solutions by Green's functions and eigenfunction expansions. Three lecture hours a week for one semester. Prerequisite: Mathematics 427J or 427K with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "M 372K - Partial Differential Equations and Applications",
+    "content": "Partial differential equations as basic models of flows, diffusion, dispersion, and vibrations. Topics include first- and second-order partial differential equations and classification (particularly the wave, diffusion, and potential equations), and their origins in applications and properties of solutions. Includes the study of characteristics, maximum principles, Green's functions, eigenvalue problems, and Fourier expansion methods. Three lecture hours a week for one semester. Prerequisite: Mathematics 427J or 427K with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "M 373K - Algebraic Structures I",
+    "content": "A study of groups, rings, and fields, including structure theory of finite groups, isomorphism theorems, polynomial rings, and principal ideal domains. Three lecture hours a week for one semester. Prerequisite: Mathematics 325K, 333L, or Philosophy 313K, and Mathematics 328K or 341 with a grade of at least C- in each.",
+    "category": "courses"
+  },
+  {
+    "title": "M 373L - Algebraic Structures II",
+    "content": "Recommended for students planning to undertake graduate work in mathematics. Topics from vector spaces and modules, including direct sum decompositions, dual spaces, canonical forms, and multilinear algebra. Three lecture hours a week for one semester. Prerequisite: Mathematics 373K with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "M 374 - Fourier and Laplace Transforms",
+    "content": "Operational properties and application of Laplace transforms; some properties of Fourier transforms. Three lecture hours a week for one semester. Prerequisite: Mathematics 427J or 427K with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "M 374G - Linear Regression Analysis",
+    "content": "Fitting of linear models to data by the method of least squares, choosing best subsets of predictors, and related materials. Three lecture hours a week for one semester. Prerequisite: Mathematics 358K or 378K with grade of at least C-, Mathematics 341 or 340L, and consent of instructor.",
+    "category": "courses"
+  },
+  {
+    "title": "M 374M - Mathematical Modeling in Science and Engineering",
+    "content": "Tools for studying differential equations and optimization problems that arise in the engineering and physical sciences. Includes dimensional analysis and scaling, regular and singular perturbation methods, optimization and calculus of variations, and stability. Three lecture hours a week for one semester. Prerequisite: Mathematics 427J or 427K, and Mathematics 340L, 341, or 311 with a grade of at least C- in each.",
+    "category": "courses"
+  },
+  {
+    "title": "M 378K - Introduction to Mathematical Statistics",
+    "content": "Sampling distributions of statistics, estimation of parameters (confidence intervals, method of moments, maximum likelihood, comparison of estimators using mean square error and efficiency, sufficient statistics), hypothesis tests (p-values, power, likelihood ratio tests), and other topics. Three lecture hours a week for one semester. Prerequisite: Mathematics 362K with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "M 378N - Generalized Linear Models",
+    "content": "Extensions to ordinary least-squares regression, including Poisson regression, the lasso, mixed models, and ridge regression. Three lecture hours a week for one semester. Prerequisite: Mathematics 378K with a grade of at least C- or consent of instructor.",
+    "category": "courses"
+  },
+  {
+    "title": "M 378P - Decision Analytics",
+    "content": "Examine decision theory with utility functions, including the use of probability, optimization, constrained optimization, and linear algebra. Three lecture hours a week for one semester. Prerequisite: Mathematics 362K and Mathematics 378K with a grade of at least C-, or consent of the instructor.",
+    "category": "courses"
+  }
+]

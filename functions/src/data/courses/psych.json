@@ -1,0 +1,457 @@
+[
+  {
+    "title": "PSY 301 - Introduction to Psychology",
+    "content": "Basic problems and principles of human experience and behavior. Three lecture hours a week for one semester, or the equivalent in independent study.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 304 - Introduction to Child Psychology",
+    "content": "General introduction to physical, social, and cognitive development from conception onward. Three lecture hours a week for one semester. Prerequisite: Psychology 301 with a grade of at least C.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 305 - Introduction to Cognitive Psychology",
+    "content": "Introduction to the study of how people perceive, act, communicate, and reason. Three lecture hours a week for one semester. Prerequisite: Psychology 301 with a grade of at least C.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 306 - Introduction to Human Sexuality",
+    "content": "Introduction to the science of sex and mating. Provides an overview of the psychological, biological, and social factors that contribute to sexual well-being and human sexual attraction. Three lecture hours a week for one semester.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 308 - Biopsychology",
+    "content": "Introduction to the biological bases of psychological processes and behavior. Overview of the physiology and anatomy of the nervous system, followed by a survey of brain mechanisms of perception, cognition, learning, and emotion; biological perspectives on drug action and mental disease. Three lecture hours a week for one semester. Prerequisite: Psychology 301 with a grade of at least C.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 309 - Personality",
+    "content": "Research and theory concerning personality structure, dynamics, development, and assessment. Three lecture hours a week for one semester. Prerequisite: Psychology 301 with a grade of at least C.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 317 - Statistical Methods in Psychology",
+    "content": "Recommended for majors who plan to do graduate work in psychology or related fields. Measures of central tendency and variability; statistical inference; correlation and regression. Three lecture hours a week for one semester. Prerequisite: Psychology 301 with a grade of at least C.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 317L - Introduction to Statistics for the Behavioral Sciences",
+    "content": "Explore the R programming language, data visualization, data wrangling, descriptive statistics (measures of central tendency and variation), measures of association (correlation, regression). Examine inferential statistics including parametric tests (such as t-tests and ANOVA) and non-parametric tests (such as Kruskal-Wallis and chi-squared tests). Three lecture hours a week for one semester.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 319K - Social Psychology",
+    "content": "Theory and research on the analysis of human conduct in social settings. Three lecture hours a week for one semester. Prerequisite: Psychology 301 with a grade of at least C.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 319R - Introductory Research Experience",
+    "content": "Learn broad knowledge about laboratory goals and observe how scientific studies are conducted. Develop entry-level firsthand supervised research experience in psychology in collaboration with projects' principal investigators or graduate/medical students. The equivalent of three to ten laboratory hours a week for one semester. Offered on the pass/fail basis only. Prerequisite: Psychology 301 with a grade of at least C and consent of instructor.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 420M - Psychological Methods and Statistics",
+    "content": "Restricted to psychology majors. Explore the basic and intermediate scientific methods and statistical techniques commonly employed in psychological research. Three lecture hours and two discussion hours a week for one semester. Prerequisite: Thirty semester hours of college coursework including Psychology 301 with a grade of at least C and Psychology 317L or 120R with a grade of at least C.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 120R - R Programming for Behavioral Sciences",
+    "content": "Restricted to psychology majors. Introduction to the R programming language. One lecture hour a week for one semester. Prerequisite: Thirty semester hours of college coursework including Psychology 301 with a grade of at least C and credit for a statistics course.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 323 - Perception",
+    "content": "Theory and research in the ways we extract information from the environment. Three lecture hours a week for one semester. Prerequisite: For psychology majors, upper-division standing and Psychology 301 and 418 or 420M with a grade of at least C in each.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 323P - Perceptual Systems: Neurons, Behavior, and Evolution",
+    "content": "An introduction to perceptual systems, with an emphasis on perception in human and nonhuman primates. Subjects include the physics of perceptual stimuli, the neural processing of perceptual information, the performance of human and other primates in perceptual tasks, and the evolution of perceptual systems. Three lecture hours a week for one semester. Prerequisite: Psychology 301 and 420M with a grade of at least C in each.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 323S - Sex Differences in Cognition and Perception",
+    "content": "Examination of facts, theories, and implications of sex differences in human cognition and perception. Subjects include genetic and hormonal origins of sex differences, structural differences in the body and brain, verbal abilities, spatial abilities, learning, memory, sensory-motor abilities, and the auditory, olfactory, visual, and other sensory systems. Three lecture hours a week for one semester. Prerequisite: Psychology 301 and 420M with a grade of at least C in each.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 323V - Seeing and Acting in a Virtual World",
+    "content": "Methods of experimentation and discovery for examining one's own perceptions and actions in ordinary life. Three lecture hours a week for one semester. Prerequisite: Psychology 301 and 420M with a grade of at least C in each.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 325K - Advanced Statistics",
+    "content": "Advanced statistical theory and methods for analysis of behavioral sciences data; subjects include analysis of variance and covariance, regression, and nonparametric techniques. Three lecture hours a week for one semester. Prerequisite: Psychology 301 and 420M with a grade of at least C in each.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 326K - Principles of Conditioning and Learning",
+    "content": "Explore how people learn emotional and motor responses without conscious intent. Three lecture hours a week for one semester. Prerequisite: Psychology 301 and 420M with a grade of at least C in each.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 332 - Behavioral Neuroscience",
+    "content": "Neuroscientific study of behavioral functions: fundamental structure and function of the human nervous system, sensory systems and perception, motor systems and behavior, motivation and learning, brain disorders and maladaptive behavior. Three lecture hours a week for one semester. Prerequisite: Psychology 301 and 420M with a grade of at least C in each.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 332C - Hormones and Behavior",
+    "content": "Neuroscientific study of hormones and behavior in animals and humans. Includes sexual behavior, sexual differentiation, parental behavior, aggressive behavior, feeding and drinking, stress, learning, and memory. Three lecture hours a week for one semester. Prerequisite: Psychology 301 and 420M with a grade of at least C in each.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 332D - Human Brain Imaging in Psychology",
+    "content": "Study of human brain imaging technologies such as fMRI and electrophysiology. Three lecture hours a week for one semester. Prerequisite: Psychology 301 and 420M with a grade of at least C in each.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 332E - Ethics, Genetics, and the Brain",
+    "content": "Discuss the ethical, legal, and societal implications of advances in the understanding of neuroscience and genetics. Three lecture hours a week for one semester. Prerequisite: Psychology 301 and 420M with a grade of at least C in each.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 332J - The Developing Brain",
+    "content": "Explore the process of brain development from prior to fertilization through to old age with focus on the molecular, cellular, neurobiological, and behavioral changes that occur. Three lecture hours a week for one semester. Prerequisite: Psychology 301 and 420M with a grade of at least C in each.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 332M - The Neuroscience of Motivation and Reward",
+    "content": "Examination of mechanisms of the brain that control behaviors such as incentive motivation, reward, aversion, and addiction. Three lecture hours a week for one semester. Prerequisite: Psychology 301 and 420M with a grade of at least C in each.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 332P - Neural Plasticity And Behavior",
+    "content": "Examine basic concepts and current research directions in brain plasticity. Includes theory and research on how animals learn and remember, how brain areas and neurons adapt to life experiences, trauma, injury, and aging and new treatment directions based on neural plasticity principles. Three lecture hours a week for one semester. Prerequisite: Psychology 301 and 420M with a grade of at least C in each.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 332S - Psychology and Neuroscience of Sleep",
+    "content": "Discuss the scientific literature on neuroscience underlying sleep, psychological influences on sleep, and sleep habits and interventions. Three lecture hours a week for one semester. Prerequisite: Psychology 301 and 420M with a grade of at least C in each.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 332T - Biological Clocks and Behavior",
+    "content": "Explore the role of biological clocks in health and disease. Three lecture hours a week for one semester. Prerequisite: Psychology 301 and 420M with a grade of at least C in each.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 332U - Diversity in Cognitive Aging",
+    "content": "Discuss biological, sociocultural, and environmental factors underlying cognitive aging. Explore how each of these factors dynamically shapes cognitive functioning, brain health, and late-life dementia risk from a life course perspective. Three lecture hours a week for one semester. Prerequisite: Psychology 301 and 420M with a grade of at least C in each.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 332W - Vision and Action",
+    "content": "Three lecture hours a week for one semester. Prerequisite: Psychology 301 and 420M with a grade of at least C in each.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 333C - Controversial Issues in Development",
+    "content": "An exploration of questions in developmental psychology that are currently in dispute. Subjects may include stem cell research, treatment of juveniles in the legal system, physician-assisted suicide, and methods of sex education. Three lecture hours a week for one semester. Prerequisite: Psychology 301 and 420M with a grade of at least C in each.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 333D - Introduction to Developmental Psychology",
+    "content": "Physical, social, and cognitive development in humans. Three lecture hours a week for one semester. Prerequisite: Psychology 301 and 420M with a grade of at least C in each.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 333E - Identity Formation",
+    "content": "An introduction to historical theories of and current research on identity, with particular focus on identity development in the domains of occupation, religion, politics and morality, gender, ethnicity, and adoption. Three lecture hours a week for one semester. Prerequisite: Psychology 301 and 420M with a grade of at least C in each.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 333F - Fantasy and Reality",
+    "content": "Examination of how children and adults decide what is real and what is not. Subjects include the fantasy-reality distinction, magical thinking, and religious cognition. Three lecture hours a week for one semester. Prerequisite: Psychology 301 and 420M with a grade of at least C in each.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 333G - The Development of Attachment Relationship",
+    "content": "Study of the attachment relationship. Three lecture hours a week for one semester. Prerequisite: Psychology 301 and 420M with a grade of at least C in each.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 333M - Infant Development",
+    "content": "Examination of genetic and environmental determinants of social, perceptual, and cognitive development in infants from theoretical and research perspectives. Three lecture hours a week for one semester. Prerequisite: Psychology 301 and 420M with a grade of at least C in each.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 333N - Cognitive Development",
+    "content": "Overview of the development of thinking from infancy through childhood. Three lecture hours a week for one semester. Prerequisite: Psychology 301 and 420M with a grade of at least C in each.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 333P - Child Language",
+    "content": "Examination of theory and research concerning the development of language in the child. Three lecture hours a week for one semester. Prerequisite: Psychology 301 and 420M with a grade of at least C in each.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 333R - Social Development in Children",
+    "content": "Development of social behavior (for example, sex typing and aggression) and social relationships. Three lecture hours a week for one semester. Prerequisite: Psychology 301 and 420M with a grade of at least C in each.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 333S - Developmental Science of Adolescence",
+    "content": "An in-depth exploration of what it means to be an adolescent - how the brain, hormones and cognitive development change motivation and behavior, and how institutions (schools, governments, police) help or hinder young people's development. Three lecture hours a week for one semester. Prerequisite: Psychology 301 and 420M with a grade of at least C in each.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 333T - Adolescent Development",
+    "content": "Physical, cognitive, social, and personality development during adolescence. Three lecture hours a week for one semester. Prerequisite: Psychology 301 and 420M with a grade of at least C in each.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 333W - Moral Development",
+    "content": "An introduction to theory and research on morality. Subjects include culture and morality, Freudian and social learning perspectives on moral development, Kohlberg's theory of morality, challenge to Kohlberg's theory, and cognitive, familial, and emotional influence on morality. Three lecture hours a week for one semester. Prerequisite: Psychology 301 and 420M with a grade of at least C in each.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 334D - Psychology of Human Mating",
+    "content": "Mate selection, sources of conflict, and mating over the life span, studied in the context of evolutionary psychology and sexual selection theory. Three lecture hours a week for one semester. Prerequisite: Psychology 301 and 420M with a grade of at least C in each.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 334E - Evolutionary Psychology",
+    "content": "Fundamentals of evolutionary psychology, including issues of natural and sexual selection, adaptation, and domain-specific psychological mechanisms. Three lecture hours a week for one semester. Prerequisite: Psychology 301 and 420M with a grade of at least C in each.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 337 - Psychology of Language",
+    "content": "Consideration of approaches to the study of language, its development in children, and its functioning; important research from psychology and linguistics. Three lecture hours a week for one semester. Prerequisite: Psychology 301 and 420M with a grade of at least C in each.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 337P - Language Processing",
+    "content": "Introduction to psycholinguistics, which uses methods and theories from cognitive psychology and cognitive science to understand how people speak, comprehend, and learn language(s). Three lecture hours a week for one semester. Prerequisite: Psychology 301 and 420M with a grade of at least C in each.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 338K - Psychology of Reading",
+    "content": "Theory and research on the reading process and its acquisition. Three lecture hours a week for one semester. Prerequisite: Psychology 301 and 420M with a grade of at least C in each.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 339 - Behavior Problems of Children",
+    "content": "Adjustment difficulties during childhood and adolescence; causation and treatment. Three lecture hours a week for one semester. Prerequisite: Psychology 301 and 420M with a grade of at least C in each.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 340M - Industrial Psychology",
+    "content": "A general introduction to organizational behavior and issues in industrial/organizational psychology. Subjects include organizational structure, selection and placement, leadership, job satisfaction, training, and change. Three lecture hours a week for one semester. Prerequisite: Psychology 301 and 420M with a grade of at least C in each.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 341K - Selected Topics in Psychology",
+    "content": "Topics of contemporary interest that may vary from semester to semester. Three lecture hours a week for one semester. May be repeated for credit when the topics vary. Prerequisite: Psychology 301 and 420M with a grade of at least C in each.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 343K - Substance Abuse",
+    "content": "Causes of substance abuse: the evolutionary perspective, sex differences, predisposition, biological and cognitive theories; emphasis on food and alcohol. Three lecture hours a week for one semester. Prerequisite: Psychology 301 and 420M with a grade of at least C in each.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 345 - Individual Differences",
+    "content": "Study of person-to-person variation in intelligence, personality, and interests, with an emphasis on genetic and environmental determinants, developmental processes, and their relation to real-world outcomes. Three lecture hours a week for one semester. Prerequisite: Psychology 301 and 420M with a grade of at least C in each.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 346K - Psychology of Sex",
+    "content": "Development of sex from genes to human behavior. Three lecture hours a week for one semester. Prerequisite: Psychology 301 and 420M with a grade of at least C in each.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 350 - Motivation",
+    "content": "Theory and research on motivation; biological and social determinants. Three lecture hours a week for one semester. Prerequisite: Psychology 301 and 420M with a grade of at least C in each.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 352P - Psychopathology",
+    "content": "Explore biological and social factors in the development and treatment of psychopathology. Three lecture hours a week for one semester. Prerequisite: Psychology 301 and 420M with a grade of at least C in each.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 353K - Psychopharmacology",
+    "content": "The pharmacology and the neurochemical, neurophysiological, and psychological effects of psychoactive drugs, with regard to their use as therapeutic and behavioral research tools. Three lecture hours a week for one semester. Prerequisite: Psychology 301 and 420M with a grade of at least C in each.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 355 - Cognition",
+    "content": "Theoretical and critical analysis of the development, nature, and function of the thought process. Three lecture hours a week for one semester. Prerequisite: Psychology 301 and 420M with a grade of at least C in each.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 355C - Development of Categories and Concepts",
+    "content": "Study of the historical and contemporary knowledge about the ways that people learn about concepts. Three lecture hours a week for one semester. Prerequisite: Psychology 301 and 420M with a grade of at least C in each.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 355D - Animal Cognition",
+    "content": "An introduction to animal intelligence and the evolution of mind. Examines what is known about intelligence in other animals, how intelligence is revealed in social and problem-solving behavior, and the ways in which human intelligence is structured by its evolutionary past. Three lecture hours a week for one semester. Prerequisite: Psychology 301 and 420M with a grade of at least C in each.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 355E - Psychology of Consciousness",
+    "content": "Introduction to the scientific study of consciousness from the perspective of psychology and neuroscience. Three lecture hours a week for one semester. Prerequisite: Psychology 301 and 420M with a grade of at least C in each.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 355M - The Cognitive Psychology of Music",
+    "content": "Cognitive foundations of music in terms of physics of sound, the psychophysics of musical experience, perceptual organization of musical scenes, the perception of time through rhythm, and the ways in which music reflects natural form. Three lecture hours a week for one semester. Prerequisite: Psychology 301 and 420M with a grade of at least C in each.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 355N - Cognitive Neuroscience",
+    "content": "Exploration of the link between the brain, mind, and behavior and cognitive neuroscience techniques. Three lecture hours a week for one semester. Prerequisite: Psychology 301 and 420M with a grade of at least C in each.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 355Q - Cognitive Science of Religion",
+    "content": "Explore cognitive and evolutionary approaches to understanding religion. Examine cutting-edge research on the cognitive science of religion from disciplines including anthropology, psychology, philosophy, and religious studies. Three lecture hours a week for one semester. Prerequisite: Psychology 301 and 420M with a grade of at least C in each.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 355R - Reasoning and Decision Making",
+    "content": "Survey of psychological research on how people reason and make decisions. Subjects include mental models, causality, analogy, heuristics, emotion, motivation, culture, and decision making. Three lecture hours a week for one semester. Prerequisite: Psychology 301 and 420M with a grade of at least C in each.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 355S - Social Cognition",
+    "content": "Examine major theories and research findings in social cognition. Three lecture hours a week for one semester. Prerequisite: Psychology 301 and 420M with a grade of at least C in each.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 357 - Undergraduate Research",
+    "content": "Supervised research experience. The equivalent to eight to ten laboratory hours a week for one semester. May not be counted toward a major in psychology. May be repeated for credit. Offered on the pass/fail basis only. Prerequisite: At least thirty semester hours of college coursework, Psychology 301 with a grade of at least C, and consent of instructor.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 357R - Advanced Undergraduate Research",
+    "content": "Deepen supervised research experience in psychology. Implement advanced laboratory experience and skills within a leadership role in collaboration with principal investigators and a team to assist with research projects. The equivalent of eight to ten laboratory hours a week for one semester. May be repeated for credit. Offered on the pass/fail basis only. Prerequisite: Psychology 301 and 420M with a grade of at least C, Psychology 357, and consent of instructor.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 458 - Experimental Psychology",
+    "content": "Techniques of psychological research illustrated in a series of laboratory experiments. Two lecture hours and three laboratory hours a week for one semester. Prerequisite: Upper-division standing, Psychology 301 and 420M with a grade of at least C in each, and a University grade point average of at least 3.25.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 359H - Honors Research I",
+    "content": "Restricted to students in the Psychology Honors Program. Three lecture hours a week for one semester. Prerequisite: Upper-division standing; Psychology 301 and 420M with a grade of at least C in each; six semester hours of upper-division coursework in psychology; a grade point average of at least 3.50 in psychology courses; a University grade point average of at least 3.25; and consent of the honors advisor.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 364 - Introduction to Clinical Psychology",
+    "content": "Introduction to techniques of assessment and treatment of psychopathology. Three lecture hours a week for one semester. Prerequisite: Psychology 301 and 420M with a grade of at least C in each.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 364C - Childhood Trauma and Adversity",
+    "content": "Focus on how childhood trauma impacts behavioral, emotional, cognitive, and biological functioning across the lifespan. Three lecture hours a week for one semester. Prerequisite: Psychology 301 and 420M with a grade of at least C in each.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 364F - Forensic Psychology",
+    "content": "Examine the study and practice of psychology as it applies to issues relating to the law and legal system, such as: determination of competency and insanity, expert testimony, jury selection and the social psychology of the courtroom, eyewitness testimony, and false confessions. Three lecture hours a week for one semester. Prerequisite: Psychology 301 and 420M with a grade of at least C in each.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 364M - Mental Illness and the Brain",
+    "content": "Introduction to the brain dysfunction and cognitive impairment often associated with mental illness and how its recognition and assessment can be used to help with differential diagnosis, prognosis, and treatment planning. Three lecture hours a week for one semester. Prerequisite: Psychology 301 and 420M with a grade of at least C in each.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 364P - Positive Psychology and the Good Life",
+    "content": "Analyze how to live a more satisfying life based on modern psychological science. Survey the emerging field of positive psychology, including assessment and determinants of well-being; human strengths and virtues; the good life considered from evolutionary, economic, sociological, and cross-cultural perspectives; and applications to issues such as social change. Three lecture hours a week for one semester. Prerequisite: Psychology 301 and 420M with a grade of at least C in each.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 364S - Human Sexuality",
+    "content": "Human sexuality from a clinical and evolutionary perspective with a focus on the assessment, diagnoses, and treatment of sexual dysfunctions. Three lecture hours a week for one semester. Prerequisite: Psychology 301 and 420M with a grade of at least C in each.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 364T - Multicultural Psychotherapy",
+    "content": "Introduction to multicultural approaches to personality assessment and counseling psychotherapy. Three lecture hours a week for one semester. Prerequisite: Psychology 301 and 420M with a grade of at least C in each.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 365D - Behavioral Science, Equity, and Inclusion",
+    "content": "Apply the principles of experimental behavioral science to problems of creating an equitable and inclusive society in the twenty-first century. Three lecture hours a week for one semester. Prerequisite: Psychology 301 and 420M with a grade of at least C in each.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 365E - Emotion",
+    "content": "Examination of the scientific literature on the psychology of human and animal emotion. Three lecture hours a week for one semester. Prerequisite: Psychology 301 and 420M with a grade of at least C in each.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 365G - Gender and Racial Attitudes",
+    "content": "Advanced introduction to the psychological study of gender and racial attitudes in children and adults, with emphasis on the causes, consequences, and revision of an individual's gender and racial stereotypes. Three lecture hours a week for one semester. Prerequisite: Psychology 301 and 420M with a grade of at least C in each.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 365L - Advanced Social Psychology",
+    "content": "Experimental research in social psychology, social influence, decision making, affiliation, risk taking, stress, and other subjects. Three lecture hours a week for one semester. Prerequisite: Psychology 301 and 420M with a grade of at least C in each.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 371 - Learning and Memory",
+    "content": "Analysis of theory and research in learning. Three lecture hours a week for one semester. Prerequisite: Psychology 301 and 420M with a grade of at least C in each.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 371E - Psychological Data Science Foundations I",
+    "content": "Introduction to foundational concepts and techniques in data science. Three lecture hours a week for one semester. Prerequisite: Psychology 301 and 420M with a grade of at least C in each.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 371F - Psychological Data Science Foundations II",
+    "content": "Explore foundational concepts and techniques in data science, including in-depth Python programming, advanced plotting techniques, curve/model fitting, computer simulations, and machine learning. Three lecture hours a week for one semester. Prerequisite: Upper-division standing and Psychology 371E.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 371M - Introduction to Machine Learning",
+    "content": "Introduction to the fundamental concepts and algorithms that enable computers to uncover the underlying patterns from different types of behavioral data. Three lecture hours a week for one semester. Prerequisite: Psychology 301 and 420M with a grade of at least C in each.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 371N - Natural Human Behavior in the Real World",
+    "content": "Design experiments that will be conducted in the real world, use mobile sensing technology to collect behavioral data, and discover behavioral patterns by analyzing fine-grained data. Conduct a behavioral study with the aim to provide research evidence to overcome the challenges that the real world poses. Three lecture hours a week for one semester. Prerequisite: Psychology 301 and 420M with a grade of at least C in each.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 371P - Applied Data Science",
+    "content": "Explore the fundamentals of data science. Discuss the current trends and subjects in data science. Three lecture hours a week for one semester. Prerequisite: Psychology 301 and 420M with a grade of at least C in each.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 371Q - Ethics in Behavioral Data Science",
+    "content": "Examine and discuss important ethical issues in the context of behavioral data science in real-world case-studies such as emotion recognition, surveillance, targeted marketing, and more. Three lecture hours a week for one semester. Prerequisite: Psychology 301 and 420M with a grade of at least C in each.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 371R - Brain Mechanisms and Learning Theory Applied to Real World Scenarios",
+    "content": "Three lecture hours a week for one semester. Prerequisite: Psychology 301 and 420M with a grade of at least C in each.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 371S - Bayesian Data Analysis",
+    "content": "Introduction to Bayesian data analysis and inference. Three lecture hours a week for one semester. Prerequisite: Psychology 301 and 420M with a grade of at least C in each.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 371T - Text Analysis for Behavioral Data Science",
+    "content": "Introduction to various methods of text analysis, with a focus on extracting psychological insights. Discuss the underlying scientific basis that supports various use-cases. Three lecture hours a week for one semester. Prerequisite: Psychology 301 and 420M with a grade of at least C in each.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 373N - The Neurobiology of Attention",
+    "content": "Examination of behavioral and brain mechanisms of attention in humans and other animals. Three lecture hours a week for one semester. Prerequisite: Psychology 301 and 420M with a grade of at least C in each.",
+    "category": "courses"
+  },
+  {
+    "title": "PSY 379H - Honors Research II",
+    "content": "Three lecture hours a week for one semester. Prerequisite: Upper-division standing, Psychology 301 and 420M with a grade of at least C in each, Psychology 458 and 359H, and consent of the honors advisor.",
+    "category": "courses"
+  }
+]

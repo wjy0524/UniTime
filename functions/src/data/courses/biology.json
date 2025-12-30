@@ -1,0 +1,189 @@
+[
+  {
+    "title": "BIO 101C, 301C, 401C, 601C - Topics in Biology",
+    "content": "Topics in biology that are especially relevant to current issues and problems in modern society. For each semester hour of credit earned, one lecture hour a week for one semester. Some topics require one additional discussion hour or three or four additional laboratory hours a week. May not be counted toward a degree in biology. May be repeated for credit when the topics vary. Prerequisite varies with the topic. Topic example: The Biology of Being Human, covering human evolution, genetics and genomics, behavior, population growth, and environmental issues.",
+    "category": "courses"
+  },
+  {
+    "title": "BIO 301E - Problems in Modern Biology",
+    "content": "An introduction to major concepts in biology, with emphasis on topics such as genetics that are relevant to current issues in the field. Three lecture hours and one discussion hour a week for one semester. Biology 301E and 301L may not both be counted; Biology 301E and 301M may not both be counted. May not be counted toward a degree in biology. Prerequisite: Admission to the Plan II Honors Program.",
+    "category": "courses"
+  },
+  {
+    "title": "BIO 102C, 202C, 302C, 402C - Conference Course",
+    "content": "Supervised study of selected subjects in biology by individual arrangement with the instructor. Conference course. May be repeated for credit. Prerequisite varies with instructor.",
+    "category": "courses"
+  },
+  {
+    "title": "BIO 302D - Science Literacy and Numeracy: Ecology and Evolution",
+    "content": "Explore science literacy and numeracy skills through inquiry, quantitative reasoning, and correcting misconceptions. Topics include Mendelian genetics, microevolution, macroevolution, population ecology, community ecology, and ecosystem ecology. Three lecture hours and one discussion hour a week for one semester.",
+    "category": "courses"
+  },
+  {
+    "title": "BIO 302E - Science Literacy and Numeracy: Genetics and Genomics",
+    "content": "Explore science literacy and numeracy skills through inquiry and quantitative reasoning. Topics include human genetics, DNA analysis and manipulation, genetic testing, assisted reproductive technology, ancestry, personalized medicine, and forensic genetics. Three lecture hours and one discussion hour a week.",
+    "category": "courses"
+  },
+  {
+    "title": "BIO 302F - Science Literacy and Numeracy: Human Health and Disease",
+    "content": "Examine metabolic, infectious, and genetic diseases including causes, prevention, and treatment through quantitative reasoning and scientific inquiry. Three lecture hours and one discussion hour a week for one semester.",
+    "category": "courses"
+  },
+  {
+    "title": "BIO 302G - Science Literacy and Numeracy: Biotechnology and the Future",
+    "content": "Explore biotechnology topics including climate change, genetically modified organisms, and biomedical technology using data-driven inquiry. Three lecture hours and one discussion hour a week for one semester.",
+    "category": "courses"
+  },
+  {
+    "title": "BIO 206L - Introductory Laboratory Experiments in Biology",
+    "content": "Uses organizing principles of biology within a comparative and evolutionary framework to train students in modern laboratory techniques, bioinformatics, experimental design, and data interpretation. One lecture hour and four laboratory hours a week. Prerequisite includes Biology 311C, 311D, 315H, or 325H.",
+    "category": "courses"
+  },
+  {
+    "title": "BIO 106M - Introduction to Lab Experiments in Biology",
+    "content": "Explores organizing principles of biology and their use in modern laboratory techniques, bioinformatics, experimental design, and interpretation of results. One lecture hour and three laboratory hours a week.",
+    "category": "courses"
+  },
+  {
+    "title": "BIO 106N - Introduction to Lab Experiments in Biology II",
+    "content": "Continuation of introductory biology laboratory experiments. One lecture hour and three laboratory hours a week.",
+    "category": "courses"
+  },
+  {
+    "title": "BIO 311C - Introductory Biology I",
+    "content": "Introduction to biological energy transformation, cell structure and physiology, and gene expression. Three lecture hours and one discussion hour a week. Prerequisite: Chemistry 301, 301C, or 301H.",
+    "category": "courses"
+  },
+  {
+    "title": "BIO 311D - Introductory Biology II",
+    "content": "Introduction to inheritance, evolution, physiology, and species interactions. Three lecture hours and one discussion hour a week. Prerequisite: Biology 311C and Biology 206L.",
+    "category": "courses"
+  },
+  {
+    "title": "BIO 315H - Advanced Introduction to Genetics: Honors",
+    "content": "Honors-level genetics emphasizing gene regulation, transmission of heritable traits, cell structure, bacterial and viral genetics, and recombinant DNA technology. Three lecture hours and one discussion hour a week.",
+    "category": "courses"
+  },
+  {
+    "title": "BIO 325 - Genetics",
+    "content": "Principles of Mendelian and molecular genetics, chromosomes, population genetics, and evolution. Three lecture hours and one discussion hour a week. Prerequisite: Biology 311C and 311D.",
+    "category": "courses"
+  },
+  {
+    "title": "BIO 325H - Genetics: Honors",
+    "content": "Honors genetics emphasizing population genetics, natural selection, organ systems, behavioral ecology, and mutational analysis of development. Three lecture hours and one discussion hour a week.",
+    "category": "courses"
+  },
+  {
+    "title": "BIO 325L - Laboratory Experience in Genetics",
+    "content": "Hands-on experimentation and observation in transmission genetics. One lecture hour and four laboratory hours a week.",
+    "category": "courses"
+  },
+  {
+    "title": "BIO 337J - Computational Biology Laboratory",
+    "content": "Overview of computational biology with emphasis on nucleic acid sequence analysis and biological databases. Two lecture hours and three computer laboratory hours a week.",
+    "category": "courses"
+  },
+  {
+    "title": "BIO 456L - Limnology and Oceanography",
+    "content": "Study of interactions between aquatic organisms and their environments. Two lecture hours and six laboratory hours a week. Same as Marine Sciences 440.",
+    "category": "courses"
+  },
+  {
+    "title": "BIO 372C - Biology Peer Mentors in Research and Teaching",
+    "content": "Students mentor peers in biology research and teaching, developing instructional materials using real-world data. Minimum three mentoring hours per week.",
+    "category": "courses"
+  },
+  {
+    "title": "BIO 177, 277, 377 - Undergraduate Research",
+    "content": "Laboratory or field research under faculty supervision in biological sciences. Up to three hours may count toward the biology major.",
+    "category": "courses"
+  },
+  {
+    "title": "BIO 379H, 679H - Honors Tutorial Course",
+    "content": "Original laboratory or field research project under faculty supervision leading to a thesis or research presentation.",
+    "category": "courses"
+  },
+  {
+    "title": "BIO 381 - Advanced Plant Physiology",
+    "content": "Graduate-level study of plant growth, development, signaling, stress responses, and evaluation of current literature. Three lecture hours a week.",
+    "category": "courses"
+  },
+  {
+    "title": "BIO 381K - Topics in Ecology, Evolution, and Behavior",
+    "content": "Graduate topics including sensory physiology, neurobiology, insect physiology, developmental neurobiology, addiction biology, and neurophysiology. May be repeated for credit.",
+    "category": "courses"
+  },
+  {
+    "title": "BIO 381N - Basic Processes of Nerve Cells",
+    "content": "Study of degeneration and regeneration in nervous systems, comparing invertebrate and vertebrate systems and roles of glia and neurons.",
+    "category": "courses"
+  },
+  {
+    "title": "BIO 383K - Topics in Ecology, Evolution, and Behavior: Development and Reproduction",
+    "content": "Graduate-level topics including hormonal control, comparative endocrinology, molecular development, and evolution of reproduction.",
+    "category": "courses"
+  },
+  {
+    "title": "BIO 384K - Topics in Ecology, Evolution, and Behavior",
+    "content": "Graduate seminar covering advanced topics such as community ecology, macroecology, conservation biology, microbial ecology, global environmental change, and genomic evolution.",
+    "category": "courses"
+  },
+  {
+    "title": "BIO 386 - Topics in Plant Science: Ecology and Evolution",
+    "content": "Graduate topics in plant systematics, ecology, evolution, and molecular biology. May be repeated for credit.",
+    "category": "courses"
+  },
+  {
+    "title": "BIO 487G - Taxonomic Plant Anatomy",
+    "content": "Advanced study of plant anatomy emphasizing systematic applications. Three lecture hours and two laboratory hours a week.",
+    "category": "courses"
+  },
+  {
+    "title": "BIO 389C - Chemistry and Biology of Membranes",
+    "content": "Study of origin, structure, and function of biological membranes, with emphasis on transport properties.",
+    "category": "courses"
+  },
+  {
+    "title": "BIO 389K - Advanced Cell Biology",
+    "content": "Graduate-level exploration of cellular structure, function, and molecular mechanisms.",
+    "category": "courses"
+  },
+  {
+    "title": "BIO 394T - Tumor Biology",
+    "content": "Comprehensive study of cancer biology including oncogenes, tumor suppressors, metastasis, angiogenesis, and therapeutic strategies.",
+    "category": "courses"
+  },
+  {
+    "title": "BIO 395F - Genetics",
+    "content": "Graduate genetics covering Mendelian and molecular genetics and modern genetic tools using model organisms.",
+    "category": "courses"
+  },
+  {
+    "title": "BIO 395I - Advanced Biochemistry",
+    "content": "Advanced biochemistry focusing on structure and function of biomolecules and enzyme mechanisms.",
+    "category": "courses"
+  },
+  {
+    "title": "BIO 396 - Membranes and Walls of Bacteria",
+    "content": "Structure, biosynthesis, and function of bacterial envelopes and walls.",
+    "category": "courses"
+  },
+  {
+    "title": "BIO 396R - Microbiology Research Seminar",
+    "content": "Graduate seminar where students present research findings and receive peer and faculty feedback.",
+    "category": "courses"
+  },
+  {
+    "title": "BIO 397J - Advanced Genetics",
+    "content": "Graduate genetics seminar emphasizing molecular developmental genetics and critical reading of the literature.",
+    "category": "courses"
+  },
+  {
+    "title": "BIO 398T - Supervised Teaching in Biological Sciences",
+    "content": "Teaching experience under faculty supervision with meetings, consultations, and reports.",
+    "category": "courses"
+  }
+]
+
+

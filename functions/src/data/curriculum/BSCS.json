@@ -1,0 +1,77 @@
+[
+  {
+    "title": "BS Computer Science - Degree Overview",
+    "content": "The Bachelor of Science in Computer Science (BSCompSci) at UT Austin requires 120 total credit hours. The degree includes core curriculum requirements, major requirements, general education requirements, and free electives. The program is housed in the College of Natural Sciences and prepares students for careers in software development, technology, research, and graduate studies.",
+    "category": "curriculum"
+  },
+  {
+    "title": "BS Computer Science - First Semester (Freshman Fall)",
+    "content": "Recommended first semester courses for BS Computer Science: C S 312 Introduction to Programming (3 hours, Core and Major requirement), M 408C Differential and Integral Calculus (4 hours, Core and Major requirement), U.S. History course (3 hours, Core requirement), Social and Behavioral Sciences course (3 hours, Core requirement), and UGS 302 or UGS 303 First-Year Signature Course (3 hours, Core requirement). Total: 16 hours.",
+    "category": "curriculum"
+  },
+  {
+    "title": "BS Computer Science - Second Semester (Freshman Spring)",
+    "content": "Recommended second semester courses for BS Computer Science: C S 311 Discrete Mathematics for Computer Science (3 hours, Major requirement), C S 314 Data Structures (3 hours, Major requirement), M 408D Sequences, Series, and Multivariable Calculus (4 hours, Major requirement), U.S. History course (3 hours, Core requirement), and RHE 306 Rhetoric and Writing (3 hours, Core requirement). Total: 16 hours.",
+    "category": "curriculum"
+  },
+  {
+    "title": "BS Computer Science - Third Semester (Sophomore Fall)",
+    "content": "Recommended third semester courses for BS Computer Science: C S 429 Computer Organization and Architecture (4 hours, Major requirement), SDS 321 Introduction to Probability and Statistics OR M 362K Probability I (3 hours, Major requirement), GOV 310L American and Texas Government (3 hours, Core requirement), Visual and Performing Arts course (3 hours, Core requirement), and a free elective (2 hours). Total: 15 hours.",
+    "category": "curriculum"
+  },
+  {
+    "title": "BS Computer Science - Fourth Semester (Sophomore Spring)",
+    "content": "Recommended fourth semester courses for BS Computer Science: C S 439 Principles of Computer Systems (4 hours, Major requirement), one upper-division C S course (3 hours, Major requirement), M 340L Matrices and Matrix Calculations (3 hours), and GOV 312L Issues and Policies in American Government (3 hours, Core requirement). Total: 13 hours.",
+    "category": "curriculum"
+  },
+  {
+    "title": "BS Computer Science - Fifth Semester (Junior Fall)",
+    "content": "Recommended fifth semester courses for BS Computer Science: C S 331 Algorithms and Complexity (3 hours, Major requirement), one upper-division C S course (3 hours, Major requirement), Natural Science and Technology Part I course (3 hours, Core requirement), Foreign Language course (3 hours, General Education requirement), and a free elective (3 hours). Total: 15 hours.",
+    "category": "curriculum"
+  },
+  {
+    "title": "BS Computer Science - Sixth Semester (Junior Spring)",
+    "content": "Recommended sixth semester courses for BS Computer Science: two upper-division C S courses (6 hours total, Major requirements), Natural Science and Technology Part I course (3 hours, Core requirement), Foreign Language course (3 hours, General Education requirement), and a free elective (3 hours). Total: 15 hours.",
+    "category": "curriculum"
+  },
+  {
+    "title": "BS Computer Science - Seventh Semester (Senior Fall)",
+    "content": "Recommended seventh semester courses for BS Computer Science: two upper-division C S courses (6 hours total, Major requirements), Math or Science course (3 hours, Major requirement), Literature course such as E 316L British Literature, E 316M American Literature, E 316N World Literature, or E 316P Masterworks of Literature (3 hours, Core requirement), and a free elective (3 hours). Total: 15 hours.",
+    "category": "curriculum"
+  },
+  {
+    "title": "BS Computer Science - Eighth Semester (Senior Spring)",
+    "content": "Recommended eighth semester courses for BS Computer Science: two upper-division C S courses (6 hours total, Major requirements) and free electives (9 hours). Total: 15 hours.",
+    "category": "curriculum"
+  },
+  {
+    "title": "BS Computer Science - Required Core CS Courses",
+    "content": "The BS Computer Science degree requires these core CS courses: C S 312 Introduction to Programming (freshman), C S 311 Discrete Mathematics for Computer Science (freshman), C S 314 Data Structures (freshman), C S 429 Computer Organization and Architecture (sophomore), C S 439 Principles of Computer Systems (sophomore), and C S 331 Algorithms and Complexity (junior). These courses must be completed before most upper-division electives.",
+    "category": "curriculum"
+  },
+  {
+    "title": "BS Computer Science - Upper-Division CS Electives Requirement",
+    "content": "The BS Computer Science degree requires 8 upper-division Computer Science courses (24 hours) beyond the core requirements. Students can choose electives based on their interests such as: artificial intelligence (C S 343), machine learning (C S 342), computer graphics (C S 354), computer networks (C S 356), security (C S 361), databases (C S 347), software engineering (C S 373), mobile computing (C S 371L), operating systems (C S 439), and many more specializations.",
+    "category": "curriculum"
+  },
+  {
+    "title": "BS Computer Science - Math Requirements",
+    "content": "The BS Computer Science degree requires these math courses: M 408C Differential and Integral Calculus (first semester), M 408D Sequences, Series, and Multivariable Calculus (second semester), M 340L Matrices and Matrix Calculations (fourth semester), and either SDS 321 Introduction to Probability and Statistics or M 362K Probability I (third semester). An additional Math or Science course is required in the seventh semester.",
+    "category": "curriculum"
+  },
+  {
+    "title": "BS Computer Science - Core Curriculum Requirements",
+    "content": "The BS Computer Science degree requires completion of the UT Austin Core Curriculum including: Communication (RHE 306), Mathematics (M 408C), Natural Science and Technology Part I (two courses), Natural Science and Technology Part II (satisfied by C S 312), Humanities/Literature (E 316L/M/N/P), Visual and Performing Arts, U.S. History (two courses), American and Texas Government (GOV 310L and GOV 312L), Social and Behavioral Sciences, and First-Year Signature Course (UGS 302 or 303).",
+    "category": "curriculum"
+  },
+  {
+    "title": "BS Computer Science - Prerequisite Chain",
+    "content": "Important prerequisite chain for BS Computer Science: C S 312 is the first programming course and prerequisite for C S 314. C S 314 (Data Structures) is prerequisite for C S 429 and most upper-division courses. C S 429 (Computer Organization) is prerequisite for C S 439 (Principles of Computer Systems). C S 311 (Discrete Math) is prerequisite for C S 331 (Algorithms). M 408C is prerequisite for M 408D. Students should follow this sequence to stay on track for graduation.",
+    "category": "curriculum"
+  },
+  {
+    "title": "BS Computer Science - Four Year Plan Summary",
+    "content": "BS Computer Science four-year plan: Freshman year focuses on programming fundamentals (C S 312, 311, 314), calculus (M 408C, 408D), and core requirements. Sophomore year covers systems courses (C S 429, 439), probability/statistics, linear algebra (M 340L), and government. Junior year includes algorithms (C S 331), CS electives, science courses, and foreign language. Senior year completes remaining CS electives, literature requirement, and free electives. Total: 120 credit hours for graduation.",
+    "category": "curriculum"
+  }
+]

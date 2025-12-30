@@ -1,0 +1,197 @@
+[
+  {
+    "title": "CHE 102 - Introduction to Chemical Engineering",
+    "content": "Restricted to freshmen. Introduction to chemical engineering, including problem solving and study skills. Opportunities and responsibilities of a career in chemical engineering. One lecture hour and one recitation hour a week for one semester. May not be counted toward any engineering degree. Offered on the pass/fail basis only.",
+    "category": "courses"
+  },
+  {
+    "title": "CHE 103 - Introduction to Undergraduate Research",
+    "content": "Restricted to freshmen. Introduction to undergraduate research including the structure of academic research, how to access research resources on campus, and foundational skills to succeed in a research environment. One lecture hour and one recitation hour a week for one semester. Offered on the pass/fail basis only.",
+    "category": "courses"
+  },
+  {
+    "title": "CHE 210 - Introduction to Computing",
+    "content": "Restricted to chemical engineering majors. Computer programming focusing on basics of computing, high-level programming environments, and spreadsheets, with application to chemical engineering. Two lecture hours and one laboratory hour a week for one semester. Chemical engineering majors must make a grade of at least C- in this course.",
+    "category": "courses"
+  },
+  {
+    "title": "CHE 311 - Engineering Sustainable Technologies",
+    "content": "Flows of materials and energy in engineering environments at local, regional, and global scales, and the interaction of those anthropogenic flows with natural cycles of materials and energy. Discusses biogeochemical flows (grand cycles) and anthropogenic material flows at the national level, in industrial sectors, and for consumer products. Three lecture hours a week for one semester. Prerequisite: A high school course in chemistry and experience with Internet searches.",
+    "category": "courses"
+  },
+  {
+    "title": "CHE 317 - Introduction to Chemical Engineering Analysis",
+    "content": "Principles and applications of material and energy balances in process analysis. Three lecture hours and one to two recitation hours a week for one semester. Chemical engineering majors must make a grade of at least C- in this course in order to take upper-division courses in chemical engineering. Prerequisite: Chemical Engineering 210, Chemistry 302, and Mathematics 408D or 408M with a grade of at least C- in each.",
+    "category": "courses"
+  },
+  {
+    "title": "CHE 319 - Transport Phenomena",
+    "content": "Restricted to chemical engineering majors. Basic study of momentum, energy, and mass transport. Includes viscous and turbulent flow, heat transfer, and mass diffusion. Three lecture hours and one to two recitation hours a week for one semester. Prerequisite: Chemical Engineering 317 and Mathematics 427J with a grade of at least C- in each.",
+    "category": "courses"
+  },
+  {
+    "title": "CHE 322 - Thermodynamics",
+    "content": "Introductory course in thermodynamics with special reference to chemical process applications: basic laws, thermodynamic properties of single component systems, expansion and compression of fluids, heat engines, multicomponent systems, physical equilibrium, chemical equilibrium. Three lecture hours and two recitation hours a week for one semester. Chemical engineering majors must make a grade of at least C- in this course. Prerequisite: Chemical Engineering 210, 317, Chemistry 353, and Mathematics 427J with a grade of at least C- in each.",
+    "category": "courses"
+  },
+  {
+    "title": "CHE 322M - Molecular Thermodynamics",
+    "content": "Statistical and molecular concepts, especially the role of the microscopic chemical potential. Three lecture hours a week for one semester. Prerequisite: Chemical Engineering 322.",
+    "category": "courses"
+  },
+  {
+    "title": "CHE 323 - Chemical Engineering for Micro- and Nanofabrication",
+    "content": "Definition and description of the terminology and processes of microelectronics, including semiconductor facilities and chemical processes for integrated circuit manufacture, with an emphasis on unit processes; the major unit process, including thin-film metals and dielectrics deposition and etching, silicon oxidation and etching, ion implantation, diffusion, lithography, planarization, and process control; and an overview of promising nanopatterning and nanofabrication techniques. Three lecture hours a week for one semester. Prerequisite: Chemistry 328M and 328N.",
+    "category": "courses"
+  },
+  {
+    "title": "CHE 333T - Engineering Communication",
+    "content": "Advanced technical communication skills, with emphasis on writing strategies for technical documents, oral presentations, and visual aids. Three lecture hours a week for one semester. Prerequisite: Rhetoric and Writing 306 with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "CHE 337 - Quantitative Analysis of Cellular and Molecular Biology",
+    "content": "Analyzes biological systems from stoichiometric, thermodynamic, and kinetic perspectives. Case studies will illustrate how these principles are used to understand disease, control cellular behavior, and design protein-based therapeutics. Three lecture hours a week for one semester. Prerequisite: Biology 311D and Chemical Engineering 317.",
+    "category": "courses"
+  },
+  {
+    "title": "CHE 338 - Biochemical Engineering",
+    "content": "Restricted to chemical engineering majors. Introduction to basic biological processes including transcription, translation, protein/enzyme function, cellular energetics, protein secretion and modifications. Application of quantitative engineering principles to the analysis of biological processes, including thermodynamics, kinetics and stoichiometry. Three lecture hours a week for one semester. Prerequisite: Chemical Engineering 317 with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "CHE 339 - Introduction to Biochemical Engineering",
+    "content": "Microorganisms in chemical and biochemical syntheses; genetic manipulation of cells by classical and recombinant DNA techniques. Enzyme technology; design of bioreactors and microbial fermentations; separations of biological products. Three lecture hours a week for one semester. Prerequisite: Biology 311C or Chemical Engineering 338 and Chemistry 353.",
+    "category": "courses"
+  },
+  {
+    "title": "CHE 339P - Introduction to Biological Physics",
+    "content": "Diffusion, dissipation, and driving forces in cellular processes. Locomotion of bacteria, basic modeling of biomolecular folding and binding events, osmotic flows, and self-assembly in cells. Three lecture hours a week for one semester. Prerequisite: Chemical Engineering 319 (or 353), 322, and 253K with a grade of at least C- in each, or consent of the department.",
+    "category": "courses"
+  },
+  {
+    "title": "CHE 339T - Cell and Tissue Engineering",
+    "content": "Introduction to biomedical research in tissue engineering. Includes case studies of tissues and organs of the body, physiology and biology of tissue, pathologies of tissue, current clinical treatments, the role of engineers in development of new technologies to diagnose and treat pathologies, quantitative cellular and molecular techniques, and applications of synthetic and natural biomaterials. Three lecture hours a week for one semester. Prerequisite: Biology 311C and Chemical Engineering 350.",
+    "category": "courses"
+  },
+  {
+    "title": "CHE 341 - Design for Environment",
+    "content": "Overview of environmental assessment tools for chemical processes and products, including life cycle and risk assessments. Overview of design tools for improving environmental performance of chemical processes, including unit operations and flowsheet analysis methods. Three lecture hours a week for one semester.",
+    "category": "courses"
+  },
+  {
+    "title": "CHE 342 - Chemical Engineering Economics and Business Analysis",
+    "content": "Study of the economic decisions faced by chemical engineers. Discounted cash flow techniques. Personal finance, managerial economics, and other special topics. Three lecture hours a week for one semester.",
+    "category": "courses"
+  },
+  {
+    "title": "CHE 343 - Molecular Simulation of Materials",
+    "content": "Introduction to basic molecular simulation techniques including molecular mechanics, molecular dynamics, and Monte Carlo method. Understanding of principles underlying these techniques, and how these techniques can be used to study the physical and chemical properties and behavior of materials at the molecular level. More advanced topics include molecular simulations in various ensembles (NVE, NVT, NPT, grand canonical), free energy computations, controlling dynamics, and association-bias Monte Carlo method. Three lecture hours a week for one semester. Prerequisite: Upper-division standing.",
+    "category": "courses"
+  },
+  {
+    "title": "CHE 344 - Introduction to Therapeutics",
+    "content": "Restricted to chemical engineering majors. Three lecture hours a week for one semester. Prerequisite: Biology 311C or Chemical Engineering 338; and Biochemistry 369, 339F, or Chemistry 353.",
+    "category": "courses"
+  },
+  {
+    "title": "CHE 346F - Atmospheric Chemistry and Physics",
+    "content": "Examine the sources of air pollutants and the chemical reactions and physical processes that affect them. Explore tropospheric chemistry and the microphysics, chemistry, and thermodynamics of atmospheric nanoparticles. Discuss aerosol transmission of viruses and mitigation of that transmission, as well as recent advances in understanding air pollution and its health effects. Three lecture hours a week for one semester. Prerequisite: Upper-division standing and consent of the instructor.",
+    "category": "courses"
+  },
+  {
+    "title": "CHE 348 - Numerical Methods in Chemical Engineering and Problem Solving",
+    "content": "Numerical solutions to algebraic and differential equations; numerical methods to integration, interpolation, and regression analysis, with application to chemical engineering. Three lecture hours and one recitation hour a week for one semester. Chemical engineering majors must make a grade of at least C- in this course. Prerequisite: Chemical Engineering 210, 317, and Mathematics 427J with a grade of at least C- in each.",
+    "category": "courses"
+  },
+  {
+    "title": "CHE 349D - Dynamics in Ecology and the Environment",
+    "content": "Examine the Earth's natural processes, populations, and systems. Explore the Earth's dynamic systems and how they change with time in response to a variety of disturbances. Use mathematical models to aid in understanding these dynamic systems and to estimate the impact of manmade disturbances. Discuss current environmental and ecological problems. Three lecture hours a week for one semester. Prerequisite: Upper-division standing and consent of instructor.",
+    "category": "courses"
+  },
+  {
+    "title": "CHE 350 - Chemical Engineering Materials",
+    "content": "Metallic, ceramic, polymeric, and composite materials. Crystal structures, phase diagrams, diffusion, and mechanical properties. Emphasis on structure-property-processing relationships. Three lecture hours a week for one semester. Prerequisite: Chemistry 353 with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "CHE 253K - Applied Statistics",
+    "content": "Statistical methods such as data exploration and summary, least-squares fitting, probability and probability distributions, statistical inference and hypothesis testing, analysis of variance, design of experiments, statistical quality control, and use of professional statistical software. Two lecture hours a week and one recitation hour a week for one semester. Chemical engineering majors must make a grade of at least C- in this course. Prerequisite: Credit with a grade of at least a C- or registration for Chemical Engineering 317; and Chemical Engineering 210 and Mathematics 427J with a grade of at least C- in each.",
+    "category": "courses"
+  },
+  {
+    "title": "CHE 253M - Measurement, Control, and Data Analysis Laboratory",
+    "content": "Laboratory safety; measurement and statistical analysis of transport process variables like temperature, pressure, and flow rate; computer data acquisition; feedback control; statistical process control and design of experiments; and production of professional-level lab reports. Five laboratory hours a week for one semester. Prerequisite: Chemical Engineering 319, 253K, and Engineering Studies 333T with a grade of at least C- in each.",
+    "category": "courses"
+  },
+  {
+    "title": "CHE 354 - Transport Processes",
+    "content": "Design and analysis of heat exchangers, fluid-flow systems and equipment, and interphase-contact devices. Three lecture hours and one recitation hour a week for one semester. Chemical engineering majors must make a grade of at least C- in this course. Prerequisite: Chemical Engineering 319 (or 353) with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "CHE 355 - Introduction to Polymers",
+    "content": "Synthesis, structural characterization, physical properties, and applications of polymers. Three lecture hours a week for one semester. Prerequisite: Chemistry 320N, 328N, or 329C with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "CHE 356 - Optimization: Theory and Practice",
+    "content": "Techniques of optimization, including formulation of optimization problems, one-dimensional search techniques, analytical methods, and n-dimensional search techniques; application of methods to process-industry problems. Three lecture hours a week for one semester. Prerequisite: Chemical Engineering 319 (or 353) and 348.",
+    "category": "courses"
+  },
+  {
+    "title": "CHE 357 - Technology and Its Impact on the Environment",
+    "content": "Study of sources and fates of environmental pollutants; environmental quality standards--their measurement and regulation; and pollution control design procedures. Three lecture hours a week for one semester. Prerequisite: Upper-division standing within the major or consent of department.",
+    "category": "courses"
+  },
+  {
+    "title": "CHE 359 - Energy Technology and Policy",
+    "content": "Technology and policy related to energy supply and demand, oil and gas production, coal utilization, hydrogen production, fuel cells, transportation, nuclear power, solar and wind energy, biomass utilization, energy conservation, and climate change. Three lecture hours a week for one semester.",
+    "category": "courses"
+  },
+  {
+    "title": "CHE 360 - Process Control",
+    "content": "Analysis of process dynamics and methods for the design of automatic control systems for chemical process plants. Three lecture hours and one to two recitation hours a week for one semester. Prerequisite: Chemical Engineering 322, 253M, and 354 with a grade of at least C- in each.",
+    "category": "courses"
+  },
+  {
+    "title": "CHE 363 - Separation Processes and Mass Transfer",
+    "content": "Design and analysis of equilibrium and mass transfer based on separations such as absorption, chromatography, crystallization, distillation, extraction, and membrane-based processes. Three lecture hours and one to two recitation hours a week for one semester. Chemical engineering majors must make a grade of at least C- in this course. Prerequisite: Chemical Engineering 319 (or 353) and 322 with a grade of at least C- in each.",
+    "category": "courses"
+  },
+  {
+    "title": "CHE 264 - Chemical Engineering Process and Projects Laboratory",
+    "content": "Experimental studies of unit operations. Laboratory safety. Statistical data analysis. Written and oral reports. Six laboratory hours a week for one semester. Prerequisite: Chemical Engineering 253M and 363 with a grade in each of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "CHE 364S - Chemical Process Safety",
+    "content": "Emphasizes quantitative engineering analysis based on the application of mass and energy balances, fluid mechanics of incompressible, compressible and two-phase fluids, heat transfer and conservation of energy, diffusion and dispersion under highly variable conditions, reaction kinetics, and process control. Subjects include various probabilistic and statistical methods to characterize accident and loss performance, techniques for process hazard analysis, risk assessment, and accident investigations. Three lecture hours a week for one semester. Prerequisite: Chemical Engineering 319 (or 353), 253K, and 354.",
+    "category": "courses"
+  },
+  {
+    "title": "CHE 372 - Chemical Reactor Analysis and Design",
+    "content": "Planning and design of commercial chemical and biochemical reaction systems for producing fuels, polymers, specialty and consumer products, pharmaceuticals, solid-state devices, and other products. Three lecture hours and one recitation hour a week for one semester. Chemical engineering majors must make a grade of at least C- in this course. Prerequisite: Chemical Engineering 322, 348, and 354 with a grade of at least C- in each.",
+    "category": "courses"
+  },
+  {
+    "title": "CHE 473K - Process Design and Operations",
+    "content": "Process design, economics, and safety; design projects representing a variety of industries and products. Three lecture hours and two recitation hours a week for one semester. Prerequisite: Chemical Engineering 354, 363, and 372 with a grade of at least C- in each.",
+    "category": "courses"
+  },
+  {
+    "title": "CHE 376K - Process Evaluation and Quality Control",
+    "content": "Use of statistical techniques to evaluate, compare, and optimize processes. Design of experiments for improved product quality control. Three lecture hours a week for one semester. Prerequisite: Upper-division standing, and admission to an appropriate major sequence in engineering or consent of the department.",
+    "category": "courses"
+  },
+  {
+    "title": "CHE 177K/277K/377K - Undergraduate Research Project",
+    "content": "Recommended for students considering graduate study. Topic to be selected in conjunction with individual chemical engineering faculty member, with approval by the department chair. A final written report is required. Three, six, or nine laboratory hours a week for one semester. Prerequisite: A grade point average of at least 3.00 in chemical engineering courses; students must submit an application to the undergraduate advising office.",
+    "category": "courses"
+  },
+  {
+    "title": "CHE 679H - Undergraduate Honors Thesis",
+    "content": "Research performed during two consecutive semesters under the supervision of a chemical engineering faculty member; topics are selected jointly by the student and the faculty member with approval by the department chair. The student makes two oral presentations and writes a thesis. Individual instruction for two semesters. Students pursuing both the Bachelor of Arts, Plan II, and the Bachelor of Science in Chemical Engineering may use this course to fulfill the thesis requirement for the Bachelor of Arts, Plan II. Prerequisite: Enrollment in the Chemical Engineering Honors Program.",
+    "category": "courses"
+  }
+]

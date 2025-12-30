@@ -1,0 +1,203 @@
+[
+  {
+    "title": "CH 301, 401 - Principles of Chemistry I",
+    "content": "Introduction to the principles of chemistry. For CH 301, three lecture hours a week; for CH 401, three lecture hours and two laboratory hours a week. Only one of Chemistry 301, 301C, 301H, 301N, or 304K may be counted. Prerequisite: Appropriate score on the Department of Chemistry placement examination.",
+    "category": "courses"
+  },
+  {
+    "title": "CH 301C, 401C - Foundations of Chemistry I",
+    "content": "Introduction to chemistry for chemistry majors, including gases, atomic theory, bonding, and thermodynamics. CH 301C has three lecture hours; CH 401C has three lecture and three laboratory hours. Only one of Chemistry 301, 301C, 301H, 301N, or 304K may be counted.",
+    "category": "courses"
+  },
+  {
+    "title": "CH 301N - Chemistry in Our World I",
+    "content": "Designed for non-science majors. Examines matter, energy, chemical reactions, and thermodynamics with real-world applications. Not intended as preparation for Chemistry 301. Three lecture hours a week.",
+    "category": "courses"
+  },
+  {
+    "title": "CH 302, 402 - Principles of Chemistry II",
+    "content": "Development and application of chemical concepts and laws. CH 302 has three lecture hours; CH 402 has three lecture hours and two laboratory hours. Prerequisite: Chemistry 301 or 301H with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "CH 302C, 402C - Foundations of Chemistry II",
+    "content": "Continuation for chemistry majors, covering equilibria, kinetics, nuclear chemistry, inorganic chemistry, and electrochemistry. Prerequisite: Chemistry 301C with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "CH 302N - Chemistry in Our World II",
+    "content": "Survey of organic chemistry concepts, polymers, and nutrition for non-science majors with real-world applications. Three lecture hours a week.",
+    "category": "courses"
+  },
+  {
+    "title": "CH 303 - Mathematical Introduction to Theories of Matter",
+    "content": "Quantum-theoretic description of atoms, molecules, solids, nuclei, and elementary particles. Covers matrix mechanics and group theory. Three lecture hours a week.",
+    "category": "courses"
+  },
+  {
+    "title": "CH 204 - Introduction to Chemical Practice",
+    "content": "Introduction to experimental chemistry techniques and laboratory skills, including organic, analytical, physical chemistry, and materials science. Four laboratory hours and one discussion hour a week.",
+    "category": "courses"
+  },
+  {
+    "title": "CH 104M - Introduction to Chemical Practice I",
+    "content": "Laboratory techniques in modern experimental chemistry with one lecture hour and three laboratory hours a week. Prerequisite: Chemistry 301, 301C, or 301H.",
+    "category": "courses"
+  },
+  {
+    "title": "CH 104N - Introduction to Chemical Practice II",
+    "content": "Continuation of chemical laboratory practice. One lecture hour and three laboratory hours a week. Prerequisite includes Chemistry 104M and Chemistry 301 or 302 sequence.",
+    "category": "courses"
+  },
+  {
+    "title": "CH 206K - Undergraduate Research",
+    "content": "Supervised undergraduate research in chemistry. Six to ten laboratory hours a week. May be repeated for credit with limits toward the chemistry degree.",
+    "category": "courses"
+  },
+  {
+    "title": "CH 207K - Introduction to Science Outreach in Elementary Schools",
+    "content": "Students develop and present hands-on science laboratories to local elementary schools. Equivalent of five lecture hours a week.",
+    "category": "courses"
+  },
+  {
+    "title": "CH 207L - Peer Teaching",
+    "content": "Students act as peer teaching assistants in chemistry courses. Includes training and leading discussion sections.",
+    "category": "courses"
+  },
+  {
+    "title": "CH 110K - Organic Chemistry Laboratory",
+    "content": "Organic chemistry laboratory primarily for pre-health and life sciences majors. One lecture hour and three laboratory hours a week.",
+    "category": "courses"
+  },
+  {
+    "title": "CH 317 - Descriptive Inorganic Chemistry",
+    "content": "Synthesis and properties of inorganic, bioinorganic, and organometallic compounds. One lecture hour and six laboratory hours a week.",
+    "category": "courses"
+  },
+  {
+    "title": "CH 119C - Professional Development for Chemists",
+    "content": "Professional development for chemistry majors, including research excellence, ethics, communication, and career planning. One lecture hour a week. Pass/fail only.",
+    "category": "courses"
+  },
+  {
+    "title": "CH 220C - Organic Chemistry Laboratory",
+    "content": "Upper-division organic chemistry laboratory with one lecture hour and five laboratory hours a week.",
+    "category": "courses"
+  },
+  {
+    "title": "CH 320M - Organic Chemistry I",
+    "content": "Organic chemistry for premedical and life sciences majors, covering structure, nomenclature, and reactivity. Three lecture hours a week.",
+    "category": "courses"
+  },
+  {
+    "title": "CH 320N - Organic Chemistry II",
+    "content": "Continuation of organic chemistry focusing on functional group reactivity and mechanisms. Three lecture hours a week.",
+    "category": "courses"
+  },
+  {
+    "title": "CH 328M - Organic Chemistry I",
+    "content": "Organic chemistry for chemistry and chemical engineering majors. Emphasis on structure, nomenclature, and reactivity. Three lecture hours a week.",
+    "category": "courses"
+  },
+  {
+    "title": "CH 328N - Organic Chemistry II",
+    "content": "Continuation of organic chemistry for majors, with emphasis on synthesis and polymers. Three lecture hours a week.",
+    "category": "courses"
+  },
+  {
+    "title": "CH 329C - Structure and Reactivity of Organic Molecules II",
+    "content": "Advanced organic reactivity with emphasis on synthesis and polymers. Three lecture hours a week.",
+    "category": "courses"
+  },
+  {
+    "title": "CH 431 - Inorganic Chemistry",
+    "content": "Survey of the chemistry of the elements incorporating descriptive and theoretical aspects, including laboratory experiments. Three lecture hours and three laboratory hours a week.",
+    "category": "courses"
+  },
+  {
+    "title": "CH 353 - Physical Chemistry I",
+    "content": "Thermodynamics, equations of state, phase equilibria, and chemical reactions for chemistry and chemical engineering majors. Three lecture hours a week.",
+    "category": "courses"
+  },
+  {
+    "title": "CH 353M - Physical Chemistry I for Life Sciences",
+    "content": "Physical chemistry for biology and biochemistry majors, emphasizing reactions in cells, enzyme catalysis, and membranes. Three lecture hours a week.",
+    "category": "courses"
+  },
+  {
+    "title": "CH 354 - Quantum Chemistry and Spectroscopy",
+    "content": "Principles of quantum mechanics, electronic structure, and spectroscopy of atoms and molecules. Three lecture hours a week.",
+    "category": "courses"
+  },
+  {
+    "title": "CH 354M - Introduction to Computational Methods in Chemistry",
+    "content": "Numerical algorithms for solving chemical problems including reaction rates, quantum mechanics, molecular dynamics, and Monte Carlo methods. Three lecture hours a week.",
+    "category": "courses"
+  },
+  {
+    "title": "CH 455 - Fundamentals of Analytical Chemistry",
+    "content": "Chemical and instrumental analytical methods for biochemistry and engineering majors. Three lecture hours and three laboratory hours a week.",
+    "category": "courses"
+  },
+  {
+    "title": "CH 456 - Analytical Chemistry",
+    "content": "Advanced analytical chemistry for chemistry majors with lecture and laboratory components.",
+    "category": "courses"
+  },
+  {
+    "title": "CH 367C - Materials Chemistry",
+    "content": "Introduction to structural and physical properties of materials, synthesis strategies, and applications such as semiconductors and energy materials. Three lecture hours a week.",
+    "category": "courses"
+  },
+  {
+    "title": "CH 368 - Advanced Topics in Chemistry",
+    "content": "Advanced topics in analytical, inorganic, organic, and physical chemistry. May be repeated for credit when topics vary.",
+    "category": "courses"
+  },
+  {
+    "title": "CH 369K - Techniques of Research",
+    "content": "Advanced laboratory practice and introduction to chemical research. One lecture hour and six laboratory hours a week.",
+    "category": "courses"
+  },
+  {
+    "title": "CH 378L - Capstone Research and Thesis",
+    "content": "Capstone research project emphasizing advanced laboratory techniques and experimental design. One lecture hour and six laboratory hours a week.",
+    "category": "courses"
+  },
+  {
+    "title": "CH 379H - Chemistry Honors Tutorial Course",
+    "content": "Honors laboratory research project under faculty supervision. May be taken twice for credit.",
+    "category": "courses"
+  },
+  {
+    "title": "CH 380L - Inorganic Reactions and Structures",
+    "content": "Graduate-level study of inorganic reactions and molecular structures. Three lecture hours a week.",
+    "category": "courses"
+  },
+  {
+    "title": "CH 382K - Advanced Physical Chemistry: Quantum Mechanics",
+    "content": "Graduate-level introduction to quantum mechanics in chemistry. Three lecture hours a week.",
+    "category": "courses"
+  },
+  {
+    "title": "CH 386J - Advanced Organic Chemistry",
+    "content": "Advanced organic chemistry with emphasis on theory and reaction mechanisms. Three lecture hours a week.",
+    "category": "courses"
+  },
+  {
+    "title": "CH 390K - Advanced Topics in Inorganic Chemistry",
+    "content": "Graduate-level topics in inorganic chemistry including organometallics, catalysis, and materials-related chemistry.",
+    "category": "courses"
+  },
+  {
+    "title": "CH 391 - Advanced Topics in Organic Chemistry",
+    "content": "Graduate seminar covering photochemistry, molecular orbitals, synthesis, and spectroscopy. Three lecture hours a week.",
+    "category": "courses"
+  },
+  {
+    "title": "CH 398T - Professional Development for Graduate Students in Chemistry",
+    "content": "Professional development in teaching, communication, ethics, and career planning for graduate chemistry students.",
+    "category": "courses"
+  }
+]
+

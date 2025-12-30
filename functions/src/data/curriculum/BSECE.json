@@ -1,0 +1,82 @@
+[
+  {
+    "title": "BS Electrical and Computer Engineering - Degree Overview",
+    "content": "The Bachelor of Science in Electrical and Computer Engineering (BSECE) at UT Austin requires 125 total credit hours. The degree is offered through the Cockrell School of Engineering and prepares students for careers in hardware design, software development, embedded systems, signal processing, communications, and more. Students choose a technical core area to specialize in.",
+    "category": "curriculum"
+  },
+  {
+    "title": "BS Electrical and Computer Engineering - First Semester (Freshman Fall)",
+    "content": "Recommended first semester courses for BS ECE: ECE 302 Introduction to Electrical Engineering (3 hours, Core requirement - can also take ECE 302H Honors), ECE 306 Introduction to Computing (3 hours, Major requirement), RHE 306 Rhetoric and Writing (3 hours, Core Communication requirement), M 408C Differential and Integral Calculus (4 hours, Core Mathematics requirement), and UGS 302 or UGS 303 First-Year Signature Course (3 hours, Core requirement). Total: 16 hours.",
+    "category": "curriculum"
+  },
+  {
+    "title": "BS Electrical and Computer Engineering - Second Semester (Freshman Spring)",
+    "content": "Recommended second semester courses for BS ECE: ECE 319K Introduction to Embedded Systems (3 hours, Major requirement - can also take ECE 319H Honors), M 408D Sequences, Series, and Multivariable Calculus (4 hours, Major requirement), PHY 303K Engineering Physics I with PHY 105M Lab (4 hours total, Core Natural Science requirement), and Social and Behavioral Sciences course (3 hours, Core requirement). Total: 14 hours.",
+    "category": "curriculum"
+  },
+  {
+    "title": "BS Electrical and Computer Engineering - Third Semester (Sophomore Fall)",
+    "content": "Recommended third semester courses for BS ECE: ECE 411 Circuit Theory (4 hours, Major requirement), M 427J Differential Equations with Linear Algebra (4 hours, Major requirement), PHY 303L Engineering Physics II with PHY 105N Lab (4 hours total, Core Natural Science requirement), and Visual and Performing Arts course (3 hours, Core requirement). Total: 15 hours.",
+    "category": "curriculum"
+  },
+  {
+    "title": "BS Electrical and Computer Engineering - Fourth Semester (Sophomore Spring)",
+    "content": "Recommended fourth semester courses for BS ECE: ECE 312 Software Design and Implementation I (3 hours, Major requirement - can also take ECE 312H Honors), ECE 313 Linear Systems and Signals (3 hours, Major requirement), M 340L Matrices and Matrix Calculations (3 hours, Major requirement), Literature course such as E 316L/M/N/P (3 hours, Core Humanities requirement), and GOV 310L American and Texas Government (3 hours, Core requirement). Total: 15 hours.",
+    "category": "curriculum"
+  },
+  {
+    "title": "BS Electrical and Computer Engineering - Fifth Semester (Junior Fall)",
+    "content": "Recommended fifth semester courses for BS ECE: ECE 333T Engineering Communication (3 hours, Major requirement), ECE 351K Probability and Random Processes (3 hours, Major requirement), Advanced technical component Math course (4 hours, Major requirement), Advanced technical component laboratory (4 hours, Major requirement), and Advanced technical component requirement (3 hours, Major requirement). Total: 17 hours.",
+    "category": "curriculum"
+  },
+  {
+    "title": "BS Electrical and Computer Engineering - Sixth Semester (Junior Spring)",
+    "content": "Recommended sixth semester courses for BS ECE: Advanced technical elective (3 hours, Major requirement), Free elective in mathematics or basic science (4 hours, Major requirement), Free elective (4 hours), Advanced technical component requirement (3 hours, Major requirement), and Advanced technical component elective (3 hours, Major requirement). Total: 17 hours.",
+    "category": "curriculum"
+  },
+  {
+    "title": "BS Electrical and Computer Engineering - Seventh Semester (Senior Fall)",
+    "content": "Recommended seventh semester courses for BS ECE: ECE 364D Introduction to Engineering Design OR ECE 364E Interdisciplinary Entrepreneurship (3 hours, Major requirement), U.S. History course (3 hours, Core requirement), Free elective (3 hours), and Advanced technical component electives (6 hours, Major requirement). Total: 15 hours.",
+    "category": "curriculum"
+  },
+  {
+    "title": "BS Electrical and Computer Engineering - Eighth Semester (Senior Spring)",
+    "content": "Recommended eighth semester courses for BS ECE: Senior Design Project - choose from ECE 464C Corporate, ECE 464G Multidisciplinary, ECE 464H Honors, ECE 464K Standard, ECE 464R Research, or ECE 464S Start-Up (4 hours, Major requirement), GOV 312L Issues and Policies in American Government (3 hours, Core requirement), U.S. History course (3 hours, Core requirement), Advanced technical component elective (3 hours, Major requirement), and Free elective (3 hours). Total: 16 hours.",
+    "category": "curriculum"
+  },
+  {
+    "title": "BS Electrical and Computer Engineering - Required Core ECE Courses",
+    "content": "The BS ECE degree requires these core ECE courses: ECE 302 Introduction to Electrical Engineering (freshman), ECE 306 Introduction to Computing (freshman), ECE 319K Introduction to Embedded Systems (freshman), ECE 411 Circuit Theory (sophomore), ECE 312 Software Design and Implementation I (sophomore), ECE 313 Linear Systems and Signals (sophomore), ECE 333T Engineering Communication (junior), ECE 351K Probability and Random Processes (junior), ECE 364D Introduction to Engineering Design (senior), and a Senior Design Project course (senior).",
+    "category": "curriculum"
+  },
+  {
+    "title": "BS Electrical and Computer Engineering - Math and Science Requirements",
+    "content": "The BS ECE degree requires these math and science courses: M 408C Differential and Integral Calculus (first semester), M 408D Sequences, Series, and Multivariable Calculus (second semester), M 427J Differential Equations with Linear Algebra (third semester), M 340L Matrices and Matrix Calculations (fourth semester), PHY 303K Engineering Physics I with PHY 105M Lab (second semester), and PHY 303L Engineering Physics II with PHY 105N Lab (third semester).",
+    "category": "curriculum"
+  },
+  {
+    "title": "BS Electrical and Computer Engineering - Core Curriculum Requirements",
+    "content": "The BS ECE degree requires completion of the UT Austin Core Curriculum including: Communication (RHE 306), Mathematics (M 408C), Natural Science and Technology Part I (PHY 303K/L with labs), Natural Science and Technology Part II (ECE 302), Humanities/Literature (E 316L/M/N/P), Visual and Performing Arts, U.S. History (two courses), American and Texas Government (GOV 310L and GOV 312L), Social and Behavioral Sciences, and First-Year Signature Course (UGS 302 or 303).",
+    "category": "curriculum"
+  },
+  {
+    "title": "BS Electrical and Computer Engineering - Technical Core Areas",
+    "content": "BS ECE students must choose a technical core area to specialize in. Options include: Computer Architecture, Computer Engineering, Data Science and Machine Learning, Electromagnetic Waves and Devices, Embedded Systems, Energy Systems and Renewable Energy, Integrated Circuits, Robotics and Cyber-Physical Systems, Signal Processing, Software Engineering, and Telecommunications/Digital Communications. Each area has specific required and elective courses.",
+    "category": "curriculum"
+  },
+  {
+    "title": "BS Electrical and Computer Engineering - Senior Design Options",
+    "content": "BS ECE students must complete a senior design project in their final semester. Options include: ECE 464C Corporate Senior Design Project (industry-sponsored), ECE 464G Multidisciplinary Senior Design Project (cross-department teams), ECE 464H Honors Senior Design Project (for honors students), ECE 464K Senior Design Project (standard option), ECE 464R Research Senior Design Project (faculty research-based), and ECE 464S Start-Up Senior Design Project (entrepreneurship focus).",
+    "category": "curriculum"
+  },
+  {
+    "title": "BS Electrical and Computer Engineering - Prerequisite Chain",
+    "content": "Important prerequisite chain for BS ECE: ECE 302 and ECE 306 are first-semester courses. ECE 306 is prerequisite for ECE 319K (Embedded Systems). ECE 302 and M 408D are prerequisites for ECE 411 (Circuit Theory). ECE 319K is prerequisite for ECE 312 (Software Design). ECE 411 and M 427J are prerequisites for ECE 313 (Linear Systems and Signals). M 408C leads to M 408D leads to M 427J. Students should follow this sequence to stay on track.",
+    "category": "curriculum"
+  },
+  {
+    "title": "BS Electrical and Computer Engineering - Four Year Plan Summary",
+    "content": "BS ECE four-year plan: Freshman year focuses on ECE fundamentals (ECE 302, 306, 319K), calculus (M 408C, 408D), physics, and core requirements. Sophomore year covers circuits (ECE 411), software (ECE 312), signals (ECE 313), differential equations (M 427J), and more physics. Junior year includes probability (ECE 351K), technical communication (ECE 333T), and technical core courses. Senior year completes with engineering design (ECE 364D), senior design project, and remaining electives. Total: 125 credit hours for graduation.",
+    "category": "curriculum"
+  }
+]

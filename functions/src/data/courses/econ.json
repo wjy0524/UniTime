@@ -1,0 +1,282 @@
+[
+  {
+    "title": "ECO 301 - Introduction to Economics",
+    "content": "Introduction to the structure and functioning of the aggregate economy and specific markets, including the labor market, housing market, and financial markets. Basic concepts of market regulation and monetary and fiscal policy. Concepts used in the social and behavioral sciences for measuring and interpreting economic data. Three lecture hours a week for one semester. May not be counted toward a major in economics.",
+    "category": "courses"
+  },
+  {
+    "title": "ECO 101S - Professional Development and Career Planning",
+    "content": "Restricted to economics majors. Discuss issues surrounding career planning implementation and evaluation in order to establish a job search, including resumes, networking, and interviewing techniques. Focus on career management as a lifelong process. One lecture hour a week for one semester.",
+    "category": "courses"
+  },
+  {
+    "title": "ECO 304K - Introduction to Microeconomics",
+    "content": "Analysis of the economic behavior of individual consumers, firms, and workers. Demand, supply, and market equilibrium. Impact of taxes, externalities, and market power on equilibrium. Three lecture hours a week for one semester, with additional hours to be arranged.",
+    "category": "courses"
+  },
+  {
+    "title": "ECO 304L - Introduction to Macroeconomics",
+    "content": "Analysis of the economy as a whole. Measurement of output, the price level, and employment. Basic theories of the determination of Gross domestic product, investment and growth, and inflation. Introduction to fiscal policy and monetary policy. Three lecture hours a week for one semester, with additional hours to be arranged. Prerequisite: Economics 304K with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "ECO 420K - Microeconomic Theory",
+    "content": "Economic theory of the behavior of individuals, households, firms, and markets. Roles of relative prices and information, with a focus on constrained optimization. Four lecture hours a week for one semester. Prerequisite: Economics 304K and 304L with a grade of at least a C- in each; Mathematics 408D, 408L, 408S or 408Q with a grade of at least C-; Economics 329 or equivalent statistics course with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "ECO 320L - Macroeconomic Theory",
+    "content": "Theories of the determination of output, employment, and the price level. Basic models of growth. Design of monetary and fiscal policies, and the mechanisms by which they affect the economy. Three lecture hours a week for one semester. Prerequisite: Economics 420K, 420S, or 421K with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "ECO 420S - Mathematical Microeconomic Theory with Advanced Applications",
+    "content": "Examine mathematical treatment of microeconomic theory with application to real world subjects. Explore mathematical methods used by economists and apply them to analyze consumer behavior, choice under uncertainty, theory of the firm, game theory and general equilibrium. Four lecture hours a week for one semester. Prerequisite: Economics 304K and 304L with a grade of at least a C- in each; Mathematics 408D, 408L or 408S with a grade of at least C-; and a statistics course with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "ECO 321 - Public Economics",
+    "content": "Study of appropriate allocations of economic activity between government (federal, state, and local) and the private sector. The workings of social security, welfare, education, pollution control, deregulation, taxation; and proposals for reform. Three lecture hours a week for one semester. Prerequisite: Economics 420K, 420S, 421K, or Finance 321K with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "ECO 421K - Microeconomic Theory For Business",
+    "content": "Restricted to business majors. May not count toward a major in economics. Microeconomic analysis and applications for business majors. Preferences, including behavioral factors. Consumer demand, industry supply, and market equilibrium. Decision-making under uncertainty. Information problems, moral hazard, and adverse selection. Game theory and behavioral game theory. Applications include insurance markets, financial markets, contracts, and strategic behavior in business settings. Four lecture hours a week for one semester. Prerequisite: Economics 304K and 304L with a grade of at least C- in each; Economics 329 with a grade of at least C; and calculus.",
+    "category": "courses"
+  },
+  {
+    "title": "ECO 322 - Money and Banking",
+    "content": "Theories of financial intermediation and the role played by money. Financial policy and monetary policy in theory and practice. Three lecture hours a week for one semester. Prerequisite: Economics 420K, 420S, 421K or Finance 321K with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "ECO 322N - Economics of Money: from the Past to Bitcoin",
+    "content": "Analyze assets that function as money through time, including the pricing of money in terms of interest rates and exchange rates, the economics of financial innovations, and the evolution of money markets. Three lecture hours a week for one semester. Prerequisite: Economics 304K with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "ECO 323L - Political Economy",
+    "content": "Economic issues in the political arena. Use of microeconomic tools to study issues associated with collective decision-making, including the role of government in a market economy, and the formulation and implementation of government policies. Three lecture hours a week for one semester. Prerequisite: Economics 301 or 304K with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "ECO 324 - Introduction to Labor Economics",
+    "content": "Labor markets in modern economies. Role of institutions and policies in shaping labor market outcomes for individuals and businesses. Three lecture hours a week for one semester. Prerequisite: Economics 420K, 420S, 421K, or Finance 321K with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "ECO 325K - Health Economics",
+    "content": "Explores medical care as a commodity, demand for health and medical services, economic behavior of medical care providers, and the functioning of medical insurance markets. Government regulation and provision of health care and health insurance. Three lecture hours a week for one semester. Prerequisite: Economics 420K, 420S, 421K, or Finance 321K with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "ECO 325L - Economics of Health",
+    "content": "Explore the application of basic microeconomics to the study of health and issues arising in the provision of medical care. Examine the demand for and the supply of medical care. Discuss the roles of the private sector and government in the provision of medical insurance. Analyze the regulation of health care and health insurance. Three lecture hours a week for one semester. Prerequisite: Economics 304K with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "ECO 326L - Economics of Education",
+    "content": "Applications of economic principles and empirical methods to education, including the concept of human capital, economic returns to education, the determinants and measurement of teacher impact, the roles of school inputs and factors outside of school, and the market for higher education. Methodology for evaluating education policy. Three lecture hours a week for one semester. Prerequisite: Economics 420K, 420S, 421K, or Finance 321K with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "ECO 327 - Comparative Economic Systems",
+    "content": "Economic systems in theory and practice. Role of government and regulation. Three lecture hours a week for one semester. Prerequisite: Economics 304K and 304L with a grade of at least C- in each.",
+    "category": "courses"
+  },
+  {
+    "title": "ECO 328 - Industrial Organization",
+    "content": "Organization of industries and markets; competition, monopoly, and oligopoly. Introduction to antitrust policy, regulatory policy, and other alternatives. Three lecture hours a week for one semester. Prerequisite: Economics 420K or 420S with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "ECO 329 - Economic Statistics",
+    "content": "Interpretation of economic data. Introduction to statistical models, estimation, and inference in economics. Three lecture hours a week for one semester. Prerequisite: Economics 304K and 304L with a grade of at least a C- in each; calculus with a grade of at least C- in each.",
+    "category": "courses"
+  },
+  {
+    "title": "ECO 333K - Development Economics",
+    "content": "Introduction to theories of economic development. Economic analysis of leading issues. Three lecture hours a week for one semester. Prerequisite: Economics 420K, 420S, 421K, or Finance 321K with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "ECO 333L - Development and Population",
+    "content": "Microeconomics of economic development, population growth and the age structure of the population, and their impact on the environment. Three lecture hours per week for one semester. Prerequisite: Economics 420K, 420S, 421K, or Finance 321K with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "ECO 334K - Urban Economics",
+    "content": "Economic analysis of urban areas, emphasizing current problems, such as spatial concentration of poverty, lack of access to jobs and financial services, and transportation systems. Examines the role of policy in addressing these problems. Three lecture hours a week for one semester. Prerequisite: Economics 420K, 420S, 421K, or Finance 321K with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "ECO 334L - Regional Economics",
+    "content": "Spatial aspects of economics, including concepts, theories, and policy applications. Three lecture hours a week for one semester. Prerequisite: Economics 420K, 420S, 421K, or Finance 321K with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "ECO 334M - Migration Economics and Policy",
+    "content": "Immigration policy of the United States compared to that of other countries. Determinants of migration. Characteristics of migrants. Effects of migration on the country of origin and the receiving country. Unauthorized immigration to the United States. Three lecture hours a week for one semester. Prerequisite: Economics 420K, 420S, 421K, or Finance 321K, and Economics 341K or 441K with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "ECO 335K - Energy Economics",
+    "content": "Economic analysis of the markets for resources that supply energy, including coal, oil, natural gas, and shale gas, and the market for electricity. Principles of valuation and optimal dynamic allocation of energy resources. Financial contracts and risk management in energy markets. Regulation of energy markets. Three lecture hours a week for one semester. Prerequisite: Economics 420K, 420S, 421K, or Finance 321K with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "ECO 336M - Economics of Auctions",
+    "content": "Explore auctions as a mechanism for allocating resources. Analyze bidders' strategic interactions using game theory. Investigate market rules designed to attain specific policy objectives. Utilize empirical methods to analyze auction data. Three lecture hours a week for one semester. Prerequisite: Economics 420K or 420S with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "ECO 339K - International Trade and Investment",
+    "content": "Theories explaining the location of production facilities and patterns in international trade. Implications of international trade for per capita income, growth, and inequality. Three lecture hours a week for one semester. Prerequisite: Economics 420K, 420S, 421K, or Finance 321K with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "ECO 339L - International Finance",
+    "content": "Exchange rates and foreign exchange markets; reasons for financial globalization; open-economy macroeconomics; exchange rate regimes (fixed and floating exchange rates, currency boards, and currency areas such as the euro zone); central bank accumulation of foreign exchange reserves; and sovereign debt crises and currency crashes. Three lecture hours a week for one semester. Prerequisite: Economics 420K, 420S, 421K, or Finance 321K with a grade of at least C-, and Economics 320L with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "ECO 341K - Introduction to Econometrics",
+    "content": "Parameter estimation and inference in regression models. Prerequisite: Economics 304K and 304L with a grade of at least C-; a grade of at least C- or registration in Economics 420K, 420S, 421K, or Finance 321K; Mathematics 408D, 408L, 408S or 408Q with a grade of at least C-; a statistics course with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "ECO 441K - Introduction to Econometrics",
+    "content": "Parameter estimation and inference in regression models. More advanced version of ECO 341K. Prerequisite: Economics 304K and 304L with a grade of at least C-; a grade of at least C- or registration in Economics 420K, 420S, 421K, or Finance 321K; Mathematics 408D, 408L, 408S or 408Q with a grade of at least C-; a statistics course with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "ECO 342L - Advanced Econometrics",
+    "content": "Explore advanced methods of causal inference and prediction. Three lecture hours a week for one semester. Prerequisite: Economics 420K or 420S, and 341K or 441K with a grade of at least C- in each.",
+    "category": "courses"
+  },
+  {
+    "title": "ECO 342M - Applied Econometrics and Data Analysis",
+    "content": "Explore advanced regression analysis, maximum likelihood, discrete choice models, nonparametric methods, causality, and regression discontinuity design. Evaluate the use of these techniques in applied research and apply them in a variety of data sets. Three lecture hours a week for one semester. Prerequisite: Economics 341K or 441K, and 420K or 420S with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "ECO 343K - Causal Inference",
+    "content": "Introduction to how economists infer causality from data. Three lecture hours a week for one semester. Prerequisite: Economics 341K or 441K, and 420K or 420S with a grade of at least C- in each.",
+    "category": "courses"
+  },
+  {
+    "title": "ECO 350L - Advanced Macroeconomics",
+    "content": "Investigate advanced macroeconomic theory. Examine dynamic general equilibrium models, real business cycle theory, and macroeconomic models with a financial intermediary sector, financial crises, and monetary and fiscal policy. Three lecture hours a week for one semester. Prerequisite: Economics 320L and 420K or 420S with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "ECO 351K - Current Issues in Business Economics",
+    "content": "Economic analysis of government regulation and policy and business responses. Three lecture hours a week for one semester. Prerequisite: Economics 420K, 420S, 421K, or Finance 321K with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "ECO 351M - Managerial Economics",
+    "content": "Use of economic analysis and optimization as tools for improving managerial decision-making in business. Three lecture hours a week for one semester. Prerequisite: Economics 420K or 420S, and Economics 329 or Mathematics 362K, with a grade of at least C- in each.",
+    "category": "courses"
+  },
+  {
+    "title": "ECO 351N - Economic Principles of Managerial Decisions",
+    "content": "Use of economic concepts and models to make strategic business decisions (adverse selection, game theory, price discrimination, strategic commitment, barriers to entry, network effects). Economics of strategic responses to the legal environment (regulations, antitrust policies, intellectual property, fiduciary duty, liability). Three lecture hours a week for one semester. Prerequisite: Economics 420K, 420S, 421K, or Finance 321K with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "ECO 352K - Business Strategy",
+    "content": "Economic analysis of business strategy, including introducing new products, vertically integrating, bundling goods, pricing, distribution, mergers, and product differentiation. Relevant aspects of antitrust law. Case studies of specific firms. Three lecture hours a week for one semester. Prerequisite: Economics 420K, 420S, 421K, or Finance 321K with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "ECO 352R - Economics of Entrepreneurship",
+    "content": "Explore the application of economics to the practice of starting or expanding a business. Examine evaluation of the market; strategic decisions, including pricing, advertising, location, and deterring competitors; raising capital; and employee compensation. Three lecture hours a week for one semester. Prerequisite: Economics 341K or 441K, and 420K or 420S with a grade of at least C- in each.",
+    "category": "courses"
+  },
+  {
+    "title": "ECO 353K - Antitrust Law and Economics",
+    "content": "Economic analysis of antitrust law intended to deter firms from engaging in anti-competitive conduct that harms consumers, including mergers that impede competition, price-fixing, and anti-competitive practices by a dominant firm in an industry. Focus on various industries and select antitrust cases. Three lecture hours a week for one semester. Prerequisite: Economics 420K, 420S, 421K, or Finance 321K with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "ECO 353M - Empirical Public Economics",
+    "content": "Use of data to evaluate public policy issues. Issues considered include the effect of having health insurance on health outcomes; the relationship between earning power and the type of college attended; charter schools and educational outcomes; the effect of an increase in the minimum wage on employment; and the welfare effects of bank bailouts. Three lecture hours a week for one semester. Prerequisite: Economics 420K, 420S, 421K or Finance 321K, and Economics 341K or 441K with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "ECO 354K - Introductory Game Theory",
+    "content": "Introduction to the formal study of interdependent decision making. Applications of game theory include pricing and advertising strategies, labor-management bargaining, and tariff negotiations. Three lecture hours a week for one semester. Prerequisite: Economics 329 and 420K, 420S, 421K, or Finance 321K with a grade of at least C- in each.",
+    "category": "courses"
+  },
+  {
+    "title": "ECO 354M - Experimental Economics",
+    "content": "Examine what economic theory has to say about economic choices and strategic interactions and what people actually do when faced with strategic decisions. Conduct experiments to either identify systematic deviations or confirm theoretical predictions. Explore how economic experiments are useful in reshaping economic thinking. Three lecture hours a week for one semester. Prerequisite: Economics 304K with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "ECO 355 - Development Problems and Policies in Latin America",
+    "content": "Analysis of the economies of Latin America. Issues may include the structure and functioning of cities, rural-urban migration, the sectoral composition of GDP and employment, and determinants of growth. Three lecture hours a week for one semester. Prerequisite: Economics 304K and 304L with a grade of at least C- in each.",
+    "category": "courses"
+  },
+  {
+    "title": "ECO 359M - Environmental and Natural Resource Economics",
+    "content": "Optimal use of exhaustible and renewable resources, including fuels, minerals, fisheries, forests, and water; resource scarcity and economic growth; valuation of nonmarketed environmental amenities; the economics of pollution control instruments, including taxes, permits, direct regulation, and negotiation; environmental quality and international trade; the economics of global climate change; pollution control policy in practice. Three lecture hours a week for one semester. Prerequisite: Economics 329 and 420K or 420S with a grade of at least C- in each.",
+    "category": "courses"
+  },
+  {
+    "title": "ECO 361S - Artificial Intelligence and Public Policy",
+    "content": "Analyze and apply tools from machine learning and artificial intelligence to policy problems. Explore the benefits and concerns that can arise in doing so. Three lecture hours a week for one semester. Prerequisite: Economics 420K or 420S with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "ECO 363C - Computational Economics",
+    "content": "Three lecture hours a week for one semester. Prerequisite: Economics 320L and 420K or 420S with a grade of at least C- in each.",
+    "category": "courses"
+  },
+  {
+    "title": "ECO 367R - Monetary Economics",
+    "content": "Theories explaining the role of money in the economy. Three lecture hours a week for one semester. Prerequisite: Economics 420K, 420S, 421K, or Finance 321K with a grade of at least C-, and Economics 320L with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "ECO 368 - Survey of the History of Economic Thought",
+    "content": "Three lecture hours a week for one semester. Prerequisite: Upper-division standing.",
+    "category": "courses"
+  },
+  {
+    "title": "ECO 369F - Financial Economics",
+    "content": "Economic analysis of the operation of financial markets, including arbitrage theory, asset pricing, and corporate finance. Three lecture hours a week for one semester. Prerequisite: Economics 329 and 420K or 420S with a grade of at least C- in each.",
+    "category": "courses"
+  },
+  {
+    "title": "ECO 370E - Economics of Gender, Race, and Ethnicity",
+    "content": "Study large and persistent differences in economic outcomes across genders and between major racial and ethnic groups in the United States. Examine empirical evidence for, and gaps in, economic models explaining these differences. Three lecture hours a week for one semester. Prerequisite: Forty-five semester credit hours and Economics 304K with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "ECO 370M - Behavioral Economics",
+    "content": "Explaining how heuristics result in biases in individual decisions and anomalies in the market place. Applications to choice under uncertainty, intertemporal choice, choice in a strategic environment, and behavioral finance. Three lecture hours a week for one semester. Prerequisite: Economics 301 or 304K with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "ECO 371M - Social Economics: Outside the Market",
+    "content": "Explore concepts of social welfare, fairness, and social choice procedures. Discuss economic analysis of social interactions that take place outside of markets. Three lecture hours a week for one semester. Prerequisite: Forty-five semester credit hours and Economics 304K with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "ECO 376N - Personnel Economics",
+    "content": "Use of microeconomic theory to analyze how firms make decisions involving human resources, including recruiting and hiring strategies, training and investment in worker skills, evaluating and motivating worker performance, and job design. Three lecture hours a week for one semester. Prerequisite: Economics 420K, 420S, 421K, or Finance 321K with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "ECO 378H - Honors Tutorial Course I",
+    "content": "Supervised individual reading, research, and writing of a substantial paper on a special topic in the field of economics. Conference course. Prerequisite: Upper-division standing, admission to the Economics Honors Program, and consent of the honors adviser.",
+    "category": "courses"
+  },
+  {
+    "title": "ECO 379H - Honors Tutorial Course II",
+    "content": "Supervised individual reading, research, and writing of a substantial paper on a special topic in the field of economics. Conference course. Prerequisite: Economics 378H.",
+    "category": "courses"
+  }
+]
