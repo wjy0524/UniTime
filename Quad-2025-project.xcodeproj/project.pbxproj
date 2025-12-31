@@ -18,9 +18,9 @@
 		1578016E2E6F472D00B7FCB9 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 1578016D2E6F472D00B7FCB9 /* FirebaseStorage */; };
 		15BBE9C22ECD9EDC00C93800 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 15BBE9C12ECD9EDC00C93800 /* Kingfisher */; };
 		15D9A37F2EAB2DE500773B9C /* Shimmer in Frameworks */ = {isa = PBXBuildFile; productRef = 15D9A37E2EAB2DE500773B9C /* Shimmer */; };
+		15F4B7C42F03CBBB00DC6C06 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 15F4B7C32F03CBBB00DC6C06 /* GoogleService-Info.plist */; };
 		D7C7169C2E7FD3500086FA22 /* CalendarKit in Frameworks */ = {isa = PBXBuildFile; productRef = D7C7169B2E7FD3500086FA22 /* CalendarKit */; };
 		D7D5481D2EF7C49200873787 /* firebase.json in Resources */ = {isa = PBXBuildFile; fileRef = D7D5481C2EF7C48C00873787 /* firebase.json */; };
-		D7D567F52EF7AE8400873787 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D7D567F42EF7AE8400873787 /* GoogleService-Info.plist */; };
 		D7D56B462EF7B28D00873787 /* FirebaseFunctions in Frameworks */ = {isa = PBXBuildFile; productRef = D7D56B452EF7B28D00873787 /* FirebaseFunctions */; };
 		D7D5EE172EF89B2F00873787 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = D7D5EE162EF89B2F00873787 /* .gitignore */; };
 /* End PBXBuildFile section */
@@ -46,8 +46,8 @@
 		157801222E6F423700B7FCB9 /* Quad-2025-project.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Quad-2025-project.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		157801302E6F423800B7FCB9 /* Quad-2025-projectTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Quad-2025-projectTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1578013A2E6F423800B7FCB9 /* Quad-2025-projectUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Quad-2025-projectUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		15F4B7C32F03CBBB00DC6C06 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		D7D5481C2EF7C48C00873787 /* firebase.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = firebase.json; sourceTree = "<group>"; };
-		D7D567F42EF7AE8400873787 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		D7D5EE162EF89B2F00873787 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -134,8 +134,8 @@
 				157801332E6F423800B7FCB9 /* Quad-2025-projectTests */,
 				1578013D2E6F423800B7FCB9 /* Quad-2025-projectUITests */,
 				157801232E6F423700B7FCB9 /* Products */,
-				D7D567F42EF7AE8400873787 /* GoogleService-Info.plist */,
 				D7D5EE162EF89B2F00873787 /* .gitignore */,
+				15F4B7C32F03CBBB00DC6C06 /* GoogleService-Info.plist */,
 			);
 			sourceTree = "<group>";
 		};
@@ -289,8 +289,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				D7D5EE172EF89B2F00873787 /* .gitignore in Resources */,
+				15F4B7C42F03CBBB00DC6C06 /* GoogleService-Info.plist in Resources */,
 				D7D5481D2EF7C49200873787 /* firebase.json in Resources */,
-				D7D567F52EF7AE8400873787 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

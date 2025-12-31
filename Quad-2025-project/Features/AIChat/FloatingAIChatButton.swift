@@ -37,7 +37,7 @@ struct FloatingAIChatButton: View {
             }
         }
         .sheet(isPresented: $showChat) {
-            AIChatView()
+            AIChatContainerView()
         }
     }
 }
