@@ -6,6 +6,7 @@
 
 //
 //  PublicProfileView.swift
+//  Quad-2025-project
 //
 
 import FirebaseAuth
@@ -13,324 +14,158 @@ import Kingfisher
 import SwiftUI
 
 struct PublicProfileView: View {
-    let targetUid: String  // 🔥 보고 있는 상대 UID
-    @StateObject var viewModel: ProfileViewModel
-    @ObservedObject var friendsManager = FriendsManager.shared
-
-    @Environment(\.colorScheme) var colorScheme
-
+    let targetUid: String
+    @StateObject private var viewModel: ProfileViewModel
     @State private var selectedTab = 0
-    @State private var showEdit = false
-    @State private var isFriend = false
-    @State private var hasPendingRequest = false
-    @State private var requestSentByMe = false
-    @State private var isProcessing = false
 
-    // MARK: - Init
     init(targetUid: String) {
         self.targetUid = targetUid
         _viewModel = StateObject(wrappedValue: ProfileViewModel(uid: targetUid))
     }
 
-    var myUid: String {
-        Auth.auth().currentUser?.uid ?? ""
-    }
-
-    var friendButtonText: String {
-        if isFriend {
-            return "Friends"
-        } else if hasPendingRequest && requestSentByMe {
-            return "Request Sent"
-        } else if hasPendingRequest && !requestSentByMe {
-            return "Respond"
-        } else {
-            return "Add Friend"
-        }
-    }
-
-    var friendButtonColor: Color {
-        if isFriend {
-            return .green
-        } else if hasPendingRequest {
-            return .orange
-        } else {
-            return Color("UTAustinOrange")
-        }
-    }
-
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(spacing: 26) {
+                VStack(spacing: 20) {
                     profileHeader
                     userInfoSection
-
-                    Picker("", selection: $selectedTab) {
-                        Text("Posts").tag(0)
-                        Text("Likes").tag(1)
-                        Text("About").tag(2)
-                    }
-                    .pickerStyle(.segmented)
-                    .padding(.horizontal, 20)
-
+                    statsSection
+                    tabPicker
                     tabContent
-                        .padding(.horizontal, 20)
                 }
                 .padding(.bottom, 40)
             }
+            .background(Color(.systemGroupedBackground))
             .navigationTitle(viewModel.username)
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    if myUid == targetUid {
-                        // 내 프로필: Edit
-                        Button {
-                            showEdit = true
-                        } label: {
-                            Image(systemName: "pencil.circle.fill")
-                                .font(.system(size: 24))
-                                .foregroundColor(Color("UTAustinOrange"))
-                        }
 
-                    } else {
-                        // 상대 프로필: Friend Actions
-                        if isProcessing {
-                            ProgressView()
-                        } else if isFriend {
-                            Menu {
-                                Button(role: .destructive) {
-                                    removeFriend()
-                                } label: {
-                                    Label("Remove Friend", systemImage: "person.fill.xmark")
-                                }
-                            } label: {
-                                Text("Friends")
-                                    .font(.subheadline.bold())
-                                    .foregroundColor(.white)
-                                    .padding(.horizontal, 16)
-                                    .padding(.vertical, 8)
-                                    .background(Color.green)
-                                    .cornerRadius(8)
-                            }
-                        } else if hasPendingRequest && !requestSentByMe {
-                            NavigationLink(
-                                destination: FriendRequestsListView(friendsManager: friendsManager)
-                            ) {
-                                Text("Respond")
-                                    .font(.subheadline.bold())
-                                    .foregroundColor(.white)
-                                    .padding(.horizontal, 16)
-                                    .padding(.vertical, 8)
-                                    .background(Color.blue)
-                                    .cornerRadius(8)
-                            }
-                        } else {
-                            Button {
-                                handleFriendAction()
-                            } label: {
-                                Text(friendButtonText)
-                                    .font(.subheadline.bold())
-                                    .foregroundColor(.white)
-                                    .padding(.horizontal, 16)
-                                    .padding(.vertical, 8)
-                                    .background(friendButtonColor)
-                                    .cornerRadius(8)
-                            }
-                            .disabled(hasPendingRequest && requestSentByMe)
-                        }
+                // ⭐️ Back 버튼 텍스트 제거 (핵심)
+                ToolbarItem(placement: .navigationBarLeading) {
+                    EmptyView()
+                }
+
+                // ⚙️ Settings
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    NavigationLink {
+                        SettingsView()
+                    } label: {
+                        Image(systemName: "line.3.horizontal")
+                            .font(.system(size: 18, weight: .semibold))
                     }
                 }
             }
-            .task {
-                await checkFriendshipStatus()
-            }
-            .sheet(isPresented: $showEdit) {
-                ProfileEditView(viewModel: viewModel)
-            }
-        }
-    }
-
-    // MARK: - Friend Actions
-
-    func checkFriendshipStatus() async {
-        isFriend = await friendsManager.isFriend(userId: targetUid)
-
-        // Check for pending requests
-        let sentRequest = friendsManager.sentRequests.first { $0.toUserId == targetUid }
-        let receivedRequest = friendsManager.friendRequests.first { $0.fromUserId == targetUid }
-
-        hasPendingRequest = sentRequest != nil || receivedRequest != nil
-        requestSentByMe = sentRequest != nil
-    }
-
-    func handleFriendAction() {
-        guard !isProcessing else { return }
-
-        if hasPendingRequest && requestSentByMe {
-            // Cancel request
-            if let request = friendsManager.sentRequests.first(where: { $0.toUserId == targetUid })
-            {
-                isProcessing = true
-                Task {
-                    try? await friendsManager.cancelFriendRequest(request)
-                    await checkFriendshipStatus()
-                    isProcessing = false
-                }
-            }
-        } else {
-            // Send friend request
-            isProcessing = true
-            Task {
-                do {
-                    try await friendsManager.sendFriendRequest(
-                        to: targetUid,
-                        username: viewModel.username
-                    )
-                    await checkFriendshipStatus()
-                    await viewModel.refreshStats()
-                } catch {
-                    print("Error sending friend request: \(error.localizedDescription)")
-                }
-                isProcessing = false
-            }
-        }
-    }
-
-    func removeFriend() {
-        guard let friend = friendsManager.friends.first(where: { $0.friendId == targetUid }) else {
-            return
-        }
-
-        isProcessing = true
-        Task {
-            try? await friendsManager.removeFriend(friend)
-            await checkFriendshipStatus()
-            await viewModel.refreshStats()
-            isProcessing = false
         }
     }
 }
+
+
+
+////////////////////////////////////////////////////////////
+// MARK: - HEADER
+////////////////////////////////////////////////////////////
 
 extension PublicProfileView {
     var profileHeader: some View {
         VStack(spacing: 0) {
-
             Rectangle()
-                .fill(Color("UTAustinOrange").opacity(colorScheme == .dark ? 0.32 : 0.18))
-                .frame(height: 130)
+                .fill(Color("UTAustinOrange").opacity(0.18))
+                .frame(height: 120)
 
-            VStack {
-                if let url = URL(string: viewModel.profileImageURL),
-                    !viewModel.profileImageURL.isEmpty
-                {
-                    KFImage(url)
-                        .resizable()
-                        .scaledToFill()
-                        .frame(width: 110, height: 110)
-                        .clipShape(Circle())
-                        .overlay(Circle().stroke(Color.white, lineWidth: 4))
-                        .offset(y: -55)
-                } else {
-                    Circle()
-                        .fill(Color.gray.opacity(0.3))
-                        .frame(width: 110, height: 110)
-                        .overlay(
-                            Image(systemName: "person.fill")
-                                .font(.system(size: 48))
-                                .foregroundColor(.white.opacity(0.9))
-                        )
-                        .offset(y: -55)
-                }
+            if let url = URL(string: viewModel.profileImageURL),
+               !viewModel.profileImageURL.isEmpty {
+                KFImage(url)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: 108, height: 108)
+                    .clipShape(Circle())
+                    .overlay(Circle().stroke(.white, lineWidth: 3))
+                    .offset(y: -54)
+            } else {
+                Circle()
+                    .fill(Color.gray.opacity(0.25))
+                    .frame(width: 108, height: 108)
+                    .overlay(
+                        Image(systemName: "person.fill")
+                            .font(.system(size: 42))
+                            .foregroundColor(.white)
+                    )
+                    .offset(y: -54)
             }
-            .padding(.bottom, -40)
         }
+        .padding(.bottom, -36)
     }
 }
 
+////////////////////////////////////////////////////////////
+// MARK: - USER INFO
+////////////////////////////////////////////////////////////
+
 extension PublicProfileView {
     var userInfoSection: some View {
-        VStack(spacing: 8) {
-
+        VStack(spacing: 4) {
             Text(viewModel.username)
-                .font(.title2.bold())
+                .font(.title3.bold())
 
             if !viewModel.major.isEmpty {
                 Text("\(viewModel.year) · \(viewModel.major)")
                     .font(.subheadline)
-                    .foregroundColor(.primary.opacity(0.8))
-            }
-
-            HStack(spacing: 28) {
-                VStack {
-                    Text("\(viewModel.followersCount)")
-                        .font(.headline)
-                    Text("Followers")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                }
-                VStack {
-                    Text("\(viewModel.followingCount)")
-                        .font(.headline)
-                    Text("Following")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                }
-            }
-            .padding(.top, 6)
-        }
-    }
-}
-
-struct ProfileCard: View {
-    let title: String
-    let subtitle: String?
-    let icon: String?
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
-
-            HStack(spacing: 10) {
-                if let icon {
-                    Image(systemName: icon)
-                        .foregroundColor(.red)
-                }
-                Text(title)
-                    .font(.headline)
-                Spacer()
-            }
-
-            if let subtitle {
-                Text(subtitle)
-                    .font(.subheadline)
                     .foregroundColor(.secondary)
-                    .lineLimit(2)
             }
         }
-        .padding(16)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(
-            RoundedRectangle(cornerRadius: 14)
-                .fill(Color(.systemBackground))
-                .shadow(color: .black.opacity(0.05), radius: 4, y: 2)
-        )
     }
 }
+
+////////////////////////////////////////////////////////////
+// MARK: - STATS (Followers / Following 클릭 가능)
+////////////////////////////////////////////////////////////
 
 extension PublicProfileView {
+    var statsSection: some View {
+        HStack(spacing: 36) {
 
-    var postsList: some View {
-        UserPostsView(viewModel: viewModel)
+            statItem(viewModel.postsCount, "Posts")
+
+            NavigationLink {
+                FollowListView(uid: targetUid, type: .followers)
+            } label: {
+                statItem(viewModel.followersCount, "Followers")
+            }
+
+            NavigationLink {
+                FollowListView(uid: targetUid, type: .following)
+            } label: {
+                statItem(viewModel.followingCount, "Following")
+            }
+        }
+        .buttonStyle(.plain)
+        .padding(.top, 8)
     }
 
-    var likesList: some View {
-        UserLikedPostsView(viewModel: viewModel)
+    func statItem(_ value: Int, _ title: String) -> some View {
+        VStack(spacing: 2) {
+            Text("\(value)")
+                .font(.headline)
+            Text(title)
+                .font(.caption)
+                .foregroundColor(.secondary)
+        }
     }
+}
 
-    var aboutSectionCard: some View {
-        ProfileCard(
-            title: "About Me",
-            subtitle: viewModel.bio.isEmpty ? "No bio added yet." : viewModel.bio,
-            icon: "person.text.rectangle"
-        )
+////////////////////////////////////////////////////////////
+// MARK: - TAB PICKER + CONTENT
+////////////////////////////////////////////////////////////
+
+extension PublicProfileView {
+    var tabPicker: some View {
+        Picker("", selection: $selectedTab) {
+            Text("Posts").tag(0)
+            Text("Likes").tag(1)
+            Text("About").tag(2)
+        }
+        .pickerStyle(.segmented)
+        .padding(.horizontal)
     }
 
     @ViewBuilder
@@ -338,10 +173,15 @@ extension PublicProfileView {
         switch selectedTab {
         case 0:
             UserPostsView(viewModel: viewModel)
+
         case 1:
             UserLikedPostsView(viewModel: viewModel)
+
         case 2:
-            ProfileAboutView(bio: viewModel.bio)
+            Text(viewModel.bio.isEmpty ? "No bio added yet." : viewModel.bio)
+                .foregroundColor(.secondary)
+                .padding(.top, 12)
+
         default:
             EmptyView()
         }

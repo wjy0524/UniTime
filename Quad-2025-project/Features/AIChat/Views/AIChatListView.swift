@@ -8,6 +8,7 @@ struct AIChatListView: View {
 
     @ObservedObject var chatStore: ChatStore
     let onClose: () -> Void
+    @StateObject private var profileVM = ProfileViewModel()
 
     @State private var searchText = ""
 
@@ -127,7 +128,10 @@ struct AIChatListView: View {
                             }
 
                             Button {
-                                // Share (추후 구현)
+                                let url = URL(
+                                    string: "https://quad.app/chat/\(session.id.uuidString)"
+                                )!
+                                ShareHelper.share(url: url)
                             } label: {
                                 Label("Share", systemImage: "square.and.arrow.up")
                             }
@@ -152,21 +156,27 @@ struct AIChatListView: View {
 
             // MARK: - Profile
             HStack(spacing: 12) {
+                // Avatar
                 Circle()
                     .fill(Color.green.opacity(0.7))
                     .frame(width: 36, height: 36)
                     .overlay(
-                        Text("WJ")
+                        Text(profileVM.username.prefix(2).uppercased())
                             .font(.system(size: 14, weight: .bold))
                             .foregroundColor(.white)
                     )
 
-                Text("Jaeyeon Won")
+                // Username
+                Text(profileVM.username)
                     .font(.system(size: 15, weight: .medium))
 
                 Spacer()
             }
             .padding()
+            .task {
+                await profileVM.loadProfile(for: profileVM.myUid)
+            }
+            
         }
         .background(Color(.systemBackground))
 

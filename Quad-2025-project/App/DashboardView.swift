@@ -43,7 +43,7 @@ struct DashboardView: View {
                 .padding(.vertical, 20)
                 .padding(.horizontal)
             }
-            .navigationTitle("Dashboard")
+            .navigationTitle("UniTime")
             .onAppear {
                 gpaVM.fetchCourses()  // 🔥 GPA 데이터 로드
                 eventVM.startListening()  // 🔥 이벤트 데이터 로드
@@ -108,12 +108,6 @@ extension DashboardView {
                 headerIcon(system: "magnifyingglass")
             }
 
-            // RIGHT — Settings Button
-            NavigationLink {
-                SettingsView()
-            } label: {
-                headerIcon(system: "gearshape.fill")
-            }
 
             // RIGHT — Profile Button
             NavigationLink {
