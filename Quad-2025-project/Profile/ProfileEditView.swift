@@ -50,9 +50,6 @@ struct ProfileEditView: View {
                     .bold()
                 }
 
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") { dismiss() }
-                }
             }
         }
     }
