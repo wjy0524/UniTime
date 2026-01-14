@@ -8,72 +8,49 @@
 import SwiftUI
 
 struct SplashView: View {
-    @State private var isActive = false
-    @State private var fadeOut = false
-    @State private var scaleUp = false
-    @State private var animateGradient = false
-    @EnvironmentObject var gpaVM: GPAViewModel   // 🔥 추가
+    @State private var showMain = false
+    @State private var showTitle = false
 
     var body: some View {
-        if isActive {
+        if showMain {
             AuthGateView()
-                .environmentObject(gpaVM)   // ← 필요
         } else {
             ZStack {
-                // 🔹 애니메이팅 그라데이션 배경
-                LinearGradient(
-                    gradient: Gradient(colors: [
-                        animateGradient ? Color("UTAustinOrange") : .orange,
-                        animateGradient ? .white : .yellow
-                    ]),
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                )
-                .ignoresSafeArea()
-                .animation(.easeInOut(duration: 2).repeatForever(autoreverses: true), value: animateGradient)
-                .opacity(fadeOut ? 0 : 1)
+                Color.white
+                    .ignoresSafeArea()
 
-                // 🔹 로고 (확대 + 페이드 아웃)
-                Image("UniTimeLogo") // Assets.xcassets 안에 넣어둔 로고 이미지
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 180, height: 180)
-                    .scaleEffect(scaleUp ? 1.2 : 1.0)
-                    .opacity(fadeOut ? 0 : 1)
-                    .animation(.easeInOut(duration: 1.5), value: fadeOut)
-                    .animation(.easeInOut(duration: 1.5), value: scaleUp)
-            }
-            .onAppear {
-                animateGradient.toggle()
+                VStack(spacing: 12) {
 
-                // 1.2초 뒤 로고 확대 시작
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
-                    withAnimation {
-                        scaleUp = true
+                    // Lottie Animation
+                    LottieView(
+                        animationName: "unitime_intro",
+                        loopMode: .playOnce
+                    ) {
+                        // 로띠 끝 → 타이틀 보여주고 → 메인 전환
+                        withAnimation(.easeOut(duration: 0.4)) {
+                            showTitle = true
+                        }
+
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
+                            withAnimation(.easeOut(duration: 0.3)) {
+                                showMain = true
+                            }
+                        }
                     }
-                }
+                    .frame(width: 220, height: 220)
 
-                // 1.5초 뒤 로고 & 배경 페이드 아웃
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-                    withAnimation {
-                        fadeOut = true
+                    // App Title
+                    if showTitle {
+                        Text("UniTime")
+                            .font(.system(size: 34, weight: .bold, design: .rounded))
+                            .foregroundColor(Color("UTAustinOrange"))
+                            .transition(
+                                .opacity.combined(with: .move(edge: .bottom))
+                            )
                     }
-                }
-
-                // 2.5초 뒤 메인 화면으로 전환
-                DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
-                    isActive = true
                 }
             }
         }
     }
 }
 
-struct MainView: View {
-    var body: some View {
-        NavigationView {
-            Text("🎓 UniTime Home")
-                .font(.largeTitle)
-        }
-    }
-}

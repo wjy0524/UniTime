@@ -10,13 +10,13 @@ import FirebaseAuth
 import FirebaseFirestore
 import SwiftUI
 
+
 struct DashboardView: View {
     @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject var gpaVM: GPAViewModel  // 🔥 실제 GPA 데이터 사용
     @EnvironmentObject var eventVM: EventViewModel  // 🔥 실제 이벤트 데이터 사용
     @StateObject private var notificationVM = NotificationViewModel()
     @StateObject private var studySessionManager = StudySessionManager()  // 🔥 Study Tracker
-    @ObservedObject private var friendsManager = FriendsManager.shared  // 🔥 Unified Friends
     @State private var showingNotifications = false
     @State private var username: String = ""
 
@@ -32,24 +32,21 @@ struct DashboardView: View {
             ScrollView {
                 VStack(spacing: 24) {
                     headerSection
-                    friendsCard  // 🔥 Unified Friends Section
                     todayScheduleCard
+                    quickActionsGrid
                     gpaCard  // 🔥 실제 GPA 반영됨
                     diningCard
-                    quickActions
                     weeklyChartCard
                     sharePreviewCard
                 }
                 .padding(.vertical, 20)
                 .padding(.horizontal)
             }
-            .navigationTitle("UniTime")
             .onAppear {
                 gpaVM.fetchCourses()  // 🔥 GPA 데이터 로드
                 eventVM.startListening()  // 🔥 이벤트 데이터 로드
                 notificationVM.startListening()  // 🔥 알림 데이터 로드
                 studySessionManager.startListening()  // 🔥 스터디 데이터 로드
-                friendsManager.startListening()  // 🔥 Friends 데이터 로드
                 fetchUsername()  // 🔥 사용자 이름 로드
             }
             .sheet(isPresented: $showingNotifications) {
@@ -65,158 +62,170 @@ struct DashboardView: View {
 
 extension DashboardView {
     var headerSection: some View {
-        HStack(alignment: .center) {
+        VStack(alignment: .leading, spacing: 12) {
+            
+            // 1️⃣ 1단: 로고(좌) + 아이콘(우)
+            HStack(alignment: .center) {
+                // 로고 (이미지 안에 글자가 포함되어 있다면 Text("UniTime")은 빼셔도 됩니다)
+                Image("UniTimeLogo")
+                    .renderingMode(.template)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(height: 80) // 에타 로고는 생각보다 작고 심플합니다
+                    .foregroundColor(Color("UTAustinOrange"))
+                
+                // 만약 로고 이미지에 글자가 없다면 아래 주석 해제해서 사용
+                /*
+                Text("UniTime")
+                    .font(.system(size: 18, weight: .bold))
+                    .foregroundColor(Color("UTAustinOrange"))
+                */
 
-            // LEFT — Greeting / Date
-            VStack(alignment: .leading, spacing: 6) {
-                Text(greetingMessage())
-                    .font(.system(size: 28, weight: .bold))
-                Text(formattedDate())
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-            }
-
-            Spacer()
-
-            // RIGHT — Notification Button
-            Button {
-                showingNotifications = true
-            } label: {
-                ZStack(alignment: .topTrailing) {
-                    headerIcon(system: "heart")
-
-                    if notificationVM.unreadCount > 0 {
-                        ZStack {
-                            Circle()
-                                .fill(Color.red)
-                                .frame(width: 18, height: 18)
-
-                            Text("\(min(notificationVM.unreadCount, 99))")
-                                .font(.system(size: 10, weight: .bold))
-                                .foregroundColor(.white)
+                Spacer()
+                
+                // 우측 아이콘 3개
+                HStack(spacing: 20) {
+                    NavigationLink(destination: SearchUserView()) {
+                        Image(systemName: "magnifyingglass")
+                            .font(.system(size: 22))
+                    }
+                    
+                    Button { showingNotifications = true } label: {
+                        ZStack(alignment: .topTrailing) {
+                            Image(systemName: "bell")
+                                .font(.system(size: 22))
+                            
+                            if notificationVM.unreadCount > 0 {
+                                Circle()
+                                    .fill(Color.red)
+                                    .frame(width: 6, height: 6)
+                                    .offset(x: 2, y: -2)
+                            }
                         }
-                        .offset(x: 8, y: -8)
+                    }
+                    
+                    NavigationLink(destination: PublicProfileView(targetUid: Auth.auth().currentUser?.uid ?? "")) {
+                        Image(systemName: "person.circle")
+                            .font(.system(size: 24))
                     }
                 }
+                .foregroundColor(.primary)
             }
-            .buttonStyle(.plain)
-
-            // RIGHT — Search Button
-            NavigationLink {
-                SearchUserView()
-            } label: {
-                headerIcon(system: "magnifyingglass")
-            }
-
-
-            // RIGHT — Profile Button
-            NavigationLink {
-                PublicProfileView(targetUid: Auth.auth().currentUser?.uid ?? "")
-            } label: {
-                ZStack {
-                    Circle()
-                        .fill(
-                            LinearGradient(
-                                colors: [
-                                    Color("UTAustinOrange").opacity(0.8),
-                                    Color.orange.opacity(0.6),
-                                ],
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            )
-                        )
-                        .frame(width: 54, height: 54)
-                        .shadow(color: .black.opacity(0.15), radius: 5, y: 3)
-
-                    Image(systemName: "person.fill")
-                        .font(.system(size: 28, weight: .semibold))
-                        .foregroundColor(.white)
-                }
-            }
-            .buttonStyle(.plain)
+            
+            // 2️⃣ 2단: 학교 이름 (아주 크게!)
+            Text("UT Austin")
+                .font(.system(size: 20, weight: .bold)) // 🔥 32~34 정도로 시원하게 키우세요
+                .padding(.leading, 2) // 로고와 라인 살짝 맞추기
         }
-        .padding(20)
-        .background(
-            RoundedRectangle(cornerRadius: 22)
-                .fill(.ultraThinMaterial)
-                .shadow(color: .black.opacity(0.05), radius: 10, y: 4)
-        )
+        .padding(.horizontal)
+        .padding(.top, 10)
     }
-
 }
 
+
 ////////////////////////////////////////////////////////////
-// MARK: - TODAY’S SCHEDULE
+// MARK: - CALENDAR INSIGHT BANNER
 ////////////////////////////////////////////////////////////
 
 extension DashboardView {
+
     var todayScheduleCard: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Today's Schedule")
-                .font(.headline)
 
-            if todaysEvents.isEmpty {
-                Text("No events today 🎉")
-                    .foregroundColor(.secondary)
-                    .font(.subheadline)
-                    .padding(.vertical, 8)
-            } else {
-                ForEach(todaysEvents) { event in
-                    HStack(spacing: 12) {
-                        // Time
-                        Text(formatEventTime(event.date))
-                            .font(.subheadline)
-                            .fontWeight(.semibold)
-                            .frame(width: 90, alignment: .leading)
-                            .foregroundColor(.secondary)
+            // Header
+            HStack(spacing: 8) {
+                Image(systemName: "calendar")
+                    .foregroundColor(.blue)
 
-                        // Event info
-                        VStack(alignment: .leading, spacing: 2) {
+                Text("Today")
+                    .font(.headline)
+            }
+
+            // 🔥 핵심 분기
+            if !todaysEvents.isEmpty {
+
+                // ✅ 오늘 일정 있음
+                VStack(spacing: 8) {
+                    ForEach(todaysEvents.prefix(3)) { event in
+                        HStack {
+                            Text(formatEventTime(event.date))
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
+                                .frame(width: 70, alignment: .leading)
+
                             Text(event.title)
                                 .font(.subheadline)
-                                .fontWeight(.medium)
+                                .lineLimit(1)
 
-                            if !event.location.isEmpty {
-                                Text(event.location)
-                                    .font(.caption)
-                                    .foregroundColor(.secondary)
-                            }
+                            Spacer()
                         }
-
-                        Spacer()
-
-                        // Color indicator
-                        Circle()
-                            .fill(Color(hexStr: event.colorHex) ?? .orange)
-                            .frame(width: 10, height: 10)
                     }
-                    .padding(.vertical, 6)
-                    .padding(.horizontal, 8)
-                    .background((Color(hexStr: event.colorHex) ?? .orange).opacity(0.1))
-                    .cornerRadius(8)
+
+                    if todaysEvents.count > 3 {
+                        Text("+ \(todaysEvents.count - 3) more event(s)")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                }
+
+            } else if let next = nextUpcomingEvent {
+
+                // 🟡 오늘 없음 → 다음 일정
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("Next: \(next.title)")
+                        .font(.subheadline)
+                        .fontWeight(.medium)
+
+                    Text(formattedUpcomingTime(next.date))
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+
+
+            } else {
+
+                // ❌ 일정 아예 없음
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("You're all clear today 🎉")
+                        .font(.subheadline)
+                        .fontWeight(.medium)
+
+                    Text("Take it easy or plan ahead.")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
                 }
             }
 
+            Spacer() // ✅ 카드 높이 안정화
+
             NavigationLink(destination: CalendarView()) {
-                Text("Open Full Calendar →")
+                Text("Open Calendar →")
                     .font(.subheadline)
                     .foregroundColor(.blue)
             }
         }
         .padding()
-        .background(Color(.systemGray6).opacity(colorScheme == .dark ? 0.3 : 0.5))
-        .cornerRadius(16)
-        .shadow(color: .black.opacity(0.05), radius: 8)
+        .frame(maxWidth: .infinity, minHeight: 150) // ⭐️ 고정 높이
+        .background(
+            RoundedRectangle(cornerRadius: 16)
+                .fill(Color(.systemGray6).opacity(0.5))
+        )
     }
+}
 
-    // MARK: - Helper: Today's Events
+
+extension DashboardView {
 
     var todaysEvents: [Event] {
         let calendar = Calendar.current
-        return eventVM.events.filter { event in
-            calendar.isDate(event.date, inSameDayAs: Date())
+        return eventVM.events.filter {
+            calendar.isDate($0.date, inSameDayAs: Date())
         }
     }
+}
+
+extension DashboardView {
 
     func formatEventTime(_ date: Date) -> String {
         let formatter = DateFormatter()
@@ -225,110 +234,48 @@ extension DashboardView {
     }
 }
 
-////////////////////////////////////////////////////////////
-// MARK: - FRIENDS CARD
-////////////////////////////////////////////////////////////
-
 extension DashboardView {
-    var friendsCard: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack {
-                Text("Friends")
-                    .font(.headline)
-
-                Spacer()
-
-                NavigationLink(destination: FriendsView()) {
-                    Text("See All")
-                        .font(.subheadline)
-                        .foregroundColor(.blue)
-                }
-            }
-
-            if friendsManager.friendRequests.isEmpty && friendsManager.friends.isEmpty {
-                HStack(spacing: 12) {
-                    Image(systemName: "person.2")
-                        .font(.title2)
-                        .foregroundColor(.gray.opacity(0.5))
-
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text("No friends yet")
-                            .font(.subheadline)
-                            .foregroundColor(.secondary)
-
-                        Text("Start connecting with people!")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                    }
-
-                    Spacer()
-
-                    NavigationLink(destination: SearchFriendsView(friendsManager: friendsManager)) {
-                        Image(systemName: "plus.circle.fill")
-                            .font(.title2)
-                            .foregroundColor(.blue)
-                    }
-                }
-                .padding(.vertical, 8)
-            } else {
-                // Friend Requests
-                if !friendsManager.friendRequests.isEmpty {
-                    NavigationLink(
-                        destination: FriendRequestsListView(friendsManager: friendsManager)
-                    ) {
-                        HStack {
-                            Image(systemName: "envelope.badge.fill")
-                                .foregroundColor(.orange)
-
-                            Text(
-                                "\(friendsManager.friendRequests.count) friend request\(friendsManager.friendRequests.count == 1 ? "" : "s")"
-                            )
-                            .font(.subheadline)
-                            .foregroundColor(.primary)
-
-                            Spacer()
-
-                            Image(systemName: "chevron.right")
-                                .font(.caption)
-                                .foregroundColor(.secondary)
-                        }
-                        .padding(.vertical, 8)
-                        .padding(.horizontal, 12)
-                        .background(Color.orange.opacity(0.1))
-                        .cornerRadius(8)
-                    }
-                }
-
-                // Friends Summary
-                HStack(spacing: 20) {
-                    HStack(spacing: 8) {
-                        Image(systemName: "person.2.fill")
-                            .foregroundColor(.blue)
-                        Text("\(friendsManager.friends.count)")
-                            .font(.headline)
-                        Text("Friends")
-                            .font(.subheadline)
-                            .foregroundColor(.secondary)
-                    }
-
-                    NavigationLink(destination: SearchFriendsView(friendsManager: friendsManager)) {
-                        HStack(spacing: 6) {
-                            Image(systemName: "magnifyingglass")
-                            Text("Find More")
-                        }
-                        .font(.subheadline)
-                        .foregroundColor(.blue)
-                    }
-                }
-                .padding(.vertical, 4)
-            }
-        }
-        .padding()
-        .background(Color(.systemBackground))
-        .cornerRadius(16)
-        .shadow(color: .black.opacity(0.05), radius: 8)
+    
+    func formattedRelativeTime(_ date: Date) -> String {
+        let formatter = RelativeDateTimeFormatter()
+        formatter.unitsStyle = .short
+        return formatter.localizedString(for: date, relativeTo: Date())
     }
 }
+
+extension DashboardView {
+
+    var nextUpcomingEvent: Event? {
+        let now = Date()
+        return eventVM.events
+            .filter { $0.date > now }
+            .sorted { $0.date < $1.date }
+            .first
+    }
+}
+
+extension DashboardView {
+
+    func formattedUpcomingTime(_ date: Date) -> String {
+        let calendar = Calendar.current
+        let formatter = DateFormatter()
+        formatter.timeStyle = .short
+
+        if calendar.isDateInToday(date) {
+            return "Today \(formatter.string(from: date))"
+        } else if calendar.isDateInTomorrow(date) {
+            return "Tomorrow \(formatter.string(from: date))"
+        } else {
+            formatter.dateFormat = "EEE h:mm a"
+            return formatter.string(from: date)
+        }
+    }
+
+}
+
+
+
+
 
 ////////////////////////////////////////////////////////////
 // MARK: - GPA CARD
@@ -412,46 +359,75 @@ extension DashboardView {
     }
 }
 
+
 ////////////////////////////////////////////////////////////
-// MARK: - QUICK ACTIONS
+// MARK: - QUICK ACTIONS GRID (Portal Style)
 ////////////////////////////////////////////////////////////
 
 extension DashboardView {
-    var quickActions: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("Quick Actions")
-                .font(.headline)
 
-            LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 4), spacing: 16) {
-                quickActionItem("📘", "GPA") { GPAFullView() }
-                quickActionItem("🍽", "Dining") { DiningHomeView() }
-                quickActionItem("📅", "Calendar") { CalendarView() }
-                quickActionItem("⏱️", "Study") { StudyTrackerView() }
+    var quickActionsGrid: some View {
+        VStack(spacing: 16) {
+
+            LazyVGrid(
+                columns: Array(repeating: GridItem(.flexible()), count: 4),
+                spacing: 20
+            ) {
+
+                quickActionItem(
+                    title: "Board",
+                    systemImage: "bubble.left.and.bubble.right.fill",
+                    color: .blue,
+                    destination: BoardView()
+                )
+
+                quickActionItem(
+                    title: "GPA",
+                    systemImage: "chart.bar.fill",
+                    color: .orange,
+                    destination: GPAFullView()
+                )
+
+                quickActionItem(
+                    title: "Dining",
+                    systemImage: "fork.knife.circle.fill",
+                    color: .green,
+                    destination: DiningHomeView()
+                )
+
+                quickActionItem(
+                    title: "Calendar",
+                    systemImage: "calendar.circle.fill",
+                    color: .red,
+                    destination: CalendarView()
+                )
+
+                quickActionItem(
+                    title: "Study",
+                    systemImage: "book.circle.fill",
+                    color: .indigo,
+                    destination: StudyTrackerView()
+                )
+
+                quickActionItem(
+                    title: "Marketplace",
+                    systemImage: "cart.circle.fill",
+                    color: .purple,
+                    destination: MarketplaceView()
+                )
+
+                quickActionItem(
+                    title: "Timetable",
+                    systemImage: "clock.circle.fill",
+                    color: .teal,
+                    destination: TimetableView()
+                )
             }
         }
-        .padding()
-        .background(Color(.systemBackground))
-        .cornerRadius(16)
-        .shadow(color: .black.opacity(0.05), radius: 8)
-    }
-
-    func quickActionItem<Destination: View>(
-        _ icon: String,
-        _ title: String,
-        destination: @escaping () -> Destination
-    ) -> some View {
-        NavigationLink(destination: destination()) {
-            VStack(spacing: 8) {
-                Text(icon).font(.largeTitle)
-                Text(title)
-                    .font(.caption)
-                    .foregroundColor(.primary)
-            }
-            .frame(maxWidth: .infinity)
-            .padding(.vertical)
-        }
+        .padding(.horizontal)
     }
 }
+
 
 ////////////////////////////////////////////////////////////
 // MARK: - WEEKLY STUDY CHART
@@ -589,4 +565,31 @@ func headerIcon(system: String) -> some View {
     }
     .environmentObject(GPAViewModel())  // mock / sample GPA VM
     .environmentObject(EventViewModel())  // mock / sample Event VM
+}
+
+extension DashboardView {
+
+    func quickActionItem<Destination: View>(
+        title: String,
+        systemImage: String,
+        color: Color,
+        destination: Destination
+    ) -> some View {
+
+        NavigationLink(destination: destination) {
+            VStack(spacing: 8) {
+
+                Image(systemName: systemImage)
+                    .font(.system(size: 28))
+                    .foregroundColor(color)
+                    .frame(height: 32)
+
+                Text(title)
+                    .font(.system(size: 12, weight: .medium))
+                    .foregroundColor(.primary)
+                    .multilineTextAlignment(.center)
+            }
+            .frame(maxWidth: .infinity)
+        }
+    }
 }

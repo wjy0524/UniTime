@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		155D61A62F15B9F70009DB53 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 155D61A52F15B9F70009DB53 /* Lottie */; };
 		1578015E2E6F472D00B7FCB9 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 1578015D2E6F472D00B7FCB9 /* FirebaseAnalytics */; };
 		157801602E6F472D00B7FCB9 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 1578015F2E6F472D00B7FCB9 /* FirebaseAuth */; };
 		157801622E6F472D00B7FCB9 /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = 157801612E6F472D00B7FCB9 /* FirebaseCrashlytics */; };
@@ -41,6 +42,19 @@
 			remoteInfo = "Quad-2025-project";
 		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		15F13B872F15B99900743C2B /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		157801222E6F423700B7FCB9 /* Quad-2025-project.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Quad-2025-project.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -93,6 +107,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				15BBE9C22ECD9EDC00C93800 /* Kingfisher in Frameworks */,
+				155D61A62F15B9F70009DB53 /* Lottie in Frameworks */,
 				1578016A2E6F472D00B7FCB9 /* FirebasePerformance in Frameworks */,
 				157801682E6F472D00B7FCB9 /* FirebaseMessaging in Frameworks */,
 				1578016E2E6F472D00B7FCB9 /* FirebaseStorage in Frameworks */,
@@ -159,6 +174,7 @@
 				1578011E2E6F423700B7FCB9 /* Sources */,
 				1578011F2E6F423700B7FCB9 /* Frameworks */,
 				157801202E6F423700B7FCB9 /* Resources */,
+				15F13B872F15B99900743C2B /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -182,6 +198,7 @@
 				15D9A37E2EAB2DE500773B9C /* Shimmer */,
 				15BBE9C12ECD9EDC00C93800 /* Kingfisher */,
 				D7D56B452EF7B28D00873787 /* FirebaseFunctions */,
+				155D61A52F15B9F70009DB53 /* Lottie */,
 			);
 			productName = "Quad-2025-project";
 			productReference = 157801222E6F423700B7FCB9 /* Quad-2025-project.app */;
@@ -270,6 +287,7 @@
 				D7C7169A2E7FD3500086FA22 /* XCRemoteSwiftPackageReference "CalendarKit" */,
 				15D9A37D2EAB2DE500773B9C /* XCRemoteSwiftPackageReference "SwiftUI-Shimmer" */,
 				15BBE9C02ECD9EDC00C93800 /* XCRemoteSwiftPackageReference "Kingfisher" */,
+				155D61A42F15B9F70009DB53 /* XCRemoteSwiftPackageReference "lottie-ios" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 157801232E6F423700B7FCB9 /* Products */;
@@ -692,6 +710,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		155D61A42F15B9F70009DB53 /* XCRemoteSwiftPackageReference "lottie-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/airbnb/lottie-ios";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.6.0;
+			};
+		};
 		1578015C2E6F472D00B7FCB9 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
@@ -727,6 +753,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		155D61A52F15B9F70009DB53 /* Lottie */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 155D61A42F15B9F70009DB53 /* XCRemoteSwiftPackageReference "lottie-ios" */;
+			productName = Lottie;
+		};
 		1578015D2E6F472D00B7FCB9 /* FirebaseAnalytics */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 1578015C2E6F472D00B7FCB9 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;

@@ -60,6 +60,7 @@ struct DiningHomeView: View {
         }
         .navigationTitle("UT Dining")
         .navigationBarTitleDisplayMode(.inline)
+        
     }
 }
 
