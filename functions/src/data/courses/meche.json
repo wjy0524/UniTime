@@ -1,0 +1,347 @@
+[
+  {
+    "title": "M E 302 - Introduction to Engineering Design and Graphics",
+    "content": "Introduction to mechanical engineering education and practice through lectures and laboratory experiences. Graphics and modeling fundamentals for engineering design: freehand sketching, computer modeling of solid geometry, and generation of engineering drawings. Introduction to reverse engineering, computer-aided design, rapid prototyping, and manufacturing. Application of the design process and problem solving through individual and team projects. Two lecture hours and four laboratory hours a week for one semester. Only one of the following may be counted: Mechanical Engineering 302, 210, 210H.",
+    "category": "courses"
+  },
+  {
+    "title": "M E 103 - Studies in Engineering Design Graphics",
+    "content": "Computer laboratory work in engineering design graphics for students with transfer credit for Mechanical Engineering 210 who need additional work. Three computer laboratory hours a week for one semester. May not be counted by students with credit for Mechanical Engineering 302, 210, or 210H. Prerequisite: Consent of the undergraduate adviser.",
+    "category": "courses"
+  },
+  {
+    "title": "M E 205 - Introduction to Computers and Programming",
+    "content": "Introduction to computer hardware and software systems; programming using a high-level language; mathematical software programming; and introduction to machine language. Includes significant hands-on programming opportunities. One lecture hour and three laboratory hours a week for one semester. May not be taken concurrently with Mechanical Engineering 302. Prerequisite: Credit or registration for Mathematics 408C or 408K.",
+    "category": "courses"
+  },
+  {
+    "title": "M E 210 - Engineering Design Graphics",
+    "content": "Graphics and modeling fundamentals for engineering design: freehand sketching, computer modeling of solid geometry, and generation of engineering drawings. Introduction to reverse engineering, computer-aided design, rapid prototyping, and manufacturing. Application of the design process to problem solving. Individual and team design projects. Two lecture hours and three laboratory hours a week for one semester. Only one of the following may be counted: Mechanical Engineering 302, 210, 210H. May not be counted toward the Bachelor of Science in Mechanical Engineering degree. Prerequisite: Credit or registration for Mathematics 408C or 408K.",
+    "category": "courses"
+  },
+  {
+    "title": "M E 210H - Engineering Design Graphics: Honors",
+    "content": "Graphics and modeling fundamentals for engineering design: freehand sketching, computer modeling of solid geometry, and generation of engineering drawings. Introduction to reverse engineering, computer-aided design, rapid prototyping, and manufacturing. Application of the design process to problem solving. Individual and team design projects. One lecture hour and four laboratory hours a week for one semester. Only one of the following may be counted: Mechanical Engineering 302, 210, 210H. May not be counted toward the Bachelor of Science in Mechanical Engineering degree. Prerequisite: Credit or registration for Mathematics 408C or 408K, and admission to an engineering honors program.",
+    "category": "courses"
+  },
+  {
+    "title": "M E 310T - Applied Thermodynamics",
+    "content": "First and second laws of thermodynamics; thermodynamics processes, cycles, and heat transfer. Three lecture hours a week for one semester. Mechanical Engineering 320 and 310T may not both be counted. May not be counted toward the Bachelor of Science in Mechanical Engineering degree. Prerequisite: Chemistry 301, Mathematics 408D or 408M, and Physics 301 or 303K with a grade of at least C- in each.",
+    "category": "courses"
+  },
+  {
+    "title": "M E 311 - Materials Engineering",
+    "content": "An exploration of fundamental aspects of the structure, properties, and behavior of engineering materials. Three lecture hours a week for one semester. Prerequisite: The following courses with a grade of at least C- in each: Chemistry 301, Mechanical Engineering 302, Physics 303K, 103M; and credit or registration for Mechanical Engineering 111L, Physics 303L, and 103N.",
+    "category": "courses"
+  },
+  {
+    "title": "M E 111L - Materials Engineering Laboratory",
+    "content": "Hands-on experiments in materials science and engineering topics and microstructure-property relationships discussed in Mechanical Engineering 311. One lecture hour and three laboratory hours a week for one semester. Prerequisite: Mechanical Engineering 302 with a grade of at least C-, and credit or registration for Mechanical Engineering 311.",
+    "category": "courses"
+  },
+  {
+    "title": "M E 314D - Dynamics",
+    "content": "Analysis of motions, forces, momenta, and energies in mechanical systems. Three lecture hours and one discussion hour a week for one semester. Mechanical Engineering 314D and 324 may not both be counted. Prerequisite: Engineering Mechanics 306 and Mathematics 408D or 408M with a grade of at least C- in each.",
+    "category": "courses"
+  },
+  {
+    "title": "M E 316T - Thermodynamics",
+    "content": "Properties, heat and work, first and second laws, thermodynamic processes, introduction to ideal power cycles. Three lecture hours a week for one semester, with additional hours to be arranged. Only one of the following may be counted: Mechanical Engineering 326, 326H, 316T. Prerequisite: Chemistry 301, Mathematics 408D or 408M, and Physics 301 or 303K with a grade of at least C- in each.",
+    "category": "courses"
+  },
+  {
+    "title": "M E 218 - Engineering Computational Methods",
+    "content": "Applied numerical analysis, programming of computational algorithms using mathematical software, and applications of computational methods to the solution of mechanical engineering problems. One and one-half lecture hours and one and one-half laboratory hours a week for one semester. Prerequisite: Mathematics 427J or 427K and Mechanical Engineering 205 with a grade of at least C- in each.",
+    "category": "courses"
+  },
+  {
+    "title": "M E 318M - Programming and Engineering Computational Methods",
+    "content": "An investigation of applied numerical analysis, programming of computational algorithms using mathematical software, and applications of computational methods to the solution of mechanical engineering problems. Two lecture hours and one and one-half laboratory hours a week for one semester. Prerequisite: Mathematics 427J or 427K with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "M E 320 - Applied Thermodynamics",
+    "content": "First and second laws of thermodynamics; thermodynamic processes, cycles, and heat transfer. Three lecture hours a week for one semester. Mechanical Engineering 320 and 310T may not both be counted. May not be counted toward the Bachelor of Science in Mechanical Engineering degree. Prerequisite: Chemistry 301, Mathematics 408D, and Physics 303K.",
+    "category": "courses"
+  },
+  {
+    "title": "M E 120C - Humanitarian Engineering Seminar",
+    "content": "Restricted to students pursuing Humanitarian Engineering certificate. One lecture hour a week for one semester. Mechanical Engineering 120C and 179M (Topic: Seminar in Humanitarian Engn) may not both be counted. Prerequisite: Consent of instructor.",
+    "category": "courses"
+  },
+  {
+    "title": "M E 324 - Dynamics",
+    "content": "Analysis of motions, forces, momenta, and energies in mechanical systems. Three lecture hours and one discussion hour a week for one semester. Mechanical Engineering 314D and 324 may not both be counted. Prerequisite: Engineering Mechanics 306 and Mathematics 408D with a grade of at least C- in each; and credit or registration for Mechanical Engineering 318M.",
+    "category": "courses"
+  },
+  {
+    "title": "M E 326 - Thermodynamics",
+    "content": "Properties, heat and work, first and second laws, thermodynamic processes, introduction to ideal power cycles. Three lecture hours a week for one semester. For some sections, two discussion hours a week are also required. Only one of the following may be counted: Mechanical Engineering 326, 326H, 316T. Prerequisite: Chemistry 301, Mathematics 408D, and Physics 303K with a grade of at least C- in each.",
+    "category": "courses"
+  },
+  {
+    "title": "M E 326H - Thermodynamics: Honors",
+    "content": "Properties, heat and work, first and second laws, thermodynamic processes, introduction to ideal power cycles. Three lecture hours a week for one semester. For some sections, two discussion hours a week are also required. Only one of the following may be counted: Mechanical Engineering 326, 326H, 316T. Prerequisite: Chemistry 301, Mathematics 408D, and Physics 303K with a grade of at least C- in each, and admission to an engineering honors program.",
+    "category": "courses"
+  },
+  {
+    "title": "M E 330 - Fluid Mechanics",
+    "content": "Fluid properties, statics, conservation laws, inviscid and viscous incompressible flow, flow in confined streams and around objects. Three lecture hours a week for one semester. Prerequisite: Engineering Mechanics 306, Mathematics 427J or 427K, and Mechanical Engineering 316T or 326 or 326H, with a grade of at least C- in each; and credit or registration for Mechanical Engineering 130L.",
+    "category": "courses"
+  },
+  {
+    "title": "M E 130L - Experimental Fluid Mechanics",
+    "content": "Experimental design concepts, uncertainty analysis, and systems analysis as applied to thermodynamics, fluid mechanics, and heat transfer systems. One lecture hour and two laboratory hours a week for one semester. Prerequisite: Credit or registration for Mechanical Engineering 330.",
+    "category": "courses"
+  },
+  {
+    "title": "M E 333H - Engineering Communication: Honors",
+    "content": "Professional communication skills for engineers, with emphasis on research, writing, editing, and oral presentation on topics of social and technical significance in engineering. Students collaborate to publish an online journal. Two lecture hours and two laboratory hours a week for one semester. Mechanical Engineering 333H and 333T may not both be counted. Prerequisite: Rhetoric and Writing 306 with a grade of at least C-, and admission to an engineering honors program.",
+    "category": "courses"
+  },
+  {
+    "title": "M E 333T - Engineering Communication",
+    "content": "Professional communication skills for engineers, with emphasis on research, writing, and oral presentation on topics of social and technical significance in engineering. Two lecture hours and two laboratory hours a week for one semester. Only one of the following may be counted: Aerospace Engineering 333T, Biomedical Engineering 333T, Communication 333T, Civil Engineering 333T, Chemical Engineering 333T, Electrical and Computer Engineering 333T, Electrical Engineering 333T, Engineering Studies 333T, Mechanical Engineering 333T, Petroleum and Geosystems Engineering 333T. Prerequisite: Rhetoric and Writing 306 or English 303C with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "M E 334 - Materials Engineering",
+    "content": "Fundamental aspects of the structure, properties, and behavior of engineering materials. Three lecture hours a week for one semester. Prerequisite: Chemistry 301 with a grade of at least C- and credit or registration for the following: Mechanical Engineering 134L; Physics 303L or 316; Physics 103N, 105N, or 116L; and Engineering Mechanics 319.",
+    "category": "courses"
+  },
+  {
+    "title": "M E 134L - Materials Engineering Laboratory",
+    "content": "Hands-on experiments in materials science and engineering topics and microstructure-property relationships discussed in Mechanical Engineering 334. One lecture hour and three laboratory hours a week for one semester. Prerequisite: Credit or registration for Mechanical Engineering 334 and Engineering Mechanics 319.",
+    "category": "courses"
+  },
+  {
+    "title": "M E 335 - Engineering Statistics",
+    "content": "Fundamentals of probability, distribution theory, data analysis and statistics, interval estimation, hypothesis testing, and statistical quality control. Three lecture hours and one discussion hour a week for one semester. Prerequisite: Mathematics 408D or 408M with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "M E 336 - Materials Processing",
+    "content": "Effects of processing on materials properties; materials selection. Three lecture hours a week for one semester. Prerequisite: Mechanical Engineering 334 (or 311) and 134L (or 111L) or the equivalent and Engineering Mechanics 319 with a grade of at least C- in each.",
+    "category": "courses"
+  },
+  {
+    "title": "M E 136L - Materials Processing Laboratory",
+    "content": "Hands-on study of selected materials processing procedures and processing-microstructure-property relationships discussed in Mechanical Engineering 336. One lecture hour and three laboratory hours a week for one semester. Prerequisite: Mechanical Engineering 111L and Engineering Mechanics 319 with a grade of at least C- in each, concurrent enrollment in Mechanical Engineering 336.",
+    "category": "courses"
+  },
+  {
+    "title": "M E 336P - Concepts in Nuclear and Radiation Engineering",
+    "content": "Introduces the many different aspects and applications of nuclear and radiation engineering/physics. Subjects covered include: history of nuclear development, basic concepts of radiation and radioactivity, radioactive waste management, global warming and the impact of nuclear power plants, industrial applications, health physics, nuclear medicine, job opportunities at power plants, non-proliferation, nuclear security, discussion of opportunities for graduate schools at national laboratories, tour of University of Texas nuclear research reactor along with three introductory laboratories. Three lecture hours a week for one semester. Mechanical Engineering 336P and 379M (Topic: Concepts in Nuclear and Radiation Engineering) may not both be counted. Prerequisite: For engineering majors, Physics 303L and 103N or Physics 316 and 116L with a grade of at least C- in each; for others, upper-division standing.",
+    "category": "courses"
+  },
+  {
+    "title": "M E 337C - Introduction to Nuclear Power Systems",
+    "content": "Radioactivity, nuclear interactions: fission and fusion, fission reactors, nuclear power systems, nuclear power safety. Three lecture hours a week for one semester. Prerequisite: For engineering majors, Mechanical Engineering 318M or 218 with a grade of at least C-; Physics 303L and 103N or Physics 316 and 116L with a grade of at least C- in each; for others, upper-division standing and written consent of instructor.",
+    "category": "courses"
+  },
+  {
+    "title": "M E 337F - Nuclear Environmental Protection",
+    "content": "Ionizing radiation and its interactions with matter and living tissues; radioactive decay kinetics; external and internal dose measurement; transportation through the environment; managing radioactive waste streams; and safeguards. Three lecture hours a week for one semester. Mechanical Engineering 337F and 389C may not both be counted. Prerequisite: For engineering majors, Physics 303L and 103N or Physics 316 and 116L with a grade of at least C- in each; for others, upper-division standing.",
+    "category": "courses"
+  },
+  {
+    "title": "M E 337G - Nuclear Safety and Security",
+    "content": "An investigation of policy and technical aspects related to nuclear safety and security. Participants will evaluate the proliferation of risk from facilities within the nuclear fuel cycle. They will calculate the criticality conditions for a nuclear assembly and derive parent/daughter decay equations. Nuclear forensics evaluations will be conducted on real-world environmental measurements. Three lecture hours a week for one semester. Prerequisite: For engineering majors, Physics 303L and 103N or Physics 316 and 116L with a grade of at least C- in each; for others, upper-division standing and written consent of instructor.",
+    "category": "courses"
+  },
+  {
+    "title": "M E 338 - Machine Elements",
+    "content": "Analysis for the design and manufacture of basic mechanical elements, and their role in the design of machines; application of finite element modeling. Three lecture hours a week for one semester. Prerequisite: Engineering Mechanics 319 and Mechanical Engineering 334 with a grade of at least C- in each.",
+    "category": "courses"
+  },
+  {
+    "title": "M E 339 - Heat Transfer",
+    "content": "Steady and transient heat conduction; forced and natural convection; radiation; introduction to heat exchangers and applications. Three lecture hours a week for one semester. Prerequisite: Mechanical Engineering 218 or 318M, 330, and 130L with a grade of at least C- in each; and credit or registration for Mechanical Engineering 139L.",
+    "category": "courses"
+  },
+  {
+    "title": "M E 139L - Experimental Heat Transfer",
+    "content": "Experimental design concepts, uncertainty analysis, and systems analysis as applied to thermodynamics, fluid mechanics, and heat transfer systems. One lecture hour and two laboratory hours a week for one semester. Prerequisite: Credit or registration for Mechanical Engineering 339.",
+    "category": "courses"
+  },
+  {
+    "title": "M E 340 - Mechatronics",
+    "content": "Theory and application of electrical circuits, electronics, and electromechanical devices; concepts in electrical power transmission; instrumentation; feedback; integration of electronics and instrumentation with mechanical engineering systems (mechatronics). Three lecture hours a week for one semester. Aerospace Engineering 375 and Mechanical Engineering 340 may not both be counted. Prerequisite: Mechanical Engineering 318M; Physics 303L or 316; Physics 103N, 105N, or 116L with a grade of at least C- in each; and credit or registration for Mechanical Engineering 140L.",
+    "category": "courses"
+  },
+  {
+    "title": "M E 140L - Mechatronics Laboratory",
+    "content": "Hands-on laboratory using hand-held and bench-top electronic test and prototyping equipment for circuits and mechatronics applications; computer-aided instrumentation and data acquisition; laboratory study in design, prototyping, and testing with electrical and electronics components and electromechanical devices. One lecture hour and two laboratory hours a week for one semester. Prerequisite: Credit or registration for Mechanical Engineering 340.",
+    "category": "courses"
+  },
+  {
+    "title": "M E 343 - Thermal-Fluid Systems",
+    "content": "Analysis and design of integrated systems involving simultaneous application of thermodynamics, heat transfer, and fluid mechanics. Applications to power generation, vehicle engineering, materials processing, environmental control, and manufacturing. Three lecture hours and one discussion hour a week for one semester. Prerequisite: Mechanical Engineering 330, 130L, 339, and 139L with a grade of at least C- in each.",
+    "category": "courses"
+  },
+  {
+    "title": "M E 344 - Dynamic Systems and Controls",
+    "content": "Lumped physical system models; electrical, fluid, mechanical, and thermal system analysis; linear system transient, steady-state behavior; introduction to feedback control. Three lecture hours a week for one semester. Prerequisite: Mathematics 427J or 427K, Mechanical Engineering 205 or 318M, and 324 or 314D with a grade of at least C- in each; Mechanical Engineering 340 and 140L with a grade of at least C- in each; and credit or registration for Mechanical Engineering 144L or 244L.",
+    "category": "courses"
+  },
+  {
+    "title": "M E 144L/244L - Dynamic Systems and Controls Laboratory",
+    "content": "Modeling of engineering systems, digital simulation, and assessment of results with experimental study; methods for analysis of first- and second-order systems, system identification, frequency response and feedback control principles; hands-on experimentation with mechanical, fluid, electrical, and magnetic systems; data acquisition and analysis using oscilloscopes and microcomputer-based analog-to-digital and digital-to-analog conversion; theoretical and practical principles governing the design and use of various sensors and transducers. For 144L, one lecture hour and two laboratory hours a week for one semester; for 244L, one lecture hour and three laboratory hours a week for one semester. Prerequisite: Credit or registration for Mechanical Engineering 344.",
+    "category": "courses"
+  },
+  {
+    "title": "M E 348E - Advanced Mechatronics I",
+    "content": "Integrated use of mechanical, electrical, and computer systems for information processing and control of machines and devices. System modeling, electromechanics, sensors and actuators, basic electronics design, signal processing and conditioning, noise and its abatement, grounding and shielding, filters, and system interfacing techniques. Three lecture hours and two laboratory hours a week for one semester. Mechanical Engineering 348C and 348E may not both be counted. Prerequisite: For engineering majors, Mechanical Engineering 340 or the equivalent; for nonengineering majors, upper-division standing and written consent of instructor.",
+    "category": "courses"
+  },
+  {
+    "title": "M E 348F - Advanced Mechatronics II",
+    "content": "Interfacing microcomputers with sensors and actuators; hybrid (analog/digital) design; digital logic and analog circuitry; data acquisition and control; microcomputer architecture, assembly language programming; signal conditioning, filters, analog-to-digital and digital-to-analog conversion. Three lecture hours and two laboratory hours a week for one semester. Mechanical Engineering 348D and 348F may not both be counted. Prerequisite: For engineering majors: Mechanical Engineering 340 or the equivalent; for nonengineering majors: upper-division standing and written consent of instructor.",
+    "category": "courses"
+  },
+  {
+    "title": "M E 349 - Corrosion Engineering",
+    "content": "Corrosion principles; electrochemical, environmental, and metallurgical effects; types of corrosion; corrosion testing and prevention; modern theories: principles and applications. Three lecture hours a week for one semester. Prerequisite: For engineering majors, Mechanical Engineering 334 (or 311) or the equivalent with a grade of at least C-, Mechanical Engineering 316T or 326 (or 326H) or the equivalent with a grade of at least C-; for others, upper-division standing and written consent of instructor.",
+    "category": "courses"
+  },
+  {
+    "title": "M E 350 - Machine Tool Operations for Engineers",
+    "content": "Hands-on manual and computer-numerical-controlled machine tool operation. Part design and tool selection for production. One lecture hour and six laboratory hours a week for one semester. Mechanical Engineering 350 and 379M (Topic 7: Machine Tool Operations for Engineers) may not both be counted. Offered on the letter-grade basis only.",
+    "category": "courses"
+  },
+  {
+    "title": "M E 352K - Engineering Computer Graphics",
+    "content": "Introduction to interactive computer graphics as a tool in computer-aided design. Use of graphics software packages. Two lecture hours and three laboratory hours a week for one semester. Prerequisite: For non-engineering majors, upper-division standing and written consent of instructor.",
+    "category": "courses"
+  },
+  {
+    "title": "M E 353 - Engineering Finance",
+    "content": "Evaluating the financial impact of engineering decisions. Comparing alternatives with cash flow analysis considering rate of return, inflation, and taxes, with emphasis on analyzing risk. Managing complex projects with activity scheduling and resource allocation considering cash flows. Methods include probabilistic analysis and simulation. Three lecture hours and two discussion hours a week for one semester. Prerequisite: Mechanical Engineering 335 with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "M E 354 - Introduction to Biomechanical Engineering",
+    "content": "The application of mechanical engineering principles to problems in the life sciences; transport phenomena of physiological solids and fluids; biosignal analysis and instrumentation; biomaterials design and compatibility; principles of medical imaging, diagnostics, and therapeutics; rehabilitation engineering. Three lecture hours a week for one semester. Prerequisite: For engineering majors, Mathematics 427J or 427K with a grade of at least C-; for others, upper-division standing and written consent of instructor.",
+    "category": "courses"
+  },
+  {
+    "title": "M E 354M - Biomechanics of Human Movement",
+    "content": "Modeling and simulation of human movement; neuromuscular control; computer applications; introduction to experimental techniques. Three lecture hours a week for one semester. Biomedical Engineering 342 and Mechanical Engineering 354M may not both be counted. Prerequisite: For non-engineering majors, upper-division standing and written consent of instructor.",
+    "category": "courses"
+  },
+  {
+    "title": "M E 355K - Engineering Vibrations",
+    "content": "Time-domain and frequency-domain analysis of vibrating systems; matrix methods, instrumentation, and vibration control; numerical methods. Three lecture hours a week for one semester. Prerequisite: Mathematics 427J or 427K, and Mechanical Engineering 314D or 324 with a grade of at least C- in each.",
+    "category": "courses"
+  },
+  {
+    "title": "M E 360 - Vehicle System Dynamics and Controls",
+    "content": "Fundamentals of ground vehicle dynamics, tire-road mechanics, vehicle control systems, vehicle stability, and simulation of vehicle systems. Three lecture hours a week for one semester. Only one of the following may be counted: Mechanical Engineering 360, 379M (Topic: Vehicle System Dynamics and Controls), 390, 397 (Topic: Vehicle System Dynamics and Controls). Prerequisite: For engineering majors, Mechanical Engineering 344 with a grade of at least C-; for others, upper-division standing and written consent of instructor.",
+    "category": "courses"
+  },
+  {
+    "title": "M E 360L - Turbomachinery and Compressible Flow",
+    "content": "Positive displacement and dynamic rotating machinery; pumps, compressors, and turbines; performance characteristics and scaling laws. One-dimensional compressible flow with area change, friction, or heat addition. Normal and oblique shock waves; Prandtl-Meyer expansion. Three lecture hours a week for one semester. Prerequisite: Mechanical Engineering 330, 130L and 139L.",
+    "category": "courses"
+  },
+  {
+    "title": "M E 360N - Intermediate Heat Transfer",
+    "content": "Multidimensional and transient diffusion; laminar and turbulent convection; radiation exchange; special topics. Three lecture hours a week for one semester. Prerequisite: Mechanical Engineering 339.",
+    "category": "courses"
+  },
+  {
+    "title": "M E 361E - Nuclear Reactor Operations and Engineering",
+    "content": "Fission and chain reactions; neutron diffusion and moderation; reactor equations; Fermi Age theory; and multigroup and multiregional analysis. Three lecture hours a week for one semester. Prerequisite: For engineering majors, Mechanical Engineering 318M or 218 and Physics 303L and 103N or Physics 316 and 116L with a grade of at least C- in each; for others, upper-division standing and written consent of instructor.",
+    "category": "courses"
+  },
+  {
+    "title": "M E 362K - Readings in Engineering",
+    "content": "A study of the interrelated problems of society, technology, and energy. Three lecture hours a week for one semester. Only one of the following may be counted: Mechanical Engineering 325L, 362K, 371K, 177K, 277K, 377K.",
+    "category": "courses"
+  },
+  {
+    "title": "M E 363M - Energy Technology and Policy",
+    "content": "An overview of energy technologies, fuels, environmental impacts and public policies. Subjects are interdisciplinary and include an introduction to quantitative concepts in energy, including the differences among fuels and energy technologies, energy policy levers, and the societal aspects of energy, such as culture, economics, war, and international affairs. Includes brief snippets of energy history, use of real-world examples, and looks forward into the future. Interactive and lecture-oriented around current events related to energy. Three lecture hours a week for one semester. Mechanical Engineering 363M and 379M (Topic: Energy Technology and Policy) may not both be counted. Prerequisite: Upper-division standing.",
+    "category": "courses"
+  },
+  {
+    "title": "M E 364L - Automatic Control System Design",
+    "content": "Feedback principles; control components; industrial compensators; Routh, Nyquist, Bode, and root locus methods; controller design; continuous and discrete time control. Three lecture hours and one-half laboratory hour a week for one semester. Prerequisite: Mechanical Engineering 344.",
+    "category": "courses"
+  },
+  {
+    "title": "M E 365K - Finite Element Method",
+    "content": "Introduction and application of the finite element method in engineering analysis and design problems; demonstration of techniques using commercial codes. Three lecture hours a week for one semester. Prerequisite: Engineering Mechanics 319 and Mathematics 427J or 427K with a grade of at least C- in each.",
+    "category": "courses"
+  },
+  {
+    "title": "M E 366J - Mechanical Engineering Design Methodology",
+    "content": "An examination of structured methodologies for designing mechanical systems; reverse engineering/redesign projects and conceptual design projects. Three lecture hours and two laboratory hours a week for one semester. Prerequisite: The following coursework with a grade of at least C- in each: Mechanical Engineering 302, 330, 130L, 335, 338, 339, 139L, 340, and 140L; one of the following with a grade of at least C-: Mechanical Engineering 333H, 333T, Aerospace Engineering 333T, Biomedical Engineering 333T, Chemical Engineering 333T, Civil Engineering 333T, Electrical Engineering 333T, Engineering Studies 333T or Petroleum and Geosystems Engineering 333T.",
+    "category": "courses"
+  },
+  {
+    "title": "M E 266K - Mechanical Engineering Design Project",
+    "content": "Creative design, analysis, selection, development, and fabrication of engineering components and systems. Development of team project with faculty adviser and sponsoring engineer. Two lecture hours a week for one semester, with additional hours to be arranged. Prerequisite: Mechanical Engineering 344, 144L or 244L, 353, and 366J with a grade of at least C- in each.",
+    "category": "courses"
+  },
+  {
+    "title": "M E 266P - Design Project Laboratory",
+    "content": "Development of individual team project in association with faculty adviser and sponsoring project engineer. Four laboratory hours a week for one semester. Prerequisite: Mechanical Engineering 344, 144L or 244L, 353, and 366J with a grade of at least C- in each.",
+    "category": "courses"
+  },
+  {
+    "title": "M E 366L - Operations Research Models",
+    "content": "Same as Operations Research and Industrial Engineering 366. Formulation and solution-interpretation for operations research models requiring, for example, optimization, simulation, or analysis of Markov chains or queues. Applications include manufacturing design and control, routing and scheduling, plant location, inventory analysis, and management of queueing systems. Three lecture hours a week for one semester. Mechanical Engineering 366L and Operations Research and Industrial Engineering 366 may not both be counted. Prerequisite: For engineering majors, Mathematics 408D or 408M and Mechanical Engineering 318M and 335 with a grade of at least C- in each; for non-engineering majors, upper-division standing and written consent of instructor.",
+    "category": "courses"
+  },
+  {
+    "title": "M E 368J - Computer-Aided Design",
+    "content": "Application of computers to design problems and simulation of mechanical systems; creation of interactive special applications programs. Three lecture hours and two laboratory hours a week for one semester. Prerequisite: Credit or registration for Mechanical Engineering 338.",
+    "category": "courses"
+  },
+  {
+    "title": "M E 369L - Introduction to Computational Fluid Dynamics",
+    "content": "Applied numerical analysis, including solution of linear algebraic equations and ordinary and partial differential equations; modeling of physical processes, including fluid flow and heat and mass transfer; use of general purpose computer codes, including commercial computational fluid dynamics software packages. Three lecture hours a week for one semester. Only one of the following may be counted: Aerospace Engineering 347, Computational Engineering 347, Mechanical Engineering 369L. Prerequisite: Credit or registration for Mechanical Engineering 330 and 339.",
+    "category": "courses"
+  },
+  {
+    "title": "M E 369P - Application Programming for Engineers",
+    "content": "Designed for students who have some experience in programming and are interested in the sharing and development of open source software applications. Provides an introduction to the Python Programming language, an open source, flexible, and intuitive debug programming language, with an emphasis on system modeling, simulation, data analysis, and software/data management. Students will create mini projects in Python that demonstrate software design and organization, debugging, open source practices, and data visualization. Three lecture hours a week for one semester. Prerequisite: For engineering majors, Mechanical Engineering 318M or the equivalent with a grade of at least C-; for others, upper-division standing and written consent of instructor.",
+    "category": "courses"
+  },
+  {
+    "title": "M E 371K - Legal Aspects of Engineering Practice",
+    "content": "Legal considerations in the practice of engineering; specifications and contracts for equipment and engineering services. Three lecture hours a week for one semester. Only one of the following may be counted: Mechanical Engineering 325L, 362K, 371K, 177K, 277K, 377K. Prerequisite: Upper-division standing.",
+    "category": "courses"
+  },
+  {
+    "title": "M E 372J - Robotics and Automation",
+    "content": "Component technologies for precision machines based on dynamic modeling and motion programming: cams, linkages, planar robot manipulators and open architecture vehicles. Homework includes 15 simulations. Three lecture hours a week for one semester. Prerequisite: Upper-division standing and credit or registration for Mechanical Engineering 324.",
+    "category": "courses"
+  },
+  {
+    "title": "M E 374C - Combustion Engine Processes",
+    "content": "Principles of internal combustion engines, fuels, carburetion, combustion, exhaust emissions, knock, fuel injection, and factors affecting performance. Three lecture hours a week for one semester. Prerequisite: Mechanical Engineering 339 or consent of instructor.",
+    "category": "courses"
+  },
+  {
+    "title": "M E 374L - Design of Thermal Systems",
+    "content": "Methodology and approach to design of thermal energy systems; component and system modeling; optimization, including economic considerations. Three lecture hours a week for one semester. Prerequisite: Mechanical Engineering 339 or the equivalent.",
+    "category": "courses"
+  },
+  {
+    "title": "M E 378K - Mechanical Behavior of Materials",
+    "content": "Elastic deformation; viscoelasticity; yielding, plastic flow, plastic instability, strengthening mechanisms; fracture, fatigue, creep; significance of mechanical properties tests. Three lecture hours a week for one semester. Prerequisite: For engineering majors, Mechanical Engineering 334 or the equivalent and 134L with a grade of at least C- in each; for others, upper-division standing and written consent of instructor.",
+    "category": "courses"
+  },
+  {
+    "title": "M E 379N - Engineering Acoustics",
+    "content": "Same as Electrical and Computer Engineering 363N. Principles of acoustics, with applications drawn from audio engineering, biomedical ultrasound, industrial acoustics, noise control, room acoustics, and underwater sound. Three lecture hours a week for one semester. Only one of the following may be counted: Electrical and Computer Engineering 363N, Electrical Engineering 363N, Mechanical Engineering 379N. Prerequisite: Mathematics 427J or 427K with a grade of at least C-.",
+    "category": "courses"
+  },
+  {
+    "title": "M E 679H - Undergraduate Honors Thesis",
+    "content": "Research performed during two consecutive semesters under the supervision of an engineering faculty member; topics are selected jointly by the student and the faculty member with approval by the director of the Engineering Honors Program. The student makes an oral presentation and writes a thesis. Individual instruction for two semesters. Students pursuing both the Bachelor of Arts, Plan II, and a bachelor's degree in engineering may use this course to fulfill the thesis requirement for the Bachelor of Arts, Plan II. Prerequisite: For 679HA, enrollment in the Engineering Honors Program; for 679HB, Mechanical Engineering 679HA and enrollment in the Engineering Honors Program.",
+    "category": "courses"
+  }
+]

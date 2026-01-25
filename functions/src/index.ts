@@ -5,6 +5,9 @@ import OpenAI from "openai";
 admin.initializeApp();
 const db = admin.firestore();
 
+// Add this line at the top with other exports
+export { scrapeEventsDaily, scrapeEventsManual } from "./scraping/hornsLinkScraper";
+
 /* ======================================================
    🔹 Intent Classifier (rule-based, fast)
 ====================================================== */
@@ -101,46 +104,39 @@ export const chat = functions.https.onCall(async (data, context) => {
     const queryVector = embedding.data[0].embedding;
 
     /* --------------------------------------------------
-       4️⃣ Optional RAG (Weaviate)
+       4️⃣ Optional RAG (Qdrant)
     -------------------------------------------------- */
     let retrievalContext = "";
-    const weaviateUrl = functions.config().weaviate?.url;
-    const weaviateKey = functions.config().weaviate?.key;
+    const qdrantUrl = functions.config().qdrant?.url;
+    const qdrantKey = functions.config().qdrant?.key;
 
-    if (weaviateUrl && weaviateKey) {
+    if (qdrantUrl && qdrantKey) {
       try {
-        const res = await fetch(`${weaviateUrl}/v1/graphql`, {
+        const searchResponse = await fetch(`${qdrantUrl}/collections/utdata/points/search`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${weaviateKey}`,
+            "api-key": qdrantKey,
           },
           body: JSON.stringify({
-            query: `{
-              Get {
-                UTData(
-                  nearVector: { vector: ${JSON.stringify(queryVector)} }
-                  limit: 5
-                ) {
-                  title
-                  content
-                }
-              }
-            }`,
+            vector: queryVector,
+            limit: 5,
+            with_payload: true,
           }),
         });
 
-        if (res.ok) {
-          const json = await res.json();
-          const results = json?.data?.Get?.UTData ?? [];
+        if (searchResponse.ok) {
+          const searchResult = await searchResponse.json();
+          const results = searchResult.result || [];
 
           if (results.length > 0) {
-            retrievalContext =
-              results.map((r: any) => `- ${r.title}: ${r.content}`).join("\n");
+            retrievalContext = results
+              .map((r: any) => `- ${r.payload.title}: ${r.payload.content}`)
+              .join("\n");
           }
         }
       } catch (err) {
-        console.error("Weaviate failed:", err);
+        console.error("Qdrant search failed:", err);
       }
     }
 
@@ -158,40 +154,50 @@ export const chat = functions.https.onCall(async (data, context) => {
     /* --------------------------------------------------
        6️⃣ Generate answer
     -------------------------------------------------- */
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o",
-      messages: [
-        {
-          role: "system",
-          content: `
-You are an AI assistant for a University of Texas at Austin student.
+      const completion = await openai.chat.completions.create({
+        model: "gpt-4o",
+        messages: [
+          {
+            role: "system",
+            content: `
+      You are an intelligent AI advisor for University of Texas at Austin students. You're like a knowledgeable upperclassman who knows more about UT.
 
-Current reasoning mode: ${reasoningMode}
+      CRITICAL INSTRUCTIONS:
+      1. THINK about what the student actually wants to know, not just what they literally asked
+      2. Use the provided UT data as CONTEXT to inform your answer, not as your complete answer
+      3. REASON and give personalized ADVICE, not just facts
+      4. Combine UT data with your general knowledge when helpful
+      5. Be conversational and helpful, like a friend who knows UT well
 
-Rules:
-- PERSONAL: Use verified user profile data directly.
-- CAMPUS: Use official UT Austin academic data.
-- GENERAL: Answer exactly like a standard ChatGPT model.
+      Examples of good responses:
+      - User asks "What's CS 331?" → Don't just list prerequisites. Explain what it's about, how hard it is, and tips for success.
+      - User asks "Should I take 15 hours?" → Consider their major, year, and give real advice about workload.
+      - User asks "What events are happening?" → Highlight interesting ones, not just list them.
 
-General mode behavior:
-- Use general knowledge freely.
-- Answer confidently and clearly.
-- Do NOT say "check official website" unless uncertainty is unavoidable.
-- For dates and facts, give the most widely accepted answer.
-- If uncertain, clearly state it is an estimate.
+      Current mode: ${reasoningMode}
+      - PERSONAL: You have verified info about this specific student. Use it to personalize advice.
+      - CAMPUS: You have official UT data. Use it as context to give informed answers.
+      - GENERAL: No specific data available. Use your general knowledge about UT and college life.
 
-${hasUserContext ? `Verified user profile:\n${userContext}` : ""}
+      ${hasUserContext ? `
+      STUDENT PROFILE (use to personalize your advice):
+      ${userContext}
+      ` : ""}
 
-${hasUniversityContext ? `Official UT Austin data:\n${retrievalContext}` : ""}
-          `,
-        },
-        {
-          role: "user",
-          content: message,
-        },
-      ],
-    });
+      ${hasUniversityContext ? `
+      UT AUSTIN DATA (use as context, not as your complete answer):
+      ${retrievalContext}
+      ` : ""}
 
+      Remember: Students want ADVICE and INSIGHT, not Wikipedia entries. Be helpful, specific, and conversational.
+            `,
+          },
+          {
+            role: "user",
+            content: message,
+          },
+        ],
+      });
     return {
       reply: completion.choices[0].message.content,
     };
@@ -203,4 +209,3 @@ ${hasUniversityContext ? `Official UT Austin data:\n${retrievalContext}` : ""}
     );
   }
 });
-
