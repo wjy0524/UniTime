@@ -6,19 +6,20 @@
 //
 
 import FirebaseAuth
-import LocalAuthentication
 import SwiftUI
 
 struct AuthGateView: View {
     @StateObject private var authManager = AuthenticationManager()
     @State private var showLogin = false
-    @State private var isCheckingBiometrics = false
 
     var body: some View {
         Group {
+            // 로그인 되어 있으면 메인 화면
             if authManager.isAuthenticated {
                 MainTabView()
                     .environmentObject(authManager)
+
+            // 로그인 안 되어 있으면 로그인 화면
             } else if showLogin {
                 AuthView(
                     isLoggedIn: Binding(
@@ -27,6 +28,8 @@ struct AuthGateView: View {
                     )
                 )
                 .environmentObject(authManager)
+
+            // 앱 시작 시 잠깐 보여주는 로딩 화면
             } else {
                 ZStack {
                     Color(.systemBackground)
@@ -41,47 +44,12 @@ struct AuthGateView: View {
                     }
                 }
                 .onAppear {
-                    authenticateWithBiometrics()
-                }
-            }
-        }
-    }
-
-    func authenticateWithBiometrics() {
-        guard !isCheckingBiometrics else { return }
-        isCheckingBiometrics = true
-
-        // Check if user is already authenticated
-        authManager.checkAuthStatus()
-
-        if Auth.auth().currentUser != nil {
-            // Firebase session exists, try biometric authentication
-            let context = LAContext()
-            var error: NSError?
-
-            if context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error) {
-                context.evaluatePolicy(
-                    .deviceOwnerAuthenticationWithBiometrics,
-                    localizedReason: "Login with Face ID"
-                ) { success, authError in
+                    // 핵심: 무조건 로그인 화면으로 전환
                     DispatchQueue.main.async {
-                        isCheckingBiometrics = false
-                        if success {
-                            authManager.checkAuthStatus()
-                        } else {
-                            showLogin = true
-                        }
+                        showLogin = true
                     }
                 }
-            } else {
-                // Biometrics not available, show login
-                isCheckingBiometrics = false
-                showLogin = true
             }
-        } else {
-            // No session, show login screen
-            isCheckingBiometrics = false
-            showLogin = true
         }
     }
 }

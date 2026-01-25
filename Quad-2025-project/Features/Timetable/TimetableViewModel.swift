@@ -1,20 +1,49 @@
-//
+
 //  TimetableViewModel.swift
 //  Quad-2025-project
-//
-//  Created on Timetable Feature Enhancement
 //
 
 import Foundation
 import SwiftUI
-import UniformTypeIdentifiers
+
+// MARK: - UT Timetable Import Models (Adapter용)
+
+struct ImportedTimetable: Decodable {
+    let name: String
+    let courses: [ImportedCourse]
+}
+
+struct ImportedCourse: Decodable {
+    let courseName: String
+    let department: String
+    let number: String
+    let schedule: ImportedSchedule
+}
+
+struct ImportedSchedule: Decodable {
+    let meetings: [ImportedMeeting]
+}
+
+struct ImportedMeeting: Decodable {
+    let days: [String]        // ["Monday", "Wednesday"]
+    let startTime: Int        // minutes (e.g. 540 = 9:00 AM)
+    let endTime: Int
+    let location: ImportedLocation
+}
+
+struct ImportedLocation: Decodable {
+    let building: String
+    let room: String
+}
+
+// MARK: - ViewModel
 
 class TimetableViewModel: ObservableObject {
+
     @Published var courses: [TimetableCourse] = []
     @Published var showingAddSheet = false
     @Published var showingEditSheet = false
     @Published var selectedCourse: TimetableCourse?
-    @Published var showingImportPicker = false
     @Published var errorMessage: String?
     @Published var showingError = false
 
@@ -34,15 +63,14 @@ class TimetableViewModel: ObservableObject {
 
     func loadCourses() {
         if let data = UserDefaults.standard.data(forKey: userDefaultsKey),
-            let decoded = try? JSONDecoder().decode([TimetableCourse].self, from: data)
-        {
+           let decoded = try? JSONDecoder().decode([TimetableCourse].self, from: data) {
             courses = decoded
         } else {
             courses = []
         }
     }
 
-    // MARK: - CRUD Operations
+    // MARK: - CRUD
 
     func addCourse(_ course: TimetableCourse) {
         courses.append(course)
@@ -61,24 +89,63 @@ class TimetableViewModel: ObservableObject {
         saveCourses()
     }
 
-    func deleteCourse(at offsets: IndexSet) {
-        courses.remove(atOffsets: offsets)
+    func clearAll() {
+        courses = []
         saveCourses()
     }
 
-    // MARK: - Import Functions
+    // MARK: - JSON Import (Adapter)
 
     func importFromJSON(_ data: Data) {
         do {
-            let decoder = JSONDecoder()
-            let importedCourses = try decoder.decode([TimetableCourse].self, from: data)
-            courses.append(contentsOf: importedCourses)
+            let imported = try JSONDecoder().decode(ImportedTimetable.self, from: data)
+            var newCourses: [TimetableCourse] = []
+
+            for importedCourse in imported.courses {
+
+                var times: [CourseTime] = []
+
+                for meeting in importedCourse.schedule.meetings {
+                    for day in meeting.days {
+                        if let dayIndex = dayStringToIndex(day) {
+                            times.append(
+                                CourseTime(
+                                    day: dayIndex,
+                                    startTime: meeting.startTime,
+                                    endTime: meeting.endTime
+                                )
+                            )
+                        }
+                    }
+                }
+
+                let location =
+                    "\(importedCourse.schedule.meetings.first?.location.building ?? "") " +
+                    "\(importedCourse.schedule.meetings.first?.location.room ?? "")"
+
+                let course = TimetableCourse(
+                    id: UUID(), // ✅ UUID FIX
+                    name: importedCourse.courseName,
+                    code: "\(importedCourse.department) \(importedCourse.number)",
+                    instructor: "",
+                    location: location.trimmingCharacters(in: .whitespaces),
+                    colorHex: "#BF5700", // UT Austin Orange,
+                    times: times
+                )
+
+                newCourses.append(course)
+            }
+
+            courses.append(contentsOf: newCourses)
             saveCourses()
+
         } catch {
-            errorMessage = "Failed to import JSON: \(error.localizedDescription)"
+            errorMessage = "Failed to import JSON: The data isn't in the correct format."
             showingError = true
         }
     }
+
+    // MARK: - CSV Import
 
     func importFromCSV(_ data: Data) {
         guard let csvString = String(data: data, encoding: .utf8) else {
@@ -97,7 +164,7 @@ class TimetableViewModel: ObservableObject {
         }
     }
 
-    // MARK: - Export Functions
+    // MARK: - Export
 
     func exportToJSON() -> Data? {
         let encoder = JSONEncoder()
@@ -110,20 +177,18 @@ class TimetableViewModel: ObservableObject {
 
         for course in courses {
             for time in course.times {
-                let line =
-                    "\(course.name),\(course.code),\(course.instructor),\(course.location),\(course.colorHex),\(time.day),\(time.startTime),\(time.endTime)\n"
-                csv += line
+                csv +=
+                "\(course.name),\(course.code),\(course.instructor),\(course.location),\(course.colorHex),\(time.day),\(time.startTime),\(time.endTime)\n"
             }
         }
-
         return csv
     }
 
-    // MARK: - Helper Functions
+    // MARK: - Helpers
 
     func getCourses(for day: Int, hour: Int) -> [TimetableCourse] {
-        return courses.filter { course in
-            course.times.contains { time in
+        courses.filter {
+            $0.times.contains { time in
                 time.day == day && hour == time.startTime / 60
             }
         }
@@ -133,9 +198,17 @@ class TimetableViewModel: ObservableObject {
         selectedCourse = course
         showingEditSheet = true
     }
+}
 
-    func clearAll() {
-        courses = []
-        saveCourses()
+// MARK: - Day String → Index
+
+func dayStringToIndex(_ day: String) -> Int? {
+    switch day.lowercased() {
+    case "monday": return 0
+    case "tuesday": return 1
+    case "wednesday": return 2
+    case "thursday": return 3
+    case "friday": return 4
+    default: return nil
     }
 }

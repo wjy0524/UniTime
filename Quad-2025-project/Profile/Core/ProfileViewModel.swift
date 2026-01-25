@@ -32,31 +32,42 @@ class ProfileViewModel: ObservableObject {
     @Published var likedPosts: [Post] = []
 
     @Published var postsCount: Int = 0
-    @Published var followersCount: Int = 0
-    @Published var followingCount: Int = 0
+    @Published var friendsCount: Int = 0   // ✅ friends 기준
 
     private let db = Firestore.firestore()
 
-    // ⭐️ 현재 보고 있는 프로필의 UID
+    // ⭐️ 현재 보고 있는 프로필 UID
     let targetUid: String
 
-    // MARK: - 내 계정 UID
+    // MARK: - 내 UID
     var myUid: String {
         Auth.auth().currentUser?.uid ?? ""
     }
 
-    // MARK: - Init for other user profile
+    // MARK: - Init (다른 유저 / 내 프로필 공용)
     init(uid: String) {
         self.targetUid = uid
+
+        // 🔔 Like 변경 감지
+        NotificationCenter.default.addObserver(
+            forName: .didUpdateLikes,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            guard let self else { return }
+            Task {
+                await self.fetchLikedPosts(for: self.targetUid)
+            }
+        }
+
         Task {
             await loadProfile(for: uid)
-            await fetchStats(for: uid)
+            await fetchFriendsCount(for: uid)
             await fetchUserPosts(for: uid)
             await fetchLikedPosts(for: uid)
         }
     }
 
-    // MARK: - Init for MY profile
     convenience init() {
         let uid = Auth.auth().currentUser?.uid ?? ""
         self.init(uid: uid)
@@ -82,49 +93,25 @@ class ProfileViewModel: ObservableObject {
         }
     }
 
-    // MARK: - Load Stats (followers, following)
-    func fetchStats(for uid: String) async {
-        await fetchFollowersCount(for: uid)
-        await fetchFollowingCount(for: uid)
-    }
-
-    func fetchFollowersCount(for uid: String) async {
+    // MARK: - Friends Count (🔥 핵심 변경)
+    func fetchFriendsCount(for uid: String) async {
         do {
-            let snap = try await db.collection("users")
+            let snap = try await db
+                .collection("users")
                 .document(uid)
-                .collection("followers")
+                .collection("friends")
                 .getDocuments()
 
-            self.followersCount = snap.documents.count
-
+            self.friendsCount = snap.documents.count
         } catch {
-            print("❌ fetchFollowersCount error:", error)
+            print("❌ fetchFriendsCount error:", error)
         }
-    }
-
-    func fetchFollowingCount(for uid: String) async {
-        do {
-            let snap = try await db.collection("users")
-                .document(uid)
-                .collection("following")
-                .getDocuments()
-
-            self.followingCount = snap.documents.count
-
-        } catch {
-            print("❌ fetchFollowingCount error:", error)
-        }
-    }
-
-    // MARK: - Refresh externally
-    func refreshStats() async {
-        await fetchStats(for: targetUid)
     }
 
     // MARK: - Update Profile
     func updateProfile(profileImage: UIImage?) async {
 
-        guard myUid == targetUid else { return }  // 내 프로필만 수정 가능
+        guard myUid == targetUid else { return }
 
         var imageURL = profileImageURL
 
@@ -137,7 +124,7 @@ class ProfileViewModel: ObservableObject {
         let updatedUser = QuadUser(
             uid: myUid,
             username: username,
-            username_lower: username.lowercased(),   // 🔥 추가
+            username_lower: username.lowercased(),
             major: major,
             year: year,
             email: email,
@@ -198,16 +185,16 @@ class ProfileViewModel: ObservableObject {
 
             let ids = snap.documents.map { $0.documentID }
 
-            if ids.isEmpty {
+            guard !ids.isEmpty else {
                 self.likedPosts = []
                 return
             }
 
-            let snap2 = try await db.collection("posts")
-                .whereField("id", in: ids)
+            let postsSnap = try await db.collection("posts")
+                .whereField(FieldPath.documentID(), in: ids)
                 .getDocuments()
 
-            self.likedPosts = snap2.documents.compactMap {
+            self.likedPosts = postsSnap.documents.compactMap {
                 try? $0.data(as: Post.self)
             }
 
@@ -215,4 +202,5 @@ class ProfileViewModel: ObservableObject {
             print("❌ Failed loading liked posts:", error)
         }
     }
+
 }

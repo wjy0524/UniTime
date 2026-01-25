@@ -46,13 +46,14 @@ struct MainTabView: View {
                         .onAppear {
                             chatViewModel.startListeningToConversations()
                         }
-                    
-                    DiningHomeView()
-                        .environmentObject(authManager)
-                        .tabItem {
-                            Image(systemName: "fork.knife")
-                            Text("Dining")
-                        }
+                    NavigationStack {
+                        DiningHomeView()
+                            .environmentObject(authManager)
+                    }
+                    .tabItem {
+                        Image(systemName: "fork.knife")
+                        Text("Dining")
+                    }
                 }
                 
                 FloatingAIChatButton()

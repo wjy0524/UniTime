@@ -1,3 +1,4 @@
+
 //
 //  StudyTrackerView.swift
 //  Quad-2025-project
@@ -11,7 +12,7 @@ import SwiftUI
 
 struct StudyTrackerView: View {
     @StateObject private var sessionManager = StudySessionManager()
-    @StateObject private var friendsManager = StudyFriendsManager()
+    @StateObject private var friendService = FriendService.shared
     @State private var showBlockedApps = false
     @State private var showHistory = false
     @State private var showScreenTimePrompt = false
@@ -51,13 +52,13 @@ struct StudyTrackerView: View {
                             Image(systemName: "person.2.fill")
                                 .foregroundColor(Color("UTAustinOrange"))
 
-                            if friendsManager.friendRequests.count > 0 {
+                            if friendService.receivedRequests.count > 0 {
                                 ZStack {
                                     Circle()
                                         .fill(Color.red)
                                         .frame(width: 18, height: 18)
 
-                                    Text("\(min(friendsManager.friendRequests.count, 99))")
+                                    Text("\(min(friendService.receivedRequests.count, 99))")
                                         .font(.system(size: 10, weight: .bold))
                                         .foregroundColor(.white)
                                 }
@@ -80,7 +81,7 @@ struct StudyTrackerView: View {
                 AppPickerView(selection: $sessionManager.selectedAppsForBlocking)
             }
             .sheet(isPresented: $showStudyFriends) {
-                StudyFriendsView()
+                FriendRequestsView(friendService: friendService)
             }
             .sheet(isPresented: $showPrivacySettings) {
                 StudyPrivacySettingsView()
@@ -500,8 +501,8 @@ struct StudyTrackerView: View {
                                 .font(.subheadline)
                                 .bold()
                             Spacer()
-                            if friendsManager.friendRequests.count > 0 {
-                                Text("\(friendsManager.friendRequests.count)")
+                            if friendService.receivedRequests.count > 0 {
+                                Text("\(friendService.receivedRequests.count)")
                                     .font(.caption)
                                     .bold()
                                     .foregroundColor(.white)

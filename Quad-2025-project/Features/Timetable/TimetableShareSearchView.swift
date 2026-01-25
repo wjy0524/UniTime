@@ -2,7 +2,9 @@
 //  TimetableShareSearchView.swift
 //  Quad-2025-project
 //
-//  Share timetable with friends from unified friends list
+
+//  TimetableShareSearchView.swift
+//  Quad-2025-project
 //
 
 import FirebaseAuth
@@ -12,17 +14,20 @@ import SwiftUI
 
 struct TimetableShareSearchView: View {
     @Environment(\.dismiss) private var dismiss
-    @StateObject private var shareViewModel = TimetableShareViewModel.shared
-    @ObservedObject var timetableViewModel: TimetableViewModel
-    @ObservedObject private var friendsManager = FriendsManager.shared
 
-    @State private var selectedFriend: Friend?
-    @State private var isSharing: Bool = false
+    @ObservedObject var timetableViewModel: TimetableViewModel
+    @StateObject private var friendService = FriendService.shared
+    @StateObject private var shareViewModel = TimetableShareViewModel.shared
+
+    @State private var friends: [Friend] = []   // 🔥 UI용 친구 리스트
+    @State private var isSharing = false
+
+    private let db = Firestore.firestore()
 
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
-                if friendsManager.friends.isEmpty {
+                if friends.isEmpty {
                     emptyFriendsView
                 } else {
                     friendsList
@@ -37,8 +42,9 @@ struct TimetableShareSearchView: View {
                     }
                 }
             }
-            .onAppear {
-                friendsManager.startListening()
+            .task {
+                await friendService.loadAll()
+                friends = await friendService.fetchFriendUsers()   // ✅ 핵심
             }
             .alert("Success", isPresented: $shareViewModel.showingSuccess) {
                 Button("OK", role: .cancel) {
@@ -67,7 +73,7 @@ struct TimetableShareSearchView: View {
                 .font(.headline)
                 .foregroundColor(.secondary)
 
-            Text("Add friends from the main Friends page to share your timetable with them")
+            Text("Add friends to share your timetable with them")
                 .font(.subheadline)
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
@@ -81,23 +87,22 @@ struct TimetableShareSearchView: View {
 
     var friendsList: some View {
         List {
-            ForEach(friendsManager.friends) { friend in
+            ForEach(friends) { friend in
                 FriendRowForSharing(
                     friend: friend,
-                    isSharing: isSharing,
-                    onShare: {
-                        shareTimetableWith(friend: friend)
-                    }
-                )
+                    isSharing: isSharing
+                ) {
+                    shareTimetable(with: friend)
+                }
             }
         }
         .listStyle(.plain)
     }
 
-    // MARK: - Share Action
+    // MARK: - Share Logic
 
-    func shareTimetableWith(friend: Friend) {
-        guard let currentUserId = Auth.auth().currentUser?.uid else {
+    func shareTimetable(with friend: Friend) {
+        guard let myUid = Auth.auth().currentUser?.uid else {
             shareViewModel.errorMessage = "Not authenticated"
             shareViewModel.showingError = true
             return
@@ -107,60 +112,54 @@ struct TimetableShareSearchView: View {
 
         Task {
             do {
-                // Get current user info
-                let userDoc = try await db.collection("users").document(currentUserId).getDocument()
-                guard let userData = userDoc.data(),
-                    let currentUsername = userData["username"] as? String
-                else {
-                    throw NSError(
-                        domain: "TimetableShare", code: 1,
-                        userInfo: [NSLocalizedDescriptionKey: "Could not fetch user data"])
+                let userDoc = try await db
+                    .collection("users")
+                    .document(myUid)
+                    .getDocument()
+
+                guard let data = userDoc.data(),
+                      let myUsername = data["username"] as? String else {
+                    throw NSError(domain: "Share", code: 1)
                 }
 
-                let currentProfileImage = userData["profileImageURL"] as? String
+                let myProfileImage = data["profileImageURL"] as? String
 
-                // Create share request
-                let shareRequest = TimetableShareRequest(
-                    fromUserId: currentUserId,
-                    fromUsername: currentUsername,
-                    fromUserProfileImage: currentProfileImage,
-                    toUserId: friend.friendId,
-                    toUsername: friend.friendUsername,
+                let request = TimetableShareRequest(
+                    fromUserId: myUid,
+                    fromUsername: myUsername,
+                    fromUserProfileImage: myProfileImage,
+                    toUserId: friend.uid,
+                    toUsername: friend.username,
                     timestamp: Date(),
                     status: .pending,
                     timetableCourses: timetableViewModel.courses
                 )
 
-                // Save to Firestore
-                try db.collection("timetableShareRequests").addDocument(from: shareRequest)
+                try db
+                    .collection("timetableShareRequests")
+                    .addDocument(from: request)
 
                 await MainActor.run {
-                    shareViewModel.successMessage = "Timetable shared with \(friend.friendUsername)"
+                    shareViewModel.successMessage =
+                        "Timetable shared with \(friend.username)"
                     shareViewModel.showingSuccess = true
                     isSharing = false
                 }
 
-                // Send notification
-                let notificationVM = NotificationViewModel()
-                if let requestId = shareRequest.id {
-                    notificationVM.sendTimetableShareRequest(
-                        toUserId: friend.friendId, shareRequestId: requestId)
-                }
-
             } catch {
                 await MainActor.run {
-                    shareViewModel.errorMessage = "Failed to share: \(error.localizedDescription)"
+                    shareViewModel.errorMessage = error.localizedDescription
                     shareViewModel.showingError = true
                     isSharing = false
                 }
             }
         }
     }
-
-    private let db = Firestore.firestore()
 }
 
-// MARK: - Friend Row for Sharing
+////////////////////////////////////////////////////////////
+// MARK: - Friend Row
+////////////////////////////////////////////////////////////
 
 struct FriendRowForSharing: View {
     let friend: Friend
@@ -169,55 +168,42 @@ struct FriendRowForSharing: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            // Profile Image
-            if let imageURL = friend.friendProfileImage, !imageURL.isEmpty,
-                let url = URL(string: imageURL)
-            {
+            if let imageURL = friend.profileImageURL,
+               let url = URL(string: imageURL) {
                 KFImage(url)
                     .resizable()
                     .scaledToFill()
-                    .frame(width: 50, height: 50)
+                    .frame(width: 44, height: 44)
                     .clipShape(Circle())
             } else {
                 Circle()
                     .fill(Color.gray.opacity(0.3))
-                    .frame(width: 50, height: 50)
+                    .frame(width: 44, height: 44)
                     .overlay(
                         Image(systemName: "person.fill")
                             .foregroundColor(.white)
                     )
             }
 
-            VStack(alignment: .leading, spacing: 4) {
-                Text(friend.friendUsername)
-                    .font(.headline)
-
-                Text("Friend")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-            }
+            Text(friend.username)
+                .font(.headline)
 
             Spacer()
 
             if isSharing {
                 ProgressView()
             } else {
-                Button {
+                Button("Share") {
                     onShare()
-                } label: {
-                    HStack {
-                        Image(systemName: "calendar.badge.plus")
-                        Text("Share")
-                    }
-                    .font(.subheadline)
-                    .foregroundColor(.white)
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 8)
-                    .background(Color.blue)
-                    .cornerRadius(8)
                 }
+                .font(.subheadline)
+                .padding(.horizontal, 14)
+                .padding(.vertical, 6)
+                .background(Color.blue)
+                .foregroundColor(.white)
+                .cornerRadius(8)
             }
         }
-        .padding(.vertical, 4)
+        .padding(.vertical, 6)
     }
 }

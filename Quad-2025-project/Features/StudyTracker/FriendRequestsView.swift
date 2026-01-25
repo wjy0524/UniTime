@@ -1,3 +1,4 @@
+
 //
 //  FriendRequestsView.swift
 //  Quad-2025-project
@@ -6,57 +7,88 @@
 //
 
 import SwiftUI
+import FirebaseFirestore
+import FirebaseAuth
+
+// MARK: - View Model (View 전용)
+
+struct FriendRequestVM: Identifiable {
+    let id: String            // friend_request document id
+    let uid: String           // 상대방 uid
+    let username: String
+    let createdAt: Date
+    let message: String?
+}
+
+// MARK: - Main View
 
 struct FriendRequestsView: View {
-    @ObservedObject var friendsManager: StudyFriendsManager
+    @ObservedObject var friendService: FriendService
     @Environment(\.dismiss) var dismiss
     @Environment(\.colorScheme) var colorScheme
+
     @State private var selectedTab = 0
+    @State private var receivedRequests: [FriendRequestVM] = []
+    @State private var sentRequests: [FriendRequestVM] = []
+    @State private var isLoading = false
+
+    private let db = Firestore.firestore()
 
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
-                // Tab Selector
+
                 Picker("Requests", selection: $selectedTab) {
-                    Text("Received (\(friendsManager.friendRequests.count))").tag(0)
-                    Text("Sent (\(friendsManager.sentRequests.filter { $0.status == .pending }.count))").tag(1)
+                    Text("Received (\(receivedRequests.count))").tag(0)
+                    Text("Sent (\(sentRequests.count))").tag(1)
                 }
                 .pickerStyle(.segmented)
                 .padding()
 
                 Divider()
 
-                // Content
-                if selectedTab == 0 {
-                    receivedRequestsList
+                if isLoading {
+                    Spacer()
+                    ProgressView()
+                    Spacer()
                 } else {
-                    sentRequestsList
+                    if selectedTab == 0 {
+                        receivedList
+                    } else {
+                        sentList
+                    }
                 }
             }
             .navigationTitle("Friend Requests")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Done") {
-                        dismiss()
-                    }
-                    .foregroundColor(Color("UTAustinOrange"))
+                    Button("Done") { dismiss() }
+                        .foregroundColor(Color("UTAustinOrange"))
                 }
+            }
+            .task {
+                await loadRequests()
             }
         }
     }
 
-    // MARK: - Received Requests
+    // MARK: - Received
 
-    var receivedRequestsList: some View {
+    private var receivedList: some View {
         Group {
-            if friendsManager.friendRequests.isEmpty {
-                emptyReceivedState
+            if receivedRequests.isEmpty {
+                emptyState(text: "No Friend Requests")
             } else {
                 ScrollView {
                     LazyVStack(spacing: 12) {
-                        ForEach(friendsManager.friendRequests) { request in
-                            ReceivedRequestCard(request: request, friendsManager: friendsManager)
+                        ForEach(receivedRequests) { request in
+                            ReceivedRequestCard(
+                                request: request,
+                                friendService: friendService
+                            ) {
+                                Task { await loadRequests() }
+                            }
                         }
                     }
                     .padding()
@@ -65,277 +97,199 @@ struct FriendRequestsView: View {
         }
     }
 
-    var emptyReceivedState: some View {
-        VStack(spacing: 16) {
+    // MARK: - Sent
+
+    private var sentList: some View {
+        Group {
+            if sentRequests.isEmpty {
+                emptyState(text: "No Sent Requests")
+            } else {
+                ScrollView {
+                    LazyVStack(spacing: 12) {
+                        ForEach(sentRequests) { request in
+                            SentRequestCard(
+                                request: request,
+                                friendService: friendService
+                            ) {
+                                Task { await loadRequests() }
+                            }
+                        }
+                    }
+                    .padding()
+                }
+            }
+        }
+    }
+
+    // MARK: - Empty
+
+    private func emptyState(text: String) -> some View {
+        VStack(spacing: 12) {
             Image(systemName: "envelope.open")
-                .font(.system(size: 60))
+                .font(.system(size: 50))
                 .foregroundColor(.secondary.opacity(0.5))
-
-            Text("No Friend Requests")
-                .font(.title2)
+            Text(text)
+                .font(.title3)
                 .bold()
-
-            Text("You don't have any pending friend requests.")
-                .font(.subheadline)
+            Text("Nothing to show here yet.")
+                .font(.caption)
                 .foregroundColor(.secondary)
-                .multilineTextAlignment(.center)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .padding()
     }
 
-    // MARK: - Sent Requests
+    // MARK: - Data Loading
 
-    var sentRequestsList: some View {
-        Group {
-            let pendingRequests = friendsManager.sentRequests.filter { $0.status == .pending }
+    private func loadRequests() async {
+        isLoading = true
+        await friendService.loadAll()
 
-            if pendingRequests.isEmpty {
-                emptySentState
-            } else {
-                ScrollView {
-                    LazyVStack(spacing: 12) {
-                        ForEach(pendingRequests) { request in
-                            SentRequestCard(request: request, friendsManager: friendsManager)
-                        }
-                    }
-                    .padding()
-                }
+        receivedRequests = await buildRequests(
+            uids: friendService.receivedRequests,
+            isReceived: true
+        )
+
+        sentRequests = await buildRequests(
+            uids: friendService.sentRequests,
+            isReceived: false
+        )
+
+        isLoading = false
+    }
+
+    private func buildRequests(
+        uids: [String],
+        isReceived: Bool
+    ) async -> [FriendRequestVM] {
+
+        var result: [FriendRequestVM] = []
+
+        for uid in uids {
+            do {
+                // user info
+                let userSnap = try await db.collection("users").document(uid).getDocument()
+                let username = userSnap.data()?["username"] as? String ?? "Unknown"
+
+                // request info
+                let query = db.collection("friend_requests")
+                    .whereField(isReceived ? "fromUid" : "toUid", isEqualTo: uid)
+                    .whereField(isReceived ? "toUid" : "fromUid", isEqualTo: friendService.myUid)
+
+                let snap = try await query.getDocuments()
+                guard let doc = snap.documents.first else { continue }
+
+                let createdAt =
+                    (doc["createdAt"] as? Timestamp)?.dateValue() ?? Date()
+                let message = doc["message"] as? String
+
+                result.append(
+                    FriendRequestVM(
+                        id: doc.documentID,
+                        uid: uid,
+                        username: username,
+                        createdAt: createdAt,
+                        message: message
+                    )
+                )
+            } catch {
+                print("❌ Failed to load request:", error)
             }
         }
-    }
-
-    var emptySentState: some View {
-        VStack(spacing: 16) {
-            Image(systemName: "paperplane")
-                .font(.system(size: 60))
-                .foregroundColor(.secondary.opacity(0.5))
-
-            Text("No Sent Requests")
-                .font(.title2)
-                .bold()
-
-            Text("You haven't sent any friend requests yet.")
-                .font(.subheadline)
-                .foregroundColor(.secondary)
-                .multilineTextAlignment(.center)
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .padding()
+        return result
     }
 }
 
-// MARK: - Received Request Card
+// MARK: - Received Card
 
 struct ReceivedRequestCard: View {
-    let request: FriendRequest
-    @ObservedObject var friendsManager: StudyFriendsManager
-    @Environment(\.colorScheme) var colorScheme
+    let request: FriendRequestVM
+    @ObservedObject var friendService: FriendService
+    let onUpdate: () -> Void
+
     @State private var isProcessing = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            // User Info
-            HStack(spacing: 12) {
-                // Avatar
-                Circle()
-                    .fill(
-                        LinearGradient(
-                            colors: [
-                                Color("UTAustinOrange").opacity(0.7),
-                                Color.orange.opacity(0.5)
-                            ],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
-                    )
-                    .frame(width: 50, height: 50)
-                    .overlay(
-                        Image(systemName: "person.fill")
-                            .foregroundColor(.white)
-                    )
+            Text(request.username)
+                .font(.headline)
 
-                // Info
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(request.fromUsername)
-                        .font(.headline)
+            Text(relativeDate(request.createdAt))
+                .font(.caption)
+                .foregroundColor(.secondary)
 
-                    Text(formatDate(request.createdAt))
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                }
-
-                Spacer()
-            }
-
-            // Message (if any)
-            if let message = request.message, !message.isEmpty {
+            if let message = request.message {
                 Text(message)
                     .font(.subheadline)
                     .foregroundColor(.secondary)
-                    .padding()
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .background(Color(.systemGray6).opacity(colorScheme == .dark ? 0.5 : 0.8))
-                    .cornerRadius(8)
             }
 
-            // Action Buttons
             if isProcessing {
-                HStack {
-                    Spacer()
-                    ProgressView()
-                    Spacer()
-                }
-                .padding(.vertical, 8)
+                ProgressView()
             } else {
-                HStack(spacing: 12) {
-                    Button {
+                HStack {
+                    Button("Accept") {
                         isProcessing = true
                         Task {
-                            await friendsManager.acceptFriendRequest(request: request)
+                            await friendService.acceptRequest(from: request.uid)
                             isProcessing = false
+                            onUpdate()
                         }
-                    } label: {
-                        HStack {
-                            Image(systemName: "checkmark.circle.fill")
-                            Text("Accept")
-                                .bold()
-                        }
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color.green)
-                        .foregroundColor(.white)
-                        .cornerRadius(10)
                     }
+                    .buttonStyle(.borderedProminent)
 
-                    Button {
+                    Button("Decline") {
                         isProcessing = true
                         Task {
-                            await friendsManager.declineFriendRequest(request: request)
+                            await friendService.cancelRequest(to: request.uid)
                             isProcessing = false
+                            onUpdate()
                         }
-                    } label: {
-                        HStack {
-                            Image(systemName: "xmark.circle.fill")
-                            Text("Decline")
-                                .bold()
-                        }
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color.red)
-                        .foregroundColor(.white)
-                        .cornerRadius(10)
                     }
+                    .buttonStyle(.bordered)
                 }
             }
         }
         .padding()
-        .background(Color(.systemGray6).opacity(colorScheme == .dark ? 0.3 : 0.5))
+        .background(Color(.systemGray6))
         .cornerRadius(12)
-    }
-
-    func formatDate(_ date: Date) -> String {
-        let formatter = RelativeDateTimeFormatter()
-        formatter.unitsStyle = .full
-        return formatter.localizedString(for: date, relativeTo: Date())
     }
 }
 
-// MARK: - Sent Request Card
+// MARK: - Sent Card
 
 struct SentRequestCard: View {
-    let request: FriendRequest
-    @ObservedObject var friendsManager: StudyFriendsManager
-    @Environment(\.colorScheme) var colorScheme
-    @State private var isProcessing = false
-    @State private var showCancelConfirmation = false
+    let request: FriendRequestVM
+    @ObservedObject var friendService: FriendService
+    let onUpdate: () -> Void
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack(spacing: 12) {
-                // Avatar
-                Circle()
-                    .fill(
-                        LinearGradient(
-                            colors: [
-                                Color.blue.opacity(0.7),
-                                Color.purple.opacity(0.5)
-                            ],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
-                    )
-                    .frame(width: 50, height: 50)
-                    .overlay(
-                        Image(systemName: "person.fill")
-                            .foregroundColor(.white)
-                    )
+        VStack(alignment: .leading, spacing: 8) {
+            Text(request.username)
+                .font(.headline)
 
-                // Info
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(request.toUsername)
-                        .font(.headline)
+            Text("Pending")
+                .font(.caption)
+                .foregroundColor(.orange)
 
-                    HStack(spacing: 4) {
-                        Image(systemName: "clock")
-                            .font(.caption2)
-                        Text("Pending")
-                            .font(.caption)
-                    }
-                    .foregroundColor(.orange)
-
-                    Text(formatDate(request.createdAt))
-                        .font(.caption2)
-                        .foregroundColor(.secondary)
-                }
-
-                Spacer()
-
-                // Cancel Button
-                Button {
-                    showCancelConfirmation = true
-                } label: {
-                    Text("Cancel")
-                        .font(.caption)
-                        .foregroundColor(.red)
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 6)
-                        .background(Color.red.opacity(0.1))
-                        .cornerRadius(6)
+            Button("Cancel Request") {
+                Task {
+                    await friendService.cancelRequest(to: request.uid)
+                    onUpdate()
                 }
             }
-
-            // Message (if any)
-            if let message = request.message, !message.isEmpty {
-                Text("Message: \(message)")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-                    .italic()
-            }
+            .font(.caption)
+            .foregroundColor(.red)
         }
         .padding()
-        .background(Color(.systemGray6).opacity(colorScheme == .dark ? 0.3 : 0.5))
+        .background(Color(.systemGray6))
         .cornerRadius(12)
-        .confirmationDialog("Cancel Friend Request?", isPresented: $showCancelConfirmation) {
-            Button("Cancel Request", role: .destructive) {
-                guard let requestId = request.id else { return }
-                Task {
-                    await friendsManager.cancelFriendRequest(requestId: requestId)
-                }
-            }
-            Button("Keep Request", role: .cancel) {}
-        } message: {
-            Text("Are you sure you want to cancel the friend request to \(request.toUsername)?")
-        }
-    }
-
-    func formatDate(_ date: Date) -> String {
-        let formatter = RelativeDateTimeFormatter()
-        formatter.unitsStyle = .abbreviated
-        return formatter.localizedString(for: date, relativeTo: Date())
     }
 }
 
-#Preview {
-    FriendRequestsView(friendsManager: StudyFriendsManager())
+// MARK: - Helpers
+
+private func relativeDate(_ date: Date) -> String {
+    let formatter = RelativeDateTimeFormatter()
+    formatter.unitsStyle = .short
+    return formatter.localizedString(for: date, relativeTo: Date())
 }

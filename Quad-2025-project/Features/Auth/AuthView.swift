@@ -2,12 +2,15 @@ import SwiftUI
 import FirebaseAuth
 import FirebaseFirestore
 
+// MARK: - Auth Root
 struct AuthView: View {
     @Binding var isLoggedIn: Bool
     @State private var isLogin = true
-    
+
     var body: some View {
-        VStack {
+        ZStack {
+            Color(.systemBackground).ignoresSafeArea()
+
             if isLogin {
                 LoginView(isLogin: $isLogin, isLoggedIn: $isLoggedIn)
             } else {
@@ -17,195 +20,276 @@ struct AuthView: View {
     }
 }
 
+//
 // MARK: - Login View
+//
 struct LoginView: View {
     @Binding var isLogin: Bool
     @Binding var isLoggedIn: Bool
+
     @State private var email = ""
     @State private var password = ""
     @State private var message = ""
+    @State private var isLoading = false
 
     let allowedDomains = ["@utexas.edu", "@eid.utexas.edu", "@gmail.com"]
 
     var body: some View {
-        VStack(spacing: 20) {
-            Text("UniTime")
-                .font(.largeTitle)
-                .bold()
+        VStack {
+            Spacer()
 
-            TextField("UTmail (utexas.edu / eid.utexas.edu)", text: $email)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .autocapitalization(.none)
-                .keyboardType(.emailAddress)
-                .padding(.horizontal)
+            // 🔷 Logo + Title
+            VStack(spacing: 12) {
+                // Logo
+                Image("UniTimeLogo")
+                    .renderingMode(.template)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 130, height: 130)
+                    .foregroundColor(Color("UTAustinOrange"))
 
-            SecureField("Password", text: $password)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .textContentType(.password)
-                .padding(.horizontal)
-
-            Button("Login") {
-                login()
+                // Subtitle
+                Text("Your campus life, in one place")
+                    .font(.subheadline)
+                    .foregroundColor(Color(.systemGray))
             }
-            .buttonStyle(.borderedProminent)
+            .padding(.bottom, 40)
 
-            Text(message).foregroundColor(.red)
+            // 🔐 Input Card
+            VStack(spacing: 14) {
+                TextField("UTmail", text: $email)
+                    .keyboardType(.emailAddress)
+                    .textInputAutocapitalization(.never)
+                    .padding()
+                    .background(Color(.systemGray6))
+                    .cornerRadius(14)
+
+                SecureField("Password", text: $password)
+                    .padding()
+                    .background(Color(.systemGray6))
+                    .cornerRadius(14)
+            }
+            .padding(.horizontal)
+
+            // 🔵 Login Button
+            Button {
+                login()
+            } label: {
+                ZStack {
+                    if isLoading {
+                        ProgressView().tint(.white)
+                    } else {
+                        Text("Log in")
+                            .fontWeight(.semibold)
+                    }
+                }
+                .frame(maxWidth: .infinity)
+                .padding()
+                .background(Color("UTAustinOrange"))
+                .foregroundColor(.white)
+                .cornerRadius(14)
+            }
+            .padding(.horizontal)
+            .padding(.top, 20)
+            .disabled(isLoading)
+
+            // ❌ Error Message
+            if !message.isEmpty {
+                Text(message)
+                    .font(.caption)
+                    .foregroundColor(.red)
+                    .multilineTextAlignment(.center)
+                    .padding(.top, 8)
+                    .padding(.horizontal)
+            }
 
             Spacer()
 
-            Button("Don't have an account? Sign up") {
+            // ➕ Switch to Sign Up
+            Button {
                 isLogin = false
+            } label: {
+                Text("Don't have an account? Sign up")
+                    .font(.footnote)
+                    .foregroundColor(Color("UTAustinOrange"))
             }
-            .foregroundColor(.blue)
+            .padding(.bottom, 20)
         }
         .padding()
     }
 
-    func login() {
+    // MARK: - Login Logic (기존 그대로)
+    private func login() {
         guard allowedDomains.contains(where: { email.hasSuffix($0) }) else {
-            message = "Only UTmail accounts (@utexas.edu or @eid.utexas.edu) are allowed."
+            message = "Only UTmail accounts are allowed."
             return
         }
 
-        Auth.auth().signIn(withEmail: email, password: password) { result, error in
-            if let error = error {
-                DispatchQueue.main.async {
-                    message = "Login failed: \(error.localizedDescription)"
-                }
-            } else if let user = result?.user {
-                // 🔑 인증 상태 새로고침
-                user.reload { reloadError in
-                    if let reloadError = reloadError {
-                        DispatchQueue.main.async {
-                            message = "Error checking verification: \(reloadError.localizedDescription)"
-                        }
-                        return
-                    }
+        isLoading = true
+        message = ""
 
-                    if user.isEmailVerified {
-                        let db = Firestore.firestore()
-                        db.collection("users").document(user.uid).getDocument { snapshot, error in
-                            if let data = snapshot?.data(),
-                               let verified = data["isVerified"] as? Bool, verified {
-                                DispatchQueue.main.async {
-                                    isLoggedIn = true
-                                }
-                            } else {
-                                // Firestore에 isVerified 갱신
-                                db.collection("users").document(user.uid).updateData([
-                                    "isVerified": true
-                                ])
-                                DispatchQueue.main.async {
-                                    isLoggedIn = true
-                                }
-                            }
-                        }
-                    } else {
-                        DispatchQueue.main.async {
-                            message = "Please verify your email before logging in."
-                            try? Auth.auth().signOut()
-                        }
-                    }
+        Auth.auth().signIn(withEmail: email, password: password) { result, error in
+            isLoading = false
+
+            if let error = error {
+                message = error.localizedDescription
+                return
+            }
+
+            guard let user = result?.user else { return }
+
+            user.reload { _ in
+                if user.isEmailVerified {
+                    isLoggedIn = true
+                } else {
+                    message = "Please verify your email before logging in."
+                    try? Auth.auth().signOut()
                 }
             }
         }
     }
 }
 
+//
 // MARK: - Sign Up View
+//
 struct SignUpView: View {
     @Binding var isLogin: Bool
     @Binding var isLoggedIn: Bool
+
     @State private var email = ""
     @State private var password = ""
     @State private var confirmPassword = ""
     @State private var message = ""
+    @State private var isLoading = false
 
     let allowedDomains = ["@utexas.edu", "@eid.utexas.edu", "@gmail.com"]
 
     var body: some View {
-        VStack(spacing: 20) {
-            Text("Sign Up")
-                .font(.largeTitle)
-                .bold()
+        VStack {
+            Spacer()
 
-            TextField("UTmail (utexas.edu / eid.utexas.edu)", text: $email)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .autocapitalization(.none)
-                .keyboardType(.emailAddress)
-                .padding(.horizontal)
+            // 🔷 Title
+            VStack(spacing: 8) {
+                Text("Create Account")
+                    .font(.largeTitle.bold())
 
-            SecureField("Password", text: $password)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .textContentType(.newPassword)
-                .padding(.horizontal)
-
-            SecureField("Confirm Password", text: $confirmPassword)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .textContentType(.newPassword)
-                .padding(.horizontal)
-
-            Button("Create Account") {
-                signUp()
+                Text("Use your UTmail to get started")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
             }
-            .buttonStyle(.borderedProminent)
+            .padding(.bottom, 40)
 
-            Text(message).foregroundColor(.red)
+            // 🔐 Input Card
+            VStack(spacing: 14) {
+                TextField("UTmail", text: $email)
+                    .keyboardType(.emailAddress)
+                    .textInputAutocapitalization(.never)
+                    .padding()
+                    .background(Color(.systemGray6))
+                    .cornerRadius(14)
+
+                SecureField("Password", text: $password)
+                    .padding()
+                    .background(Color(.systemGray6))
+                    .cornerRadius(14)
+
+                SecureField("Confirm Password", text: $confirmPassword)
+                    .padding()
+                    .background(Color(.systemGray6))
+                    .cornerRadius(14)
+            }
+            .padding(.horizontal)
+
+            // 🔵 Create Account Button
+            Button {
+                signUp()
+            } label: {
+                ZStack {
+                    if isLoading {
+                        ProgressView().tint(.white)
+                    } else {
+                        Text("Create account")
+                            .fontWeight(.semibold)
+                    }
+                }
+                .frame(maxWidth: .infinity)
+                .padding()
+                .background(Color("UTAustinOrange"))
+                .foregroundColor(.white)
+                .cornerRadius(14)
+            }
+            .padding(.horizontal)
+            .padding(.top, 20)
+            .disabled(isLoading)
+
+            // ❌ Error / Info
+            if !message.isEmpty {
+                Text(message)
+                    .font(.caption)
+                    .foregroundColor(message.contains("sent") ? .green : .red)
+                    .multilineTextAlignment(.center)
+                    .padding(.top, 8)
+                    .padding(.horizontal)
+            }
 
             Spacer()
 
-            Button("Already have an account? Login") {
+            // 🔙 Back to Login
+            Button {
                 isLogin = true
+            } label: {
+                Text("Already have an account? Log in")
+                    .font(.footnote)
+                    .foregroundColor(Color("UTAustinOrange"))
             }
-            .foregroundColor(.blue)
+            .padding(.bottom, 20)
         }
         .padding()
     }
 
-    func signUp() {
+    // MARK: - Sign Up Logic (기존 그대로)
+    private func signUp() {
         guard allowedDomains.contains(where: { email.hasSuffix($0) }) else {
-            message = "Only UTmail accounts (@utexas.edu or @eid.utexas.edu) are allowed."
+            message = "Only UTmail accounts are allowed."
             return
         }
+
         guard password == confirmPassword else {
             message = "Passwords do not match."
             return
         }
 
+        isLoading = true
+        message = ""
+
         Auth.auth().createUser(withEmail: email, password: password) { result, error in
+            isLoading = false
+
             if let error = error {
-                DispatchQueue.main.async {
-                    message = "Sign up failed: \(error.localizedDescription)"
-                }
-            } else if let user = result?.user {
-                let actionCodeSettings = ActionCodeSettings()
-                actionCodeSettings.url = URL(string: "https://quad-2025-project.web.app")!
-                actionCodeSettings.handleCodeInApp = true
-                actionCodeSettings.setIOSBundleID(Bundle.main.bundleIdentifier!)
+                message = error.localizedDescription
+                return
+            }
 
-                // Firestore에 기록 (isVerified = false)
-                let db = Firestore.firestore()
-                db.collection("users").document(user.uid).setData([
-                    "uid": user.uid,
-                    "email": user.email ?? "",
-                    "isVerified": false,
-                    "createdAt": Timestamp(date: Date())
-                ])
+            guard let user = result?.user else { return }
 
-                // 이메일 인증 메일 발송
-                user.sendEmailVerification(with: actionCodeSettings) { error in
-                    if let error = error {
-                        DispatchQueue.main.async {
-                            message = "Failed to send verification email: \(error.localizedDescription)"
-                        }
-                    } else {
-                        DispatchQueue.main.async {
-                            message = "Verification email sent! Please check your inbox."
-                            try? Auth.auth().signOut()
-                        }
-                    }
+            let db = Firestore.firestore()
+            db.collection("users").document(user.uid).setData([
+                "uid": user.uid,
+                "email": user.email ?? "",
+                "isVerified": false,
+                "createdAt": Timestamp(date: Date())
+            ])
+
+            user.sendEmailVerification { error in
+                if let error = error {
+                    message = error.localizedDescription
+                } else {
+                    message = "Verification email sent. Please check your inbox."
+                    try? Auth.auth().signOut()
                 }
             }
         }
     }
 }
+

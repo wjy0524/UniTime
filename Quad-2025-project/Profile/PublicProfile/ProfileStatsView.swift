@@ -18,8 +18,7 @@ struct ProfileStatsView: View {
         HStack(spacing: 28) {
 
             statBlock(number: viewModel.postsCount, title: "Posts")
-            statBlock(number: viewModel.followersCount, title: "Followers")
-            statBlock(number: viewModel.followingCount, title: "Following")
+            statBlock(number: viewModel.friendsCount, title: "Friends")
 
         }
     }

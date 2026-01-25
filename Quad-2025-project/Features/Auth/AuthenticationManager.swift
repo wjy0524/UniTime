@@ -14,6 +14,7 @@ import SwiftUI
 class AuthenticationManager: ObservableObject {
     @Published var isAuthenticated = false
     @Published var currentUser: User?
+    
 
     private var authStateHandler: AuthStateDidChangeListenerHandle?
 

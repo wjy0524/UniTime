@@ -5,10 +5,6 @@
 //  Created by Jaeyeon Won on 11/19/25.
 //
 
-//
-//  UserPostsView.swift
-//
-
 import SwiftUI
 
 struct UserPostsView: View {
@@ -33,27 +29,30 @@ struct UserPostsView: View {
         } else {
             VStack(spacing: 16) {
                 ForEach(viewModel.userPosts) { post in
-                    VStack(alignment: .leading, spacing: 8) {
+                    NavigationLink {
+                        PostDetailView(post: post)
+                    } label: {
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text(post.title)
+                                .font(.headline)
 
-                        Text(post.title)
-                            .font(.headline)
-
-                        Text(post.content)
-                            .font(.subheadline)
-                            .foregroundColor(.secondary)
-                            .lineLimit(3)
+                            Text(post.content)
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
+                                .lineLimit(3)
+                        }
+                        .padding()
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .background(
+                            RoundedRectangle(cornerRadius: 12)
+                                .fill(Color(.systemBackground))
+                                .shadow(color: .black.opacity(0.05), radius: 4, y: 2)
+                        )
                     }
-                    .padding()
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .background(
-                        RoundedRectangle(cornerRadius: 12)
-                            .fill(Color(.systemBackground))
-                            .shadow(color: .black.opacity(0.05), radius: 4, y: 2)
-                    )
+                    .buttonStyle(.plain) // 🔥 이거 중요 (터치 영역/스타일 문제 방지)
                 }
             }
             .padding(.horizontal)
-            // Load posts ONCE
             .task {
                 await viewModel.fetchUserPosts(for: viewModel.targetUid)
             }
