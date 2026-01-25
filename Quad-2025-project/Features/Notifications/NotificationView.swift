@@ -11,10 +11,13 @@ import SwiftUI
 struct NotificationView: View {
     @StateObject private var viewModel = NotificationViewModel()
     @Environment(\.dismiss) private var dismiss
+    @State private var selectedUserId: String?
 
     var body: some View {
         NavigationStack {
             ZStack {
+
+                // 🔹 메인 콘텐츠
                 if viewModel.isLoading {
                     ProgressView("Loading notifications...")
                 } else if viewModel.notifications.isEmpty {
@@ -22,12 +25,26 @@ struct NotificationView: View {
                 } else {
                     notificationList
                 }
+
+                // 🔥 숨김 NavigationLink (같은 ZStack 안!)
+                NavigationLink(
+                    destination:
+                        selectedUserId.map { uid in
+                            PublicProfileView(targetUid: uid)
+                        },
+                    isActive: Binding(
+                        get: { selectedUserId != nil },
+                        set: { if !$0 { selectedUserId = nil } }
+                    )
+                ) {
+                    EmptyView()
+                }
+
             }
             .navigationTitle("Notifications")
             .navigationBarTitleDisplayMode(.inline)
             .onAppear {
                 viewModel.startListening()
-                // Mark all as read when view appears
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                     viewModel.markAllAsRead()
                 }
@@ -57,6 +74,7 @@ struct NotificationView: View {
             }
         }
     }
+
 
     // MARK: - Empty State
 
@@ -115,7 +133,7 @@ struct NotificationView: View {
 
         switch notification.type {
         case .follow, .followAccepted:
-            break
+                selectedUserId = notification.fromUserId   // 🔥 여기
 
         case .timetableShareRequest:
             break

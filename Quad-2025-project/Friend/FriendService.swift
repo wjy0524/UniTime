@@ -88,6 +88,8 @@ final class FriendService: ObservableObject {
 
         do {
             try await ref.setData(data, merge: false)
+            NotificationViewModel()
+                       .sendFollowNotification(toUserId: uid)
             await loadAll()
         } catch {
             print("❌ sendRequest failed:", error)
