@@ -452,6 +452,16 @@ extension TimetableView {
         case .success(let urls):
             guard let url = urls.first else { return }
 
+            guard url.startAccessingSecurityScopedResource() else {
+                viewModel.errorMessage = "Permission denied to access file."
+                viewModel.showingError = true
+                return
+            }
+
+            defer {
+                url.stopAccessingSecurityScopedResource()
+            }
+
             do {
                 let data = try Data(contentsOf: url)
 
@@ -470,6 +480,7 @@ extension TimetableView {
             viewModel.showingError = true
         }
     }
+
 
     func exportJSON() {
         guard let data = viewModel.exportToJSON() else { return }
