@@ -73,9 +73,12 @@ final class FriendService: ObservableObject {
 
     // MARK: - Actions
     func sendRequest(to uid: String) async {
-        print("🔥 sendRequest called")
-        print("👉 myUid:", myUid)
-        print("👉 toUid:", uid)
+        if friends.contains(uid) || sentRequests.contains(uid) {
+            return
+        }
+
+        let requestId = "\(myUid)_\(uid)"
+        let ref = db.collection("friend_requests").document(requestId)
 
         let data: [String: Any] = [
             "fromUid": myUid,
@@ -84,33 +87,41 @@ final class FriendService: ObservableObject {
         ]
 
         do {
-            try await db.collection("friend_requests").addDocument(data: data)
-            print("✅ friend request written")
+            try await ref.setData(data, merge: false)
+            await loadAll()
         } catch {
-            print("❌ friend request failed:", error)
+            print("❌ sendRequest failed:", error)
         }
-
-        await loadAll()
     }
 
 
     func acceptRequest(from uid: String) async {
-        // add friend both sides
-        try? await db.collection("users").document(myUid)
-            .collection("friends").document(uid).setData([:])
+        do {
+            // 1️⃣ 내 friends
+            try await db.collection("users").document(myUid)
+                .collection("friends").document(uid).setData([:])
 
-        try? await db.collection("users").document(uid)
-            .collection("friends").document(myUid).setData([:])
+            // 2️⃣ 상대 friends
+            try await db.collection("users").document(uid)
+                .collection("friends").document(myUid).setData([:])
 
-        // delete request
-        let snap = try? await db.collection("friend_requests")
-            .whereField("fromUid", isEqualTo: uid)
-            .whereField("toUid", isEqualTo: myUid)
-            .getDocuments()
+            // 3️⃣ 요청 삭제
+            let snap = try await db.collection("friend_requests")
+                .whereField("fromUid", isEqualTo: uid)
+                .whereField("toUid", isEqualTo: myUid)
+                .getDocuments()
 
-        snap?.documents.forEach { $0.reference.delete() }
-        await loadAll()
+            for doc in snap.documents {
+                try await doc.reference.delete()
+            }
+
+            await loadAll()
+
+        } catch {
+            print("❌ acceptRequest failed:", error)
+        }
     }
+
 
     func removeFriend(uid: String) async {
         try? await db.collection("users").document(myUid)

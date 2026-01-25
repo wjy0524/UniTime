@@ -157,6 +157,7 @@ extension PublicProfileView {
             ) {
                 Task {
                     await friendService.sendRequest(to: targetUid)
+                    await friendService.loadAll() // 🔥 상태 즉시 반영
                 }
             }
 
@@ -168,8 +169,10 @@ extension PublicProfileView {
             ) {
                 Task {
                     await friendService.cancelRequest(to: targetUid)
+                    await friendService.loadAll() // 🔥
                 }
             }
+
 
         case .received:
             actionButton(
@@ -178,6 +181,10 @@ extension PublicProfileView {
             ) {
                 Task {
                     await friendService.acceptRequest(from: targetUid)
+
+                    // 🔥 추가
+                    await viewModel.fetchFriendsCount(for: targetUid)
+                    await viewModel.fetchFriendsCount(for: viewModel.myUid)
                 }
             }
 
@@ -196,8 +203,13 @@ extension PublicProfileView {
                 Button("Remove Friend", role: .destructive) {
                     Task {
                         await friendService.removeFriend(uid: targetUid)
+
+                        // 🔥 친구 수 즉시 갱신
+                        await viewModel.fetchFriendsCount(for: targetUid)
+                        await viewModel.fetchFriendsCount(for: viewModel.myUid)
                     }
                 }
+
                 Button("Cancel", role: .cancel) {}
             }
         }
