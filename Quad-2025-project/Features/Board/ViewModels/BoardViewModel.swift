@@ -181,7 +181,8 @@ class BoardViewModel: ObservableObject {
             images: imageURLs,
             category: category,  // 🔥 Make sure this matches exactly: "Free", "Notice", etc.
             likeCount: 0,
-            commentCount: 0
+            commentCount: 0,
+            keywords: generateKeywords(title: title, content: content)
         )
 
         do {
@@ -248,4 +249,20 @@ class BoardViewModel: ObservableObject {
 // 🔥 NEW: Notification for post updates
 extension Notification.Name {
     static let didUpdatePost = Notification.Name("didUpdatePost")
+}
+
+extension BoardViewModel {
+
+    func generateKeywords(title: String, content: String) -> [String] {
+        let text = "\(title) \(content)"
+            .lowercased()
+            .replacingOccurrences(
+                of: "[^a-z0-9가-힣 ]",
+                with: "",
+                options: .regularExpression
+            )
+
+        let words = text.split(separator: " ")
+        return Array(Set(words.map { String($0) }))
+    }
 }
