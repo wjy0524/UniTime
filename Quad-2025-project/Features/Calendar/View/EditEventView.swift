@@ -5,27 +5,32 @@
 //  Created on Calendar Feature Enhancement
 //
 
+
 import SwiftUI
 
 struct EditEventView: View {
-    @Environment(\.dismiss) var dismiss
+    @Environment(\.dismiss) private var dismiss
     @ObservedObject var viewModel: EventViewModel
 
     let event: Event
 
+    // MARK: - State
     @State private var title: String
     @State private var date: Date
     @State private var type: String
     @State private var location: String
     @State private var colorHex: String
     @State private var sharedWith: [String]
+    @State private var reminderMinutes: Int?
 
+    @State private var isSaving = false
     @State private var showError = false
     @State private var errorMessage = ""
-    @State private var isSaving = false
 
+    // MARK: - Options
     let eventTypes = [
-        "General", "Meeting", "Deadline", "Class", "Social", "Personal", "Work", "Other",
+        "General", "Meeting", "Deadline", "Class",
+        "Social", "Personal", "Work", "Other"
     ]
 
     let colorOptions: [(name: String, hex: String)] = [
@@ -38,9 +43,18 @@ struct EditEventView: View {
         ("Teal", "#30B0C7"),
         ("Green", "#34C759"),
         ("Yellow", "#FFCC00"),
-        ("Gray", "#8E8E93"),
+        ("Gray", "#8E8E93")
     ]
 
+    let reminderOptions: [(label: String, value: Int?)] = [
+        ("None", nil),
+        ("5 minutes before", 5),
+        ("10 minutes before", 10),
+        ("30 minutes before", 30),
+        ("1 hour before", 60)
+    ]
+
+    // MARK: - Init
     init(event: Event, viewModel: EventViewModel) {
         self.event = event
         self.viewModel = viewModel
@@ -51,138 +65,115 @@ struct EditEventView: View {
         _location = State(initialValue: event.location)
         _colorHex = State(initialValue: event.colorHex)
         _sharedWith = State(initialValue: event.sharedWith)
+        _reminderMinutes = State(initialValue: event.reminderMinutes)
     }
 
+    // MARK: - Body
     var body: some View {
         NavigationStack {
-            Form {
-                // Event Details
-                Section(header: Text("Event Details")) {
-                    TextField("Event Title", text: $title)
-                        .font(.body)
-
-                    DatePicker("Date & Time", selection: $date)
-
-                    Picker("Type", selection: $type) {
-                        ForEach(eventTypes, id: \.self) { eventType in
-                            Text(eventType).tag(eventType)
-                        }
+            formContent
+                .navigationTitle("Edit Event")
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button("Cancel") { dismiss() }
                     }
 
-                    TextField("Location (Optional)", text: $location)
+                    ToolbarItem(placement: .confirmationAction) {
+                        Button("Save") { saveChanges() }
+                            .disabled(title.isEmpty || isSaving)
+                    }
                 }
+                .alert("Error", isPresented: $showError) {
+                    Button("OK", role: .cancel) {}
+                } message: {
+                    Text(errorMessage)
+                }
+        }
+    }
 
-                // Color Selection
-                Section(header: Text("Color")) {
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 16) {
-                            ForEach(colorOptions, id: \.hex) { option in
-                                VStack(spacing: 4) {
-                                    Circle()
-                                        .fill(Color(hexStr: option.hex) ?? .orange)
-                                        .frame(width: 44, height: 44)
-                                        .overlay(
-                                            Circle()
-                                                .stroke(
-                                                    colorHex == option.hex
-                                                        ? Color.primary : Color.clear,
-                                                    lineWidth: 3
-                                                )
-                                        )
-                                        .onTapGesture {
-                                            colorHex = option.hex
-                                        }
+    // MARK: - Form Content
+    private var formContent: some View {
+        Form {
+            eventDetailsSection
+            colorSection
+            reminderSection
+            sharedSection
+        }
+    }
 
-                                    Text(option.name)
-                                        .font(.caption2)
-                                        .foregroundColor(
-                                            colorHex == option.hex ? .primary : .secondary)
-                                }
+    // MARK: - Sections
+    private var eventDetailsSection: some View {
+        Section("Event Details") {
+            TextField("Event Title", text: $title)
+
+            DatePicker(
+                "Date & Time",
+                selection: $date,
+                displayedComponents: [.date, .hourAndMinute]
+            )
+
+            Picker("Type", selection: $type) {
+                ForEach(eventTypes, id: \.self) {
+                    Text($0)
+                }
+            }
+
+            TextField("Location (Optional)", text: $location)
+        }
+    }
+
+    private var colorSection: some View {
+        Section("Color") {
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 16) {
+                    ForEach(colorOptions, id: \.hex) { option in
+                        Circle()
+                            .fill(Color(hexStr: option.hex) ?? .orange)
+                            .frame(width: 44, height: 44)
+                            .overlay(
+                                Circle().stroke(
+                                    colorHex == option.hex ? Color.primary : Color.clear,
+                                    lineWidth: 3
+                                )
+                            )
+                            .onTapGesture {
+                                colorHex = option.hex
                             }
-                        }
-                        .padding(.vertical, 8)
                     }
                 }
+                .padding(.vertical, 8)
+            }
+        }
+    }
 
-                // Sharing Info
-                if !sharedWith.isEmpty {
-                    Section(header: Text("Shared With")) {
-                        ForEach(sharedWith, id: \.self) { uid in
-                            SharedUserRow(uid: uid)
-                        }
-                    }
-                }
-
-                // Event Info
-                Section(header: Text("Event Information")) {
-                    HStack {
-                        Text("Created by")
-                        Spacer()
-                        Text(event.ownerId == viewModel.uid ? "You" : "Shared")
-                            .foregroundColor(.secondary)
-                    }
-
-                    HStack {
-                        Text("Event ID")
-                        Spacer()
-                        Text(event.id?.prefix(8) ?? "N/A")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                    }
+    private var reminderSection: some View {
+        Section("Reminder") {
+            Picker("Notify me", selection: $reminderMinutes) {
+                ForEach(reminderOptions, id: \.label) { option in
+                    Text(option.label)
+                        .tag(option.value as Int?)
                 }
             }
-            .navigationTitle("Edit Event")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") {
-                        dismiss()
-                    }
-                }
+            .pickerStyle(.menu)
+        }
+    }
 
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Save") {
-                        saveChanges()
-                    }
-                    .disabled(title.isEmpty || isSaving)
-                    .opacity(isSaving ? 0.6 : 1.0)
-                }
-            }
-            .alert("Error", isPresented: $showError) {
-                Button("OK", role: .cancel) {}
-            } message: {
-                Text(errorMessage)
-            }
-            .overlay {
-                if isSaving {
-                    ZStack {
-                        Color.black.opacity(0.2)
-                            .ignoresSafeArea()
-
-                        ProgressView("Saving...")
-                            .padding()
-                            .background(Color(.systemBackground))
-                            .cornerRadius(12)
-                            .shadow(radius: 10)
+    private var sharedSection: some View {
+        Group {
+            if !sharedWith.isEmpty {
+                Section("Shared With") {
+                    ForEach(sharedWith, id: \.self) { uid in
+                        SharedUserRow(uid: uid)
                     }
                 }
             }
         }
     }
 
+    // MARK: - Save
     private func saveChanges() {
-        guard !title.isEmpty else {
-            errorMessage = "Event title is required"
-            showError = true
-            return
-        }
-
-        guard let eventId = event.id else {
-            errorMessage = "Event ID not found"
-            showError = true
-            return
-        }
-
+        guard let eventId = event.id else { return }
         isSaving = true
 
         Task {
@@ -193,8 +184,24 @@ struct EditEventView: View {
                     date: date,
                     type: type,
                     location: location,
-                    colorHex: colorHex
+                    colorHex: colorHex,
+                    reminderMinutes: reminderMinutes
                 )
+
+                let updatedEvent = Event(
+                    id: eventId,
+                    ownerId: event.ownerId,
+                    title: title,
+                    date: date,
+                    type: type,
+                    location: location,
+                    colorHex: colorHex,
+                    sharedWith: sharedWith,
+                    reminderMinutes: reminderMinutes
+                )
+
+                NotificationManager.shared.removeNotification(for: updatedEvent)
+                NotificationManager.shared.scheduleNotification(for: updatedEvent)
 
                 await MainActor.run {
                     isSaving = false
@@ -203,28 +210,10 @@ struct EditEventView: View {
             } catch {
                 await MainActor.run {
                     isSaving = false
-                    errorMessage = "Failed to update event: \(error.localizedDescription)"
+                    errorMessage = error.localizedDescription
                     showError = true
                 }
             }
         }
     }
-
-}
-
-// Preview
-#Preview {
-    EditEventView(
-        event: Event(
-            id: "preview-id",
-            ownerId: "user123",
-            title: "Sample Event",
-            date: Date(),
-            type: "Meeting",
-            location: "Conference Room",
-            colorHex: "#FF6A00",
-            sharedWith: []
-        ),
-        viewModel: EventViewModel()
-    )
 }

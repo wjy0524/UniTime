@@ -242,6 +242,11 @@ class NotificationViewModel: ObservableObject {
 
             do {
                 let docRef = try db.collection("notifications").addDocument(from: notification)
+                NotificationManager.shared.scheduleImmediateNotification(
+                        identifier: "notif_\(docRef.documentID)",
+                        title: "New Notification",
+                        body: notification.message
+                    )
                 print("✅ FOLLOW: Notification saved with ID: \(docRef.documentID)")
             } catch {
                 print("❌ FOLLOW: Failed to save notification - \(error)")

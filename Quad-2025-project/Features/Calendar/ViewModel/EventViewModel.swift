@@ -73,13 +73,17 @@ final class EventViewModel: ObservableObject {
             var newEvent = event
             newEvent.ownerId = uid
 
-            _ = try db
+            let docRef = try db
                 .collection("users")
                 .document(uid)
                 .collection("events")
                 .addDocument(from: newEvent)
 
-            NotificationManager.shared.scheduleNotification(for: newEvent)
+            // 🔑 Firestore ID를 이벤트에 주입
+            var eventWithId = newEvent
+            eventWithId.id = docRef.documentID
+
+            NotificationManager.shared.scheduleNotification(for: eventWithId)
         } catch {
             print("❌ Error adding event:", error)
         }
@@ -94,6 +98,7 @@ final class EventViewModel: ObservableObject {
             .collection("events")
             .document(id)
             .delete()
+        NotificationManager.shared.removeNotification(for: event)
     }
 
     // MARK: - Helpers
@@ -108,8 +113,10 @@ final class EventViewModel: ObservableObject {
         date: Date,
         type: String,
         location: String,
-        colorHex: String
+        colorHex: String,
+        reminderMinutes: Int?
     ) async throws {
+
         guard let uid else {
             throw NSError(domain: "Auth", code: 401)
         }
@@ -124,9 +131,28 @@ final class EventViewModel: ObservableObject {
                 "date": date,
                 "type": type,
                 "location": location,
-                "colorHex": colorHex
+                "colorHex": colorHex,
+                "reminderMinutes": reminderMinutes as Any
             ])
+
+        // 🔔 알림 재설정 (중요)
+        // 🔔 알림 재설정 (Firestore 리스너 의존 ❌)
+        let updatedEvent = Event(
+            id: eventId,
+            ownerId: uid,
+            title: title,
+            date: date,
+            type: type,
+            location: location,
+            colorHex: colorHex,
+            sharedWith: [],              // 기존 sharedWith 쓰면 그걸로
+            reminderMinutes: reminderMinutes
+        )
+
+        NotificationManager.shared.removeNotification(for: updatedEvent)
+        NotificationManager.shared.scheduleNotification(for: updatedEvent)
     }
+
     
     func sendEventShareRequest(event: Event, to targetUID: String) async {
         print("🚨 SEND EVENT SHARE REQUEST:", event.id ?? "nil")
@@ -153,14 +179,12 @@ final class EventViewModel: ObservableObject {
                 ]
               ])
 
-
-            // 2️⃣ 🔔 알림은 NotificationViewModel에게만 맡긴다
-            let notificationVM = NotificationViewModel()
-            notificationVM.sendEventInviteNotification(
+            NotificationService.sendEventInvite(
                 toUserId: targetUID,
-                eventId: eventId,
+                eventId: event.id!,
                 eventTitle: event.title
             )
+
 
             print("✅ Event share request + notification sent")
 
