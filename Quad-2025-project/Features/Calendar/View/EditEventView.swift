@@ -5,7 +5,6 @@
 //  Created on Calendar Feature Enhancement
 //
 
-import FirebaseFirestore
 import SwiftUI
 
 struct EditEventView: View {
@@ -108,14 +107,8 @@ struct EditEventView: View {
                 // Sharing Info
                 if !sharedWith.isEmpty {
                     Section(header: Text("Shared With")) {
-                        ForEach(sharedWith, id: \.self) { userId in
-                            HStack {
-                                Image(systemName: "person.fill")
-                                    .foregroundColor(.secondary)
-                                Text("User: \(userId.prefix(8))...")
-                                    .font(.caption)
-                                    .foregroundColor(.secondary)
-                            }
+                        ForEach(sharedWith, id: \.self) { uid in
+                            SharedUserRow(uid: uid)
                         }
                     }
                 }
@@ -194,15 +187,14 @@ struct EditEventView: View {
 
         Task {
             do {
-                let db = Firestore.firestore()
-
-                try await db.collection("events").document(eventId).updateData([
-                    "title": title,
-                    "date": date,
-                    "type": type,
-                    "location": location,
-                    "colorHex": colorHex,
-                ])
+                try await viewModel.updateEvent(
+                    eventId: eventId,
+                    title: title,
+                    date: date,
+                    type: type,
+                    location: location,
+                    colorHex: colorHex
+                )
 
                 await MainActor.run {
                     isSaving = false
@@ -217,6 +209,7 @@ struct EditEventView: View {
             }
         }
     }
+
 }
 
 // Preview

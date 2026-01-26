@@ -80,13 +80,14 @@ class ProfileViewModel: ObservableObject {
             let data = try snapshot.data(as: QuadUser.self)
 
             self.user = data
-            self.username = data.username
-            self.major = data.major
-            self.year = data.year
-            self.email = data.email
-            self.phone = data.phone
-            self.bio = data.bio
-            self.profileImageURL = data.profileImageURL
+            self.username = data.username ?? "Unknown"
+            self.major = data.major ?? ""
+            self.year = data.year ?? ""
+            self.email = data.email ?? ""
+            self.phone = data.phone ?? ""
+            self.bio = data.bio ?? ""
+            self.profileImageURL = data.profileImageURL ?? ""
+
 
         } catch {
             print("❌ Failed loading profile:", error)

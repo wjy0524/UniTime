@@ -5,19 +5,33 @@
 //  Created on Notification Feature Implementation
 //
 
-import FirebaseAuth
+//
+//  NotificationView.swift
+//  Quad-2025-project
+//
+
 import SwiftUI
+import FirebaseAuth
+import FirebaseFirestore
+
+// MARK: - Navigation Target
+enum NotificationNavTarget: Hashable {
+    case user(uid: String)
+    case post(postId: String)
+    case eventRequests 
+}
 
 struct NotificationView: View {
     @StateObject private var viewModel = NotificationViewModel()
     @Environment(\.dismiss) private var dismiss
-    @State private var selectedUserId: String?
+
+    @State private var navTarget: NotificationNavTarget?
 
     var body: some View {
         NavigationStack {
             ZStack {
 
-                // 🔹 메인 콘텐츠
+                // 메인 콘텐츠
                 if viewModel.isLoading {
                     ProgressView("Loading notifications...")
                 } else if viewModel.notifications.isEmpty {
@@ -25,24 +39,25 @@ struct NotificationView: View {
                 } else {
                     notificationList
                 }
-
-                // 🔥 숨김 NavigationLink (같은 ZStack 안!)
-                NavigationLink(
-                    destination:
-                        selectedUserId.map { uid in
-                            PublicProfileView(targetUid: uid)
-                        },
-                    isActive: Binding(
-                        get: { selectedUserId != nil },
-                        set: { if !$0 { selectedUserId = nil } }
-                    )
-                ) {
-                    EmptyView()
-                }
-
             }
             .navigationTitle("Notifications")
             .navigationBarTitleDisplayMode(.inline)
+
+            // 🔥 PUSH 네비게이션 (핵심)
+            .navigationDestination(item: $navTarget) { target in
+                switch target {
+                case .user(let uid):
+                    PublicProfileView(targetUid: uid)
+
+                case .post(let postId):
+                    PostDetailLoaderView(postId: postId)
+                    
+                case .eventRequests:
+                    EventShareRequestsView()
+
+                }
+            }
+
             .onAppear {
                 viewModel.startListening()
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
@@ -51,33 +66,27 @@ struct NotificationView: View {
             }
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button("Close") {
-                        dismiss()
-                    }
+                    Button("Close") { dismiss() }
                 }
 
                 ToolbarItem(placement: .navigationBarTrailing) {
                     if !viewModel.notifications.isEmpty {
-                        Button {
+                        Button("Mark all read") {
                             viewModel.markAllAsRead()
-                        } label: {
-                            Text("Mark all read")
-                                .font(.subheadline)
                         }
+                        .font(.subheadline)
                     }
                 }
             }
             .alert("Error", isPresented: $viewModel.showingError) {
                 Button("OK", role: .cancel) {}
             } message: {
-                Text(viewModel.errorMessage ?? "An unknown error occurred")
+                Text(viewModel.errorMessage ?? "Unknown error")
             }
         }
     }
 
-
     // MARK: - Empty State
-
     var emptyStateView: some View {
         VStack(spacing: 20) {
             Image(systemName: "bell.slash")
@@ -85,18 +94,15 @@ struct NotificationView: View {
                 .foregroundColor(.gray)
 
             Text("No Notifications")
-                .font(.title2)
-                .bold()
+                .font(.title2.bold())
 
             Text("You're all caught up!")
-                .font(.subheadline)
                 .foregroundColor(.secondary)
         }
         .padding()
     }
 
     // MARK: - Notification List
-
     var notificationList: some View {
         ScrollView {
             LazyVStack(spacing: 0) {
@@ -116,15 +122,13 @@ struct NotificationView: View {
                         }
                     }
 
-                    Divider()
-                        .padding(.leading, 70)
+                    Divider().padding(.leading, 70)
                 }
             }
         }
     }
 
-    // MARK: - Handle Notification Actions
-
+    // MARK: - Tap Handling (🔥 핵심 로직)
     func handleNotificationTap(_ notification: AppNotification) {
 
         if !notification.isRead {
@@ -132,29 +136,35 @@ struct NotificationView: View {
         }
 
         switch notification.type {
+
+        // 👤 친구 요청 / 수락 → 프로필로
         case .follow, .followAccepted:
-                selectedUserId = notification.fromUserId   // 🔥 여기
+            navTarget = .user(uid: notification.fromUserId)
 
-        case .timetableShareRequest:
-            break
-
-        case .timetableShareAccepted, .timetableShareDeclined:
-            break
-
+        // 📝 게시글 관련 → 게시글로
         case .postLike, .postComment:
-            break
+            if let postId = notification.postId {
+                navTarget = .post(postId: postId)
+            }
+            // 📅 이벤트 공유 요청
+        case .eventInvite:   // ← 네가 알림 만들 때 쓴 type
+            if let eventId = notification.eventId {
+                navTarget = .eventRequests
+                }
+        
 
-        case .eventInvite:
-            break
-
-        case .chatMessage:
+        // (지금은 이동 없음)
+            //추후 업데이트 해야함
+        case .timetableShareRequest,
+             .timetableShareAccepted,
+             .timetableShareDeclined,
+             .chatMessage:
             break
         }
     }
 }
 
-// MARK: - Notification Row
-
+// MARK: - Notification Row (그대로 유지)
 struct NotificationRow: View {
     let notification: AppNotification
     let onTap: () -> Void
@@ -169,25 +179,16 @@ struct NotificationRow: View {
                     .frame(width: 50, height: 50)
 
                 Image(systemName: notification.type.icon)
-                    .font(.system(size: 20))
                     .foregroundColor(notificationColor)
             }
 
-            // Content
             VStack(alignment: .leading, spacing: 4) {
                 Text(notification.message)
                     .font(.subheadline)
-                    .foregroundColor(.primary)
-                    .multilineTextAlignment(.leading)
-                    .lineLimit(3)
 
                 Text(notification.timeAgo)
                     .font(.caption)
                     .foregroundColor(.secondary)
-
-                if notification.type == .timetableShareRequest && !isProcessing {
-                    timetableShareActions
-                }
             }
 
             Spacer()
@@ -198,13 +199,9 @@ struct NotificationRow: View {
                     .frame(width: 10, height: 10)
             }
         }
-        .padding(.horizontal)
-        .padding(.vertical, 12)
-        .background(notification.isRead ? Color.clear : Color.blue.opacity(0.05))
+        .padding()
         .contentShape(Rectangle())
-        .onTapGesture {
-            onTap()
-        }
+        .onTapGesture { onTap() }
         .contextMenu {
             Button(role: .destructive) {
                 onDelete()
@@ -224,51 +221,27 @@ struct NotificationRow: View {
         default: return .gray
         }
     }
+}
 
-    var timetableShareActions: some View {
-        HStack(spacing: 12) {
-            Button {
-                isProcessing = true
-                if let shareId = notification.timetableShareId {
-                    TimetableShareViewModel.shared.declineShareRequest(shareId)
-                }
-            } label: {
-                Text("Decline")
-                    .font(.caption)
-                    .fontWeight(.semibold)
-                    .foregroundColor(.white)
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 6)
-                    .background(Color.red)
-                    .cornerRadius(8)
-            }
-            .buttonStyle(.plain)
+struct PostDetailLoaderView: View {
+    let postId: String
+    @State private var post: Post?
 
-            Button {
-                isProcessing = true
-                if let shareId = notification.timetableShareId {
-                    TimetableShareViewModel.shared.acceptShareRequest(shareId)
-                }
-            } label: {
-                Text("Accept")
-                    .font(.caption)
-                    .fontWeight(.semibold)
-                    .foregroundColor(.white)
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 6)
-                    .background(Color.green)
-                    .cornerRadius(8)
+    var body: some View {
+        Group {
+            if let post {
+                PostDetailView(post: post)
+            } else {
+                ProgressView()
+                    .task {
+                        let snap = try? await Firestore.firestore()
+                            .collection("posts")
+                            .document(postId)
+                            .getDocument()
+                        post = try? snap?.data(as: Post.self)
+                    }
             }
-            .buttonStyle(.plain)
         }
-        .padding(.top, 4)
     }
 }
 
-// MARK: - Preview
-
-struct NotificationView_Previews: PreviewProvider {
-    static var previews: some View {
-        NotificationView()
-    }
-}

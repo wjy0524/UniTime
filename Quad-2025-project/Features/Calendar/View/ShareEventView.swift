@@ -4,17 +4,24 @@
 //  Quad-2025-project
 //
 
+//
+//  ShareEventView.swift
+//  Quad-2025-project
+//
+
 import Kingfisher
 import SwiftUI
 
 struct ShareEventView: View {
     let event: Event
-    let onShare: (String) -> Void
+    @ObservedObject var viewModel: EventViewModel
 
     @Environment(\.dismiss) private var dismiss
     @StateObject private var friendService = FriendService.shared
 
     @State private var selectedFriend: String?
+    @State private var isSending = false
+    @State private var hasSent = false
 
     var body: some View {
         NavigationStack {
@@ -37,20 +44,20 @@ struct ShareEventView: View {
             }
             .navigationTitle("Share Event")
             .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Share") {
-                        if let target = selectedFriend {
-                            onShare(target)
-                            dismiss()
-                        }
-                    }
-                    .disabled(selectedFriend == nil)
-                }
 
+                // Cancel
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") {
                         dismiss()
                     }
+                }
+
+                // Share (send request)
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(isSending ? "Sending..." : "Send Request") {
+                        sendRequest()
+                    }
+                    .disabled(selectedFriend == nil || isSending)
                 }
             }
             .task {
@@ -58,7 +65,29 @@ struct ShareEventView: View {
             }
         }
     }
+
+    // MARK: - Send Share Request
+    private func sendRequest() {
+        guard let targetUID = selectedFriend else { return }
+        guard !hasSent else { return }   // 🔥 핵심
+
+        hasSent = true
+        isSending = true
+
+        Task {
+            await viewModel.sendEventShareRequest(
+                event: event,
+                to: targetUID
+            )
+
+            await MainActor.run {
+                isSending = false
+                dismiss()
+            }
+        }
+    }
 }
+
 
 
 struct FriendShareRow: View {

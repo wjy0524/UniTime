@@ -100,13 +100,16 @@ struct UserSearchRow: View {
     var body: some View {
         HStack(spacing: 12) {
 
-            if let url = URL(string: user.profileImageURL),
-               !user.profileImageURL.isEmpty {
+            if let imageURL = user.profileImageURL,
+               !imageURL.isEmpty,
+               let url = URL(string: imageURL) {
+
                 KFImage(url)
                     .resizable()
                     .scaledToFill()
                     .frame(width: 44, height: 44)
                     .clipShape(Circle())
+
             } else {
                 Circle()
                     .fill(Color(.systemGray4))
@@ -117,8 +120,9 @@ struct UserSearchRow: View {
                     )
             }
 
+
             VStack(alignment: .leading, spacing: 2) {
-                Text(user.username)
+                Text(user.username ?? "Unknown")
                     .font(.subheadline)
                     .fontWeight(.semibold)
 

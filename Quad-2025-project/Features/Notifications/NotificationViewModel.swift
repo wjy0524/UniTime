@@ -445,4 +445,28 @@ class NotificationViewModel: ObservableObject {
             }
         }
     }
+    // MARK: - Event Share Notification
+
+    func sendEventInviteNotification(
+        toUserId: String,
+        eventId: String,
+        eventTitle: String
+    ) {
+        guard let currentUserId = Auth.auth().currentUser?.uid else { return }
+
+        db.collection("users").document(currentUserId).getDocument { [weak self] snapshot, error in
+            guard let self = self,
+                  let data = snapshot?.data(),
+                  let username = data["username"] as? String
+            else { return }
+
+            self.sendNotification(
+                type: .eventInvite,   // ⭐ 핵심 (enum!)
+                toUserId: toUserId,
+                message: "\(username) shared an event: \(eventTitle)",
+                eventId: eventId
+            )
+        }
+    }
+
 }

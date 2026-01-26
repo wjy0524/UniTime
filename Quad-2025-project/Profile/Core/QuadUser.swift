@@ -13,19 +13,21 @@ import FirebaseFirestore
 import Foundation
 
 struct QuadUser: Codable, Identifiable {
-    @DocumentID var id: String?  // Firestore doc ID
+    @DocumentID var id: String?
     var uid: String
 
-    var username: String
-    let username_lower: String
-    var major: String
-    var year: String
-    var email: String
-    var phone: String
-    var bio: String
-    var profileImageURL: String
-    var shareStudyStatus: Bool = true  // Privacy setting for sharing study time with friends
+    var username: String?          // ✅ optional
+    let username_lower: String?
+    var major: String?
+    var year: String?
+    var email: String?
+    var phone: String?
+    var bio: String?
+    var profileImageURL: String?
+    var shareStudyStatus: Bool = true
 
-    var identifier: String { id ?? uid }
-
+    var displayName: String {
+        username ?? "Unknown User"  // ✅ UI fallback
+    }
 }
+

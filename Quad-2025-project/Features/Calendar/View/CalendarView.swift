@@ -14,10 +14,8 @@ struct CalendarView: View {
     @State private var selectedDate = Date()
 
     @State private var showAddEvent = false
-    @State private var showShareEvent = false
-    @State private var showEditEvent = false
-    @State private var eventToShare: Event?
     @State private var eventToEdit: Event?
+    @State private var eventToShare: Event?
 
     var body: some View {
         NavigationStack {
@@ -39,11 +37,9 @@ struct CalendarView: View {
                         viewModel: viewModel,
                         onEdit: { event in
                             eventToEdit = event
-                            showEditEvent = true
                         },
                         onShare: { event in
                             eventToShare = event
-                            showShareEvent = true
                         }
                     )
                     .padding(.bottom, 40)
@@ -51,6 +47,17 @@ struct CalendarView: View {
             }
             .navigationTitle("Calendar")
             .toolbar {
+
+                // 📥 받은 이벤트 요청함
+                ToolbarItem(placement: .navigationBarLeading) {
+                    NavigationLink {
+                        EventShareRequestsView()
+                    } label: {
+                        Image(systemName: "tray.full")
+                    }
+                }
+
+                // ➕ 이벤트 추가
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button {
                         showAddEvent = true
@@ -61,6 +68,7 @@ struct CalendarView: View {
                     }
                 }
             }
+
             .onAppear {
                 viewModel.startListening()
             }
@@ -71,18 +79,17 @@ struct CalendarView: View {
                     }
                 }
             }
-            .sheet(isPresented: $showEditEvent) {
-                if let event = eventToEdit {
-                    EditEventView(event: event, viewModel: viewModel)
-                }
+            .sheet(item: $eventToEdit) { event in
+                EditEventView(event: event, viewModel: viewModel)
             }
-            .sheet(isPresented: $showShareEvent) {
-                if let event = eventToShare {
-                    ShareEventView(event: event) { uid in
-                        Task { await viewModel.shareEvent(event, to: uid) }
-                    }
-                }
+
+            .sheet(item: $eventToShare) { event in
+                ShareEventView(
+                    event: event,
+                    viewModel: viewModel
+                )
             }
+
         }
     }
 
@@ -124,14 +131,12 @@ struct CalendarView: View {
                     Menu {
                         Button {
                             eventToEdit = event
-                            showEditEvent = true
-                        } label: {
+                        }label: {
                             Label("Edit", systemImage: "pencil")
                         }
 
                         Button {
                             eventToShare = event
-                            showShareEvent = true
                         } label: {
                             Label("Share", systemImage: "square.and.arrow.up")
                         }
@@ -311,26 +316,28 @@ struct AllEventsView: View {
 
             // Actions menu
             Menu {
-                Button {
-                    onEdit(event)
-                } label: {
-                    Label("Edit", systemImage: "pencil")
-                }
+                if event.ownerId == viewModel.uid {
+                    Button {
+                        onEdit(event)
+                    } label: {
+                        Label("Edit", systemImage: "pencil")
+                    }
 
-                Button {
-                    onShare(event)
-                } label: {
-                    Label("Share", systemImage: "square.and.arrow.up")
-                }
+                    Button {
+                        onShare(event)
+                    } label: {
+                        Label("Share", systemImage: "square.and.arrow.up")
+                    }
 
-                Divider()
+                    Divider()
+                }
 
                 Button(role: .destructive) {
                     viewModel.deleteEvent(event)
                 } label: {
                     Label("Delete", systemImage: "trash")
                 }
-            } label: {
+            }label: {
                 Image(systemName: "ellipsis.circle")
                     .font(.title3)
                     .foregroundColor(.secondary)
