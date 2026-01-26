@@ -15,24 +15,105 @@ class PostDetailViewModel: ObservableObject {
     @Published var commentText = ""
     @Published var likeCount = 0
     @Published var didLike = false
-    @Published var replyingTo: Comment? = nil  // 🔥 대댓글 대상
+    @Published var replyingTo: Comment? = nil
     @Published var authorName = ""
 
     let db = Firestore.firestore()
     var uid: String { Auth.auth().currentUser?.uid ?? "" }
+    
+    // 🔥 NEW: Firestore listeners for real-time updates
+    private var postListener: ListenerRegistration?
+    private var commentsListener: ListenerRegistration?
+    
+    // 🔥 NEW: Clean up listeners
+    deinit {
+        postListener?.remove()
+        commentsListener?.remove()
+    }
+    
+    // 🔥 NEW: Call this to stop listeners when view disappears
+    func stopListening() {
+        postListener?.remove()
+        commentsListener?.remove()
+        postListener = nil
+        commentsListener = nil
+    }
 
     func load(post: Post) async {
         likeCount = post.likeCount
 
         // 🔥 authorId → username 변환
         if let username = await fetchUsername(uid: post.authorId) {
-            self.authorName = username  // ⭐️ 추가되는 변수
+            self.authorName = username
         } else {
             self.authorName = post.authorId
         }
 
         await checkLiked(post)
-        await loadComments(post)
+        
+        // 🔥 Start real-time listeners
+        startPostListener(post: post)
+        startCommentsListener(post: post)
+    }
+    
+    // 🔥 NEW: Real-time listener for post (likes count)
+    func startPostListener(post: Post) {
+        guard let postId = post.id else { return }
+        
+        postListener?.remove()
+        
+        postListener = db.collection("posts").document(postId)
+            .addSnapshotListener { [weak self] snapshot, error in
+                guard let self = self else { return }
+                
+                if let error = error {
+                    print("❌ Post listener error:", error)
+                    return
+                }
+                
+                guard let data = snapshot?.data(),
+                      let newLikeCount = data["likeCount"] as? Int else { return }
+                
+                Task { @MainActor in
+                    self.likeCount = newLikeCount
+                }
+            }
+    }
+    
+    // 🔥 NEW: Real-time listener for comments
+    func startCommentsListener(post: Post) {
+        guard let postId = post.id else { return }
+        
+        commentsListener?.remove()
+        
+        commentsListener = db.collection("posts")
+            .document(postId)
+            .collection("comments")
+            .order(by: "timestamp")
+            .addSnapshotListener { [weak self] snapshot, error in
+                guard let self = self else { return }
+                
+                if let error = error {
+                    print("❌ Comments listener error:", error)
+                    return
+                }
+                
+                guard let documents = snapshot?.documents else { return }
+                
+                Task { @MainActor in
+                    var loaded = documents.compactMap { try? $0.data(as: Comment.self) }
+                    
+                    // 🔥 UID -> username 변환
+                    for i in 0..<loaded.count {
+                        let uid = loaded[i].authorId
+                        if let username = await self.fetchUsername(uid: uid) {
+                            loaded[i].authorId = username
+                        }
+                    }
+                    
+                    self.comments = loaded
+                }
+            }
     }
 
     // MARK: - Likes
@@ -64,7 +145,7 @@ class PostDetailViewModel: ObservableObject {
             try? await db.collection("users").document(uid)
                 .collection("likes").document(id).delete()
 
-            likeCount -= 1
+            // 🔥 REMOVED: likeCount -= 1 (listener will handle this now)
         } else {
             try? await db.collection("posts").document(id)
                 .updateData(["likeCount": FieldValue.increment(Int64(1))])
@@ -72,7 +153,7 @@ class PostDetailViewModel: ObservableObject {
             try? await db.collection("users").document(uid)
                 .collection("likes").document(id).setData([:])
 
-            likeCount += 1
+            // 🔥 REMOVED: likeCount += 1 (listener will handle this now)
 
             // 🔥 Send notification using main notification system
             print("🔔 TOGGLE LIKE: Preparing to send notification to \(post.authorId)")
@@ -85,30 +166,17 @@ class PostDetailViewModel: ObservableObject {
         }
 
         didLike.toggle()
+        
+        // 🔥 FIX: Notify BoardView to refresh this post
+        NotificationCenter.default.post(
+            name: .didUpdatePost,
+            object: nil,
+            userInfo: ["postId": id]
+        )
     }
 
     // MARK: - Comments + Replies
-    func loadComments(_ post: Post) async {
-        guard let postId = post.id else { return }
-
-        let snap = try? await db.collection("posts")
-            .document(postId)
-            .collection("comments")
-            .order(by: "timestamp")
-            .getDocuments()
-
-        var loaded = snap?.documents.compactMap { try? $0.data(as: Comment.self) } ?? []
-
-        // 🔥 UID -> username 변환
-        for i in 0..<loaded.count {
-            let uid = loaded[i].authorId
-            if let username = await fetchUsername(uid: uid) {
-                loaded[i].authorId = username
-            }
-        }
-
-        self.comments = loaded
-    }
+    // 🔥 REMOVED: loadComments() - now handled by real-time listener
 
     func addComment(_ post: Post) async {
         guard !commentText.isEmpty else { return }
@@ -131,16 +199,13 @@ class PostDetailViewModel: ObservableObject {
             .updateData(["commentCount": FieldValue.increment(Int64(1))])
 
         // 🔥 알림 (댓글 or 대댓글)
-        // 🔥 Send notification using main notification system
         let notificationVM = NotificationViewModel()
         if let parent = replyingTo {
-            // Reply to comment notification
             notificationVM.sendPostCommentNotification(
                 toUserId: parent.authorId,
                 postId: postId
             )
         } else {
-            // Comment on post notification
             notificationVM.sendPostCommentNotification(
                 toUserId: post.authorId,
                 postId: postId
@@ -149,7 +214,14 @@ class PostDetailViewModel: ObservableObject {
 
         commentText = ""
         replyingTo = nil
-        await loadComments(post)
+        // 🔥 REMOVED: await loadComments(post) - listener will handle this
+        
+        // 🔥 FIX: Notify BoardView to refresh this post's comment count
+        NotificationCenter.default.post(
+            name: .didUpdatePost,
+            object: nil,
+            userInfo: ["postId": postId]
+        )
     }
 
     func likeComment(post: Post, comment: Comment) async {
@@ -170,11 +242,10 @@ class PostDetailViewModel: ObservableObject {
             postId: postId
         )
 
-        await loadComments(post)
+        // 🔥 REMOVED: await loadComments(post) - listener will handle this
     }
 
     // MARK: - Helper Functions
-
     func fetchUsername(uid: String) async -> String? {
         do {
             let snap = try await db.collection("users")
@@ -190,5 +261,4 @@ class PostDetailViewModel: ObservableObject {
         }
         return nil
     }
-
 }

@@ -62,7 +62,7 @@ struct PostDetailView: View {
                     HStack {
                         Image(systemName: vm.didLike ? "heart.fill" : "heart")
                             .foregroundColor(.red)
-                        Text("\(vm.likeCount)")
+                        Text("\(vm.likeCount)")  // 🔥 This now updates in real-time!
                     }
                     .onTapGesture {
                         Task { await vm.toggleLike(post) }
@@ -70,7 +70,7 @@ struct PostDetailView: View {
 
                     HStack {
                         Image(systemName: "bubble.right")
-                        Text("\(post.commentCount)")
+                        Text("\(vm.comments.count)")  // 🔥 Changed to use vm.comments.count for real-time
                     }
                 }
                 .font(.subheadline)
@@ -87,6 +87,10 @@ struct PostDetailView: View {
         .navigationBarTitleDisplayMode(.inline)
         .task {
             await vm.load(post: post)
+        }
+        .onDisappear {
+            // 🔥 NEW: Clean up listeners when leaving the view
+            vm.stopListening()
         }
         .safeAreaInset(edge: .bottom) {
             commentInputBar

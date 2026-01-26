@@ -2,8 +2,6 @@
 //  BoardView.swift
 //  Quad-2025-project
 //
-//  Created by Jaeyeon Won on 11/18/25.
-//
 
 import SwiftUI
 
@@ -32,7 +30,7 @@ struct BoardView: View {
                                 .onTapGesture {
                                     vm.selectedCategory = cat
                                     vm.reset()
-                                    Task { await vm.fetchMore() }
+                                    vm.startListening()  // 🔥 Use real-time listener
                                 }
                         }
                     }
@@ -48,7 +46,7 @@ struct BoardView: View {
                 .padding()
                 .onChange(of: vm.selectedSort) {
                     vm.reset()
-                    Task { await vm.fetchMore() }
+                    vm.startListening()  // 🔥 Use real-time listener
                 }
 
                 List {
@@ -60,15 +58,28 @@ struct BoardView: View {
                         }
                     }
 
-                    if !vm.isLoading {
+                    // 🔥 Optional: Load more for pagination (if you want infinite scroll)
+                    // The listener handles initial load, but you can still fetch more
+                    if !vm.isLoading && vm.posts.count >= 20 {
                         Color.clear.onAppear { Task { await vm.fetchMore() } }
                     }
                 }
                 .listStyle(.plain)
+                .refreshable {
+                    vm.reset()
+                    vm.startListening()  // 🔥 Use real-time listener
+                }
             }
             .navigationTitle("Board")
             .toolbar {
                 ToolbarItemGroup(placement: .navigationBarTrailing) {
+                    // 🔥 TEMPORARY FIX BUTTON - Remove after running once
+                    Button("Fix") {
+                        Task {
+                            await vm.fixAllCommentCounts()
+                        }
+                    }
+                    
                     Button {
                         showSearch = true
                     } label: {
@@ -89,8 +100,16 @@ struct BoardView: View {
                 SearchPostsView()
             }
         }
-        .task {
-            await vm.fetchMore()
+        .onAppear {
+            // 🔥 Start real-time listener when view appears
+            if vm.posts.isEmpty {
+                vm.startListening()
+            }
+        }
+        .onDisappear {
+            // 🔥 Optional: Stop listener when view disappears to save resources
+            // Uncomment if you want to stop listening when leaving this screen
+            // vm.reset()
         }
     }
 
