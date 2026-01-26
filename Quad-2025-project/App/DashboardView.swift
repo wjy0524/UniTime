@@ -37,7 +37,6 @@ struct DashboardView: View {
                     gpaCard  // 🔥 실제 GPA 반영됨
                     diningCard
                     weeklyChartCard
-                    sharePreviewCard
                 }
                 .padding(.vertical, 20)
                 .padding(.horizontal)
@@ -477,34 +476,6 @@ extension DashboardView {
     }
 }
 
-////////////////////////////////////////////////////////////
-// MARK: - SHARE PREVIEW
-////////////////////////////////////////////////////////////
-
-extension DashboardView {
-    var sharePreviewCard: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("Recent Share Requests")
-                .font(.headline)
-
-            VStack(alignment: .leading, spacing: 8) {
-                Text("• Looking for someone to share ECE 302 notes.")
-                Text("• Anyone want to exchange M 408D review sheets?")
-            }
-            .foregroundColor(.secondary)
-
-            NavigationLink(destination: ShareRequestsView()) {
-                Text("View All →")
-                    .font(.subheadline)
-                    .foregroundColor(.blue)
-            }
-        }
-        .padding()
-        .background(Color(.systemBackground))
-        .cornerRadius(16)
-        .shadow(color: .black.opacity(0.05), radius: 8)
-    }
-}
 
 ////////////////////////////////////////////////////////////
 // MARK: - HELPERS
