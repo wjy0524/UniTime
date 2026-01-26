@@ -23,8 +23,18 @@ struct AddEventView: View {
     @State private var type = ""
     @State private var location = ""
     @State private var colorHex: String = "#FF6A00"
+    @State private var reminderMinutes: Int? = 30
 
     let onSave: (Event) -> Void
+    
+    let reminderOptions: [(label: String, value: Int?)] = [
+        ("None", nil),
+        ("5 minutes before", 5),
+        ("10 minutes before", 10),
+        ("30 minutes before", 30),
+        ("1 hour before", 60)
+    ]
+
 
     // 색상 옵션 (EditEventView와 동일)
     let colorOptions: [(name: String, hex: String)] = [
@@ -93,6 +103,15 @@ struct AddEventView: View {
                         .padding(.vertical, 8)
                     }
                 }
+                // MARK: - Reminder
+                Section("Reminder") {
+                    Picker("Notify me", selection: $reminderMinutes) {
+                        ForEach(reminderOptions, id: \.value) { option in
+                            Text(option.label).tag(option.value)
+                        }
+                    }
+                }
+
             }
             .navigationTitle("Add Event")
             .navigationBarTitleDisplayMode(.inline)
@@ -127,9 +146,10 @@ struct AddEventView: View {
             type: type.isEmpty ? "General" : type,
             location: location,
             colorHex: colorHex,
-            sharedWith: []
+            sharedWith: [],
+            reminderMinutes: reminderMinutes
         )
-
+        
         onSave(newEvent)
         dismiss()
     }

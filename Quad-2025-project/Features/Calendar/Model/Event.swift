@@ -17,6 +17,7 @@ struct Event: Identifiable, Codable {
     var location: String
     var colorHex: String
     var sharedWith: [String]
+    var reminderMinutes: Int?   // 🔔
 
     init(
         id: String? = nil,
@@ -26,7 +27,8 @@ struct Event: Identifiable, Codable {
         type: String = "General",
         location: String = "",
         colorHex: String = "#FF6A00",
-        sharedWith: [String] = []
+        sharedWith: [String] = [],
+        reminderMinutes: Int? = nil   // ✅ 추가
     ) {
         self.id = id
         self.ownerId = ownerId
@@ -36,5 +38,6 @@ struct Event: Identifiable, Codable {
         self.location = location
         self.colorHex = colorHex
         self.sharedWith = sharedWith
+        self.reminderMinutes = reminderMinutes
     }
 }
