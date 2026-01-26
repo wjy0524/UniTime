@@ -73,13 +73,6 @@ struct BoardView: View {
             .navigationTitle("Board")
             .toolbar {
                 ToolbarItemGroup(placement: .navigationBarTrailing) {
-                    // 🔥 TEMPORARY FIX BUTTON - Remove after running once
-                    Button("Fix") {
-                        Task {
-                            await vm.fixAllCommentCounts()
-                        }
-                    }
-                    
                     Button {
                         showSearch = true
                     } label: {
