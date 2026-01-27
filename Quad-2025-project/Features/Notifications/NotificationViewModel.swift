@@ -293,13 +293,32 @@ class NotificationViewModel: ObservableObject {
     // MARK: - Handle Timetable Share Notifications
 
     func sendTimetableShareRequest(toUserId: String, shareRequestId: String) {
-        guard let currentUserId = Auth.auth().currentUser?.uid else { return }
+        guard let currentUserId = Auth.auth().currentUser?.uid else {
+            print("❌ NO currentUser")
+            return
+        }
 
-        db.collection("users").document(currentUserId).getDocument { [weak self] snapshot, error in
-            guard let self = self,
-                let data = snapshot?.data(),
-                let username = data["username"] as? String
-            else { return }
+        print("🔥 sendTimetableShareRequest from:", currentUserId)
+
+        db.collection("users").document(currentUserId).getDocument { snapshot, error in
+            if let error {
+                print("❌ user doc fetch error:", error)
+                return
+            }
+
+            guard let data = snapshot?.data() else {
+                print("❌ user doc is empty")
+                return
+            }
+
+            print("🔥 user data:", data)
+
+            guard let username = data["username"] as? String else {
+                print("❌ username missing in user doc")
+                return
+            }
+
+            print("✅ username:", username)
 
             self.sendNotification(
                 type: .timetableShareRequest,
@@ -309,6 +328,7 @@ class NotificationViewModel: ObservableObject {
             )
         }
     }
+
 
     func sendTimetableShareAccepted(toUserId: String, shareRequestId: String) {
         guard let currentUserId = Auth.auth().currentUser?.uid else { return }

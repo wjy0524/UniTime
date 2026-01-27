@@ -135,9 +135,17 @@ struct TimetableShareSearchView: View {
                     timetableCourses: timetableViewModel.courses
                 )
 
-                try db
+                let docRef = try db
                     .collection("timetableShareRequests")
                     .addDocument(from: request)
+
+                let notificationVM = NotificationViewModel()
+                notificationVM.sendTimetableShareRequest(
+                    toUserId: friend.uid,
+                    shareRequestId: docRef.documentID
+                )
+
+
 
                 await MainActor.run {
                     shareViewModel.successMessage =
