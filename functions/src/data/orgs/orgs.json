@@ -638,7 +638,7 @@
     "title": "Epic Movement",
     "content": "Category: Religious/Christian. Missional movement providing environment and community for exploration, experience, and commitment to Christianity, especially in Asian American context.",
     "category": "organizations"
-  }
+  },
   {
     "title": "Indian Students Association",
     "content": "Category: Cultural/South Asian. One of the largest and oldest student organizations at UT, serving as an umbrella organization connecting South Asian groups and hosting large-scale cultural and social events.",
@@ -755,28 +755,13 @@
      "category": "organizations"
   },
   {
-     "title": "Math Club",
-     "content": "Category: Academic/Mathematics. Social and academic organization for students interested in mathematics across all levels.",
-     "category": "organizations"
-  },
-  {
      "title": "Muslim Students' Association",
      "content": "Category: Religious/Muslim. Major faith-based organization supporting Muslim students through worship, service, and community events.",
      "category": "organizations"
   },
   {
-     "title": "National Society of Black Engineers",
-     "content": "Category: Professional/Engineering. Supports Black engineering students through academic excellence, career development, and community impact.",
-     "category": "organizations"
-  },
-  {
      "title": "Natural Sciences Council",
      "content": "Category: Student Government/Science. Student representative body for the College of Natural Sciences.",
-     "category": "organizations"
-  },
-  {
-     "title": "Noteworthy A Cappella",
-     "content": "Category: Arts/Music. Co-ed a cappella group performing original arrangements across multiple genres.",
      "category": "organizations"
   },
   {
@@ -803,7 +788,7 @@
      "title": "Longhorn Yoga",
      "content": "Category: Wellness/Fitness. Hosts weekly yoga practices open to all experience levels to promote physical and mental wellness.",
      "category": "organizations"
-  }
+  },
   {
        "title": "Math Club",
        "content": "Category: Academic/Mathematics. Social and academic organization for students interested in mathematics at all levels.",
@@ -862,11 +847,6 @@
   {
        "title": "Music United",
        "content": "Category: Service/Music Education. Provides free music education to disabled and underserved K–5 students.",
-       "category": "organizations"
-  },
-  {
-       "title": "Muslim Students' Association",
-       "content": "Category: Religious/Muslim. One of the largest faith-based organizations at UT, supporting Muslim students through worship, service, and community.",
        "category": "organizations"
   },
   {
@@ -965,16 +945,6 @@
        "category": "organizations"
   },
   {
-       "title": "Recreational Sports",
-       "content": "Category: Fitness/Recreation. Provides campus-wide fitness facilities, programs, intramurals, and outdoor activities.",
-       "category": "organizations"
-  },
-  {
-       "title": "Run for St. Jude",
-       "content": "Category: Service/Fitness. Student-led run club fundraising for St. Jude Children’s Research Hospital.",
-       "category": "organizations"
-  },
-  {
        "title": "Scholars of Finance",
        "content": "Category: Professional/Finance. Develops ethical and principled future leaders in finance.",
        "category": "organizations"
@@ -1000,15 +970,10 @@
        "category": "organizations"
   },
   {
-       "title": "Student Government",
-       "content": "Category: Student Government. Official student representative body advocating for student interests at UT.",
-       "category": "organizations"
-  },
-  {
        "title": "Students Fighting Climate Change",
        "content": "Category: Advocacy/Environment. Interdisciplinary organization raising awareness and action on climate change.",
        "category": "organizations"
-  }
+  },
   {
       "title": "Radio-Television-Film Department",
       "content": "Category: Academic/Media. One of UT’s most competitive and nationally ranked programs in film production and media studies.",
@@ -1052,16 +1017,6 @@
     {
       "title": "Saudi Longhorn",
       "content": "Category: Cultural/Middle Eastern. Supports Saudi students and promotes Saudi culture within the UT community.",
-      "category": "organizations"
-    },
-    {
-      "title": "Scholars of Finance",
-      "content": "Category: Professional/Finance. Develops principled leaders through mentorship, leadership training, and finance education.",
-      "category": "organizations"
-    },
-    {
-      "title": "Secular Student Alliance – Austin",
-      "content": "Category: Identity/Secular. Community for non-theist students promoting reason, ethics, and separation of church and state.",
       "category": "organizations"
     },
     {
@@ -1278,28 +1233,28 @@
       "title": "University Securities Investment Team",
       "content": "Category: Finance/Investing. Manages a real-money investment portfolio with student analysts.",
       "category": "organizations"
-    }
-      {
+    },
+    {
         "title": "Texas Materials Scientists and Engineers",
         "content": "Category: Engineering/Materials Science. Brings together students interested in materials science through professional development and technical community.",
         "category": "organizations"
-      },
-      {
+    },
+    {
         "title": "Texas Men's Lacrosse",
         "content": "Category: Sports/Lacrosse. Competitive club team promoting lacrosse through training, competition, and sportsmanship.",
         "category": "organizations"
-      },
-      {
+    },
+    {
         "title": "Texas Men's Volleyball",
         "content": "Category: Sports/Volleyball. Competitive men’s club volleyball team competing at a high collegiate level.",
         "category": "organizations"
-      },
-      {
+    },
+    {
         "title": "Texas Men's Water Polo",
         "content": "Category: Sports/Water Polo. Competitive water polo organization representing UT in regional and national events.",
         "category": "organizations"
-      },
-      {
+    },
+    {
         "title": "Texas Mental Health Initiative for South Asians",
         "content": "Category: Mental Health/Cultural. Addresses mental health access and stigma within South Asian communities.",
         "category": "organizations"

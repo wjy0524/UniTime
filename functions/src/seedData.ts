@@ -100,7 +100,7 @@ async function main() {
   console.log("Created collection:", COLLECTION_NAME);
 
   // 2. Load all data
-  const dataDir = path.join(__dirname, "data");
+  const dataDir = path.join(__dirname, "../src/data");
   console.log(`\nLoading data from: ${dataDir}`);
   const items = loadJsonFiles(dataDir);
   
