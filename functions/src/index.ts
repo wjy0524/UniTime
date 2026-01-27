@@ -1,6 +1,7 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
 import OpenAI from "openai";
+import { serpSearch } from "./web/serpApi";
 
 admin.initializeApp();
 const db = admin.firestore();
@@ -104,9 +105,10 @@ export const chat = functions.https.onCall(async (data, context) => {
     const queryVector = embedding.data[0].embedding;
 
     /* --------------------------------------------------
-       4️⃣ Optional RAG (Qdrant)
+       4️⃣ RAG with Qdrant (confidence-aware)
     -------------------------------------------------- */
     let retrievalContext = "";
+    let hasGoodUniversityContext = false;
     const qdrantUrl = functions.config().qdrant?.url;
     const qdrantKey = functions.config().qdrant?.key;
 
@@ -122,6 +124,8 @@ export const chat = functions.https.onCall(async (data, context) => {
             vector: queryVector,
             limit: 5,
             with_payload: true,
+            with_vector: false,
+            score_threshold: 0.5,
           }),
         });
 
@@ -129,75 +133,118 @@ export const chat = functions.https.onCall(async (data, context) => {
           const searchResult = await searchResponse.json();
           const results = searchResult.result || [];
 
+          // Check confidence: need 2+ results with max score >= 0.75
+          let maxScore = 0;
           if (results.length > 0) {
+            maxScore = Math.max(...results.map((r: any) => r.score || 0));
+          }
+
+          const QDRANT_THRESHOLD = 0.75;
+          hasGoodUniversityContext = results.length >= 2 && maxScore >= QDRANT_THRESHOLD;
+
+          if (hasGoodUniversityContext) {
             retrievalContext = results
               .map((r: any) => `- ${r.payload.title}: ${r.payload.content}`)
               .join("\n");
           }
+
+          console.log(`Qdrant: ${results.length} results, maxScore: ${maxScore}, good: ${hasGoodUniversityContext}`);
         }
       } catch (err) {
         console.error("Qdrant search failed:", err);
       }
     }
 
-    const hasUniversityContext = Boolean(retrievalContext);
+    /* --------------------------------------------------
+       5️⃣ SerpAPI fallback (when Qdrant insufficient)
+    -------------------------------------------------- */
+    let webContext = "";
+    let usedWebSearch = false;
+
+    if (!hasGoodUniversityContext) {
+      console.log("🔎 Falling back to SerpAPI...");
+      webContext = await serpSearch(message);
+      usedWebSearch = Boolean(webContext);
+      console.log(`SerpAPI: ${usedWebSearch ? "found results" : "no results"}`);
+    }
 
     /* --------------------------------------------------
-       5️⃣ Reasoning mode router
+       6️⃣ Reasoning mode router
     -------------------------------------------------- */
     const reasoningMode = hasUserContext
       ? "PERSONAL"
-      : hasUniversityContext
+      : hasGoodUniversityContext
       ? "CAMPUS"
+      : usedWebSearch
+      ? "WEB"
       : "GENERAL";
 
+    console.log(`Mode: ${reasoningMode}`);
+
     /* --------------------------------------------------
-       6️⃣ Generate answer
+       7️⃣ Generate answer
     -------------------------------------------------- */
-      const completion = await openai.chat.completions.create({
-        model: "gpt-4o",
-        messages: [
-          {
-            role: "system",
-            content: `
-      You are an intelligent AI advisor for University of Texas at Austin students. You're like a knowledgeable upperclassman who knows more about UT.
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4o",
+      messages: [
+        {
+          role: "system",
+          content: `
+You are an intelligent AI advisor for University of Texas at Austin students. You're like a knowledgeable upperclassman who knows more about UT.
 
-      CRITICAL INSTRUCTIONS:
-      1. THINK about what the student actually wants to know, not just what they literally asked
-      2. Use the provided UT data as CONTEXT to inform your answer, not as your complete answer
-      3. REASON and give personalized ADVICE, not just facts
-      4. Combine UT data with your general knowledge when helpful
-      5. Be conversational and helpful, like a friend who knows UT well
+CRITICAL RULE:
+If no reliable campus data or web data is provided, you MUST say:
+"I don't have enough reliable information to answer that right now."
 
-      Examples of good responses:
-      - User asks "What's CS 331?" → Don't just list prerequisites. Explain what it's about, how hard it is, and tips for success.
-      - User asks "Should I take 15 hours?" → Consider their major, year, and give real advice about workload.
-      - User asks "What events are happening?" → Highlight interesting ones, not just list them.
+CRITICAL INSTRUCTIONS:
+1. THINK about what the student actually wants to know, not just what they literally asked
+2. Use the provided UT data as CONTEXT to inform your answer, not as your complete answer
+3. REASON and give personalized ADVICE, not just facts
+4. Combine UT data with your general knowledge when helpful
+5. Be conversational and helpful, like a friend who knows UT well
 
-      Current mode: ${reasoningMode}
-      - PERSONAL: You have verified info about this specific student. Use it to personalize advice.
-      - CAMPUS: You have official UT data. Use it as context to give informed answers.
-      - GENERAL: No specific data available. Use your general knowledge about UT and college life.
+Examples of good responses:
+- User asks "What's CS 331?" → Don't just list prerequisites. Explain what it's about, how hard it is, and tips for success.
+- User asks "Should I take 15 hours?" → Consider their major, year, and give real advice about workload.
+- User asks "What events are happening?" → Highlight interesting ones, not just list them.
 
-      ${hasUserContext ? `
-      STUDENT PROFILE (use to personalize your advice):
-      ${userContext}
-      ` : ""}
+Current mode: ${reasoningMode}
+- PERSONAL: You have verified info about this specific student. Use it to personalize advice.
+- CAMPUS: You have official UT data. Use it as context to give informed answers.
+- WEB: You have web search results. Use ONLY these results, do NOT guess or use prior knowledge.
+- GENERAL: No specific data available. Use your general knowledge about UT and college life.
 
-      ${hasUniversityContext ? `
-      UT AUSTIN DATA (use as context, not as your complete answer):
-      ${retrievalContext}
-      ` : ""}
+${hasUserContext ? `
+STUDENT PROFILE (use to personalize your advice):
+${userContext}
+` : ""}
 
-      Remember: Students want ADVICE and INSIGHT, not Wikipedia entries. Be helpful, specific, and conversational.
-            `,
-          },
-          {
-            role: "user",
-            content: message,
-          },
-        ],
-      });
+${hasGoodUniversityContext ? `
+UT AUSTIN DATA (use as context, not as your complete answer):
+${retrievalContext}
+` : ""}
+
+${usedWebSearch ? `
+WEB SEARCH RESULTS (AUTHORITATIVE):
+${webContext}
+
+CRITICAL RULES FOR WEB MODE:
+- Use ONLY the web search results above
+- Do NOT use prior knowledge
+- Do NOT guess
+- If the answer is not in these results, say "I don't have enough information yet"
+` : ""}
+
+Remember: Students want ADVICE and INSIGHT, not Wikipedia entries. Be helpful, specific, and conversational.
+          `,
+        },
+        {
+          role: "user",
+          content: message,
+        },
+      ],
+    });
+
     return {
       reply: completion.choices[0].message.content,
     };
