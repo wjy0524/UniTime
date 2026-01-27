@@ -19,4 +19,6 @@ struct Post: Identifiable, Codable {
     var category: String = "general" // 🔥 게시판 카테고리
     var likeCount: Int = 0           // 좋아요 수
     var commentCount: Int = 0        // 댓글 수
+    var keywords: [String] = []
+
 }

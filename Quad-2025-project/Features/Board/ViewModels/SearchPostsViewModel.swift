@@ -17,23 +17,21 @@ class SearchPostsViewModel: ObservableObject {
     let db = Firestore.firestore()
 
     func search() async {
-        guard !query.isEmpty else {
+        let q = query.lowercased().trimmingCharacters(in: .whitespaces)
+        guard !q.isEmpty else {
             results = []
             return
         }
 
-        let keyword = query.lowercased()
-
         do {
-            // 제목 검색
             let snap = try await db.collection("posts")
-                .whereField("title", isGreaterThanOrEqualTo: keyword)
-                .whereField("title", isLessThanOrEqualTo: keyword + "~")
+                .whereField("keywords", arrayContains: q)
+                .limit(to: 30)
                 .getDocuments()
 
             results = snap.documents.compactMap { try? $0.data(as: Post.self) }
         } catch {
-            print("Search error:", error)
+            print("❌ Search error:", error)
         }
     }
 }
