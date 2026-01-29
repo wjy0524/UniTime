@@ -8,47 +8,38 @@
 import SwiftUI
 
 struct SplashView: View {
-    @State private var showMain = false
+
     @State private var showTitle = false
 
     var body: some View {
-        if showMain {
-            AuthGateView()
-        } else {
-            ZStack {
-                Color.white
-                    .ignoresSafeArea()
+        ZStack {
+            Color(.systemBackground).ignoresSafeArea()
 
-                VStack(spacing: 12) {
+            VStack(spacing: 14) {
+                LottieView(
+                    animationName: "unitime_intro",
+                    loopMode: .playOnce,
+                    onFinished: nil
+                )
+                .frame(width: 220, height: 220)
 
-                    // Lottie Animation
-                    LottieView(
-                        animationName: "unitime_intro",
-                        loopMode: .playOnce
-                    ) {
-                        // 로띠 끝 → 타이틀 보여주고 → 메인 전환
-                        withAnimation(.easeOut(duration: 0.4)) {
-                            showTitle = true
-                        }
-
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
-                            withAnimation(.easeOut(duration: 0.3)) {
-                                showMain = true
-                            }
-                        }
-                    }
-                    .frame(width: 220, height: 220)
-
-                    // App Title
-                    if showTitle {
+                if showTitle {
+                    VStack(spacing: 6) {
                         Text("UniTime")
                             .font(.system(size: 34, weight: .bold, design: .rounded))
                             .foregroundColor(Color("UTAustinOrange"))
-                            .transition(
-                                .opacity.combined(with: .move(edge: .bottom))
-                            )
+
+                        Text("Your AI campus assistant")
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
                     }
+                    .transition(.opacity.combined(with: .move(edge: .bottom)))
                 }
+            }
+        }
+        .onAppear {
+            withAnimation(.easeOut(duration: 0.5)) {
+                showTitle = true
             }
         }
     }

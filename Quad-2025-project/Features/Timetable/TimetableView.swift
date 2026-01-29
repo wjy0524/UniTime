@@ -372,48 +372,8 @@ extension TimetableView {
                 .padding(.horizontal)
 
             ForEach(viewModel.courses) { course in
-                HStack(spacing: 12) {
-                    Circle()
-                        .fill(course.color)
-                        .frame(width: 14, height: 14)
-
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text("\(course.code) - \(course.name)")
-                            .font(.subheadline)
-
-                        Text("\(course.instructor) • \(course.location)")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-
-                        // Show times
-                        Text(formatCourseTimes(course.times))
-                            .font(.caption2)
-                            .foregroundColor(.secondary)
-                    }
-
-                    Spacer()
-
-                    Menu {
-                        Button {
-                            viewModel.selectCourseForEditing(course)
-                        } label: {
-                            Label("Edit", systemImage: "pencil")
-                        }
-
-                        Button(role: .destructive) {
-                            viewModel.deleteCourse(course)
-                        } label: {
-                            Label("Delete", systemImage: "trash")
-                        }
-                    } label: {
-                        Image(systemName: "ellipsis.circle")
-                            .foregroundColor(.secondary)
-                    }
-                }
-                .padding()
-                .background(Color.gray.opacity(0.1))
-                .cornerRadius(12)
-                .padding(.horizontal)
+                CourseDetailCard(course: course)
+                    .padding(.horizontal)
             }
         }
     }
@@ -565,3 +525,84 @@ struct TimetableView_Previews: PreviewProvider {
         .environmentObject(EventViewModel())
     }
 }
+
+struct CourseDetailCard: View {
+    let course: TimetableCourse
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+
+            // Header
+            HStack {
+                Circle()
+                    .fill(course.color)
+                    .frame(width: 12, height: 12)
+
+                Text(course.code)
+                    .font(.headline)
+
+                Spacer()
+            }
+
+            Text(course.name)
+                .font(.subheadline)
+                .foregroundColor(.secondary)
+
+            // Meta info
+            if !course.instructor.isEmpty {
+                Label(course.instructor, systemImage: "person.fill")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+
+            if !course.location.isEmpty {
+                Label(course.location, systemImage: "mappin.circle.fill")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+
+            // Time pills
+            VStack(alignment: .leading, spacing: 6) {
+                ForEach(course.times) { time in
+                    HStack(spacing: 6) {
+                        Text(dayName(time.day))
+                            .font(.caption2)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 4)
+                            .background(course.color.opacity(0.2))
+                            .cornerRadius(6)
+
+                        Text("\(format(time.startTime)) - \(format(time.endTime))")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                }
+            }
+        }
+        .padding()
+        .background(Color(.systemBackground))
+        .cornerRadius(14)
+        .shadow(color: .black.opacity(0.05), radius: 4)
+    }
+
+    // MARK: - Helpers (⭐ 이게 핵심)
+
+    private func dayName(_ day: Int) -> String {
+        let days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+        return days.indices.contains(day) ? days[day] : ""
+    }
+
+    private func format(_ minutes: Int) -> String {
+        let hour = minutes / 60
+        let minute = minutes % 60
+        let suffix = hour >= 12 ? "PM" : "AM"
+        let displayHour = hour == 0 ? 12 : (hour > 12 ? hour - 12 : hour)
+
+        if minute == 0 {
+            return "\(displayHour)\(suffix)"
+        }
+        return String(format: "%d:%02d%@", displayHour, minute, suffix)
+    }
+}
+
+
