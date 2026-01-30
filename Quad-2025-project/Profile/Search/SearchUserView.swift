@@ -126,10 +126,22 @@ struct UserSearchRow: View {
                     .font(.subheadline)
                     .fontWeight(.semibold)
 
-                Text("\(user.major) · \(user.year)")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
+                let subtitle: String = {
+                    switch (user.major, user.year) {
+                    case let (m?, y?): return "\(m) · \(y)"
+                    case let (m?, nil): return m
+                    case let (nil, y?): return y
+                    default: return ""
+                    }
+                }()
+
+                if !subtitle.isEmpty {
+                    Text(subtitle)
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
             }
+
 
             Spacer()
 

@@ -181,10 +181,8 @@ extension PublicProfileView {
             ) {
                 Task {
                     await friendService.acceptRequest(from: targetUid)
-
-                    // 🔥 추가
-                    await viewModel.fetchFriendsCount(for: targetUid)
-                    await viewModel.fetchFriendsCount(for: viewModel.myUid)
+                    
+                
                 }
             }
 
@@ -204,9 +202,7 @@ extension PublicProfileView {
                     Task {
                         await friendService.removeFriend(uid: targetUid)
 
-                        // 🔥 친구 수 즉시 갱신
-                        await viewModel.fetchFriendsCount(for: targetUid)
-                        await viewModel.fetchFriendsCount(for: viewModel.myUid)
+                    
                     }
                 }
 

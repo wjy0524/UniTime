@@ -35,6 +35,7 @@ class ProfileViewModel: ObservableObject {
     @Published var friendsCount: Int = 0   // ✅ friends 기준
 
     private let db = Firestore.firestore()
+    private var friendsListener: ListenerRegistration?
 
     // ⭐️ 현재 보고 있는 프로필 UID
     let targetUid: String
@@ -62,7 +63,7 @@ class ProfileViewModel: ObservableObject {
 
         Task {
             await loadProfile(for: uid)
-            await fetchFriendsCount(for: uid)
+            startFriendsListener(for: uid)
             await fetchUserPosts(for: uid)
             await fetchLikedPosts(for: uid)
         }
@@ -108,6 +109,24 @@ class ProfileViewModel: ObservableObject {
             print("❌ fetchFriendsCount error:", error)
         }
     }
+    
+    func startFriendsListener(for uid: String) {
+        friendsListener?.remove()   // 중복 방지
+
+        friendsListener = db
+            .collection("users")
+            .document(uid)
+            .collection("friends")
+            .addSnapshotListener { [weak self] snap, error in
+                guard let self else { return }
+                if let error {
+                    print("❌ friends listener error:", error)
+                    return
+                }
+                self.friendsCount = snap?.documents.count ?? 0
+            }
+    }
+
 
     // MARK: - Update Profile
     func updateProfile(profileImage: UIImage?) async {
@@ -202,6 +221,11 @@ class ProfileViewModel: ObservableObject {
         } catch {
             print("❌ Failed loading liked posts:", error)
         }
+    }
+    
+    deinit {
+            friendsListener?.remove()
+            print("🧹 ProfileViewModel deinit - friends listener removed")
     }
 
 }
