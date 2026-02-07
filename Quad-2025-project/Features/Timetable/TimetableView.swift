@@ -267,6 +267,7 @@ extension TimetableView {
             let timeColumnWidth: CGFloat = 50
             let availableWidth = geometry.size.width - timeColumnWidth
             let columnWidth = availableWidth / 5
+            let asyncCourses = viewModel.courses.filter { $0.isAsync }
 
             ScrollView {
                 VStack(spacing: 0) {
@@ -285,6 +286,52 @@ extension TimetableView {
                         }
                     }
                     .padding(.vertical, 8)
+
+                    // Async row - only shown if there are async courses
+                    if !asyncCourses.isEmpty {
+                        HStack(spacing: 0) {
+                            Text("Async")
+                                .frame(width: timeColumnWidth)
+                                .font(.caption2)
+                                .foregroundColor(.secondary)
+
+                            ForEach(0..<5, id: \.self) { dayIndex in
+                                ZStack {
+                                    Rectangle()
+                                        .stroke(Color.gray.opacity(0.2))
+                                        .background(Color(white: 0.98))
+
+                                    if dayIndex == 2 {  // Show in Wednesday column
+                                        ScrollView(.horizontal, showsIndicators: false) {
+                                            HStack(spacing: 4) {
+                                                ForEach(asyncCourses) { course in
+                                                    VStack(alignment: .leading, spacing: 2) {
+                                                        Text(course.code)
+                                                            .bold()
+                                                            .font(.system(size: 10))
+                                                            .lineLimit(1)
+                                                        Text(course.name)
+                                                            .font(.system(size: 8))
+                                                            .lineLimit(1)
+                                                    }
+                                                    .padding(6)
+                                                    .frame(width: columnWidth * 0.9)
+                                                    .background(course.color.opacity(0.85))
+                                                    .foregroundColor(.white)
+                                                    .cornerRadius(4)
+                                                    .onTapGesture {
+                                                        viewModel.selectCourseForEditing(course)
+                                                    }
+                                                }
+                                            }
+                                            .padding(.horizontal, 4)
+                                        }
+                                    }
+                                }
+                                .frame(width: columnWidth, height: 60)
+                            }
+                        }
+                    }
 
                     ForEach(hours, id: \.self) { hour in
                         HStack(spacing: 0) {
@@ -440,7 +487,6 @@ extension TimetableView {
             viewModel.showingError = true
         }
     }
-
 
     func exportJSON() {
         guard let data = viewModel.exportToJSON() else { return }
@@ -604,5 +650,3 @@ struct CourseDetailCard: View {
         return String(format: "%d:%02d%@", displayHour, minute, suffix)
     }
 }
-
-
