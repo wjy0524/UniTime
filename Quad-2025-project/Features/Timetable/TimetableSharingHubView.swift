@@ -357,83 +357,21 @@ struct SharedTimetablesTabView: View {
         ScrollView {
             VStack(spacing: 12) {
                 ForEach(sharedTimetables) { timetable in
-                    SharedTimetableCard(
-                        timetable: timetable,
-                        onTap: {
-                            selectedTimetable = timetable
-                        },
-                        onDelete: {
+                    SharedTimetableCard(timetable: timetable) {
+                        selectedTimetable = timetable
+                    }
+                    .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                        Button(role: .destructive) {
                             timetableToDelete = timetable
                             showingDeleteConfirmation = true
+                        } label: {
+                            Label("Remove", systemImage: "trash")
                         }
-                    )
+                    }
                 }
             }
             .padding()
         }
-    }
-}
-
-// MARK: - Shared Timetable Card
-struct SharedTimetableCard: View {
-    let timetable: TimetableShareRequest
-    let onTap: () -> Void
-    let onDelete: () -> Void
-
-    var body: some View {
-        Button(action: onTap) {
-            HStack(spacing: 12) {
-                Circle()
-                    .fill(Color("UTAustinOrange").opacity(0.2))
-                    .frame(width: 50, height: 50)
-                    .overlay(
-                        Text(timetable.fromUsername.prefix(1).uppercased())
-                            .font(.title3)
-                            .bold()
-                            .foregroundColor(Color("UTAustinOrange"))
-                    )
-
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(timetable.fromUsername)
-                        .font(.headline)
-                        .foregroundColor(.primary)
-
-                    Text("\(timetable.timetableCourses.count) courses")
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
-
-                    Text("Shared \(timeAgo(from: timetable.timestamp))")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                }
-
-                Spacer()
-
-                Button(action: {
-                    // Just open the detail view on tap
-                }) {
-                    Image(systemName: "chevron.right")
-                        .foregroundColor(.secondary)
-                        .font(.system(size: 14))
-                }
-            }
-            .padding()
-            .background(Color(.systemBackground))
-            .cornerRadius(12)
-            .shadow(color: .black.opacity(0.05), radius: 5, y: 2)
-        }
-        .buttonStyle(.plain)
-        .contextMenu {
-            Button(role: .destructive, action: onDelete) {
-                Label("Remove", systemImage: "trash")
-            }
-        }
-    }
-
-    private func timeAgo(from date: Date) -> String {
-        let formatter = RelativeDateTimeFormatter()
-        formatter.unitsStyle = .abbreviated
-        return formatter.localizedString(for: date, relativeTo: Date())
     }
 }
 
@@ -551,45 +489,5 @@ struct CoursePreviewCard: View {
             return "\(displayHour)\(suffix)"
         }
         return String(format: "%d:%02d%@", displayHour, minute, suffix)
-    }
-}
-
-// MARK: - Timetable Detail View
-struct TimetableDetailView: View {
-    let shareRequest: TimetableShareRequest
-    let onDelete: () -> Void
-    @Environment(\.dismiss) private var dismiss
-
-    var body: some View {
-        NavigationStack {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 16) {
-                    ForEach(shareRequest.timetableCourses) { course in
-                        CoursePreviewCard(course: course)
-                            .padding(.horizontal)
-                    }
-                }
-                .padding(.vertical)
-            }
-            .navigationTitle("\(shareRequest.fromUsername)'s Timetable")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button("Done") {
-                        dismiss()
-                    }
-                }
-
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(role: .destructive) {
-                        onDelete()
-                        dismiss()
-                    } label: {
-                        Image(systemName: "trash")
-                            .foregroundColor(.red)
-                    }
-                }
-            }
-        }
     }
 }
