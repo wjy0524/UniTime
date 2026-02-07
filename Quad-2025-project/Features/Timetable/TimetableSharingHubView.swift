@@ -99,27 +99,24 @@ struct TimetableSharingHubView: View {
     }
 
     private func loadSharedTimetables() {
-        guard let userId = Auth.auth().currentUser?.uid else {
-            isLoadingShared = false
-            return
-        }
-
-        shareViewModel.loadSharedTimetables(userId: userId) { result in
-            isLoadingShared = false
-            switch result {
-            case .success(let timetables):
-                sharedTimetables = timetables
-            case .failure:
-                sharedTimetables = []
+        isLoadingShared = true
+        shareViewModel.getSharedTimetables { timetables in
+            DispatchQueue.main.async {
+                self.sharedTimetables = timetables
+                self.isLoadingShared = false
             }
         }
     }
 
     private func deleteSharedTimetable(_ timetable: TimetableShareRequest) {
-        shareViewModel.deleteSharedTimetable(timetable) { success in
-            if success {
-                sharedTimetables.removeAll { $0.id == timetable.id }
-                selectedTimetable = nil
+        guard let requestId = timetable.id else { return }
+
+        shareViewModel.removeSharedTimetable(requestId) { success in
+            DispatchQueue.main.async {
+                if success {
+                    self.sharedTimetables.removeAll { $0.id == requestId }
+                    self.selectedTimetable = nil
+                }
             }
         }
     }
@@ -271,7 +268,9 @@ struct RequestCard: View {
                 }
 
                 Button {
-                    viewModel.declineShareRequest(request)
+                    if let requestId = request.id {
+                        viewModel.declineShareRequest(requestId)
+                    }
                 } label: {
                     Label("Decline", systemImage: "xmark")
                         .font(.subheadline)
@@ -283,7 +282,9 @@ struct RequestCard: View {
                 }
 
                 Button {
-                    viewModel.acceptShareRequest(request)
+                    if let requestId = request.id {
+                        viewModel.acceptShareRequest(requestId)
+                    }
                 } label: {
                     Label("Accept", systemImage: "checkmark")
                         .font(.subheadline)
@@ -408,14 +409,12 @@ struct SharedTimetableCard: View {
 
                 Spacer()
 
-                Menu {
-                    Button(role: .destructive, action: onDelete) {
-                        Label("Remove", systemImage: "trash")
-                    }
-                } label: {
-                    Image(systemName: "ellipsis")
+                Button(action: {
+                    // Just open the detail view on tap
+                }) {
+                    Image(systemName: "chevron.right")
                         .foregroundColor(.secondary)
-                        .frame(width: 30, height: 30)
+                        .font(.system(size: 14))
                 }
             }
             .padding()
@@ -424,6 +423,11 @@ struct SharedTimetableCard: View {
             .shadow(color: .black.opacity(0.05), radius: 5, y: 2)
         }
         .buttonStyle(.plain)
+        .contextMenu {
+            Button(role: .destructive, action: onDelete) {
+                Label("Remove", systemImage: "trash")
+            }
+        }
     }
 
     private func timeAgo(from date: Date) -> String {
