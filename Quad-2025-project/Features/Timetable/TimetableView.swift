@@ -15,8 +15,7 @@ struct TimetableView: View {
     @State private var importType: ImportType = .json
     @State private var selectedTimeSlot: TimeSlot?
     @State private var showingShareSearch = false
-    @State private var showingShareRequests = false
-    @State private var showingSharedTimetables = false
+    @State private var showingSharingHub = false
     @StateObject private var shareViewModel = TimetableShareViewModel.shared
 
     enum ImportType {
@@ -43,28 +42,12 @@ struct TimetableView: View {
 
                     Spacer()
 
-                    // View Shared Timetables Button
+                    // Unified Sharing Hub Button
                     Button {
-                        showingSharedTimetables = true
-                    } label: {
-                        Image(systemName: "person.2.fill")
-                            .font(.system(size: 18, weight: .semibold))
-                            .foregroundColor(Color("UTAustinOrange"))
-                            .frame(width: 40, height: 40)
-                            .background(
-                                Circle()
-                                    .fill(Color(.systemBackground))
-                                    .shadow(color: .black.opacity(0.1), radius: 3, y: 2)
-                            )
-                    }
-                    .buttonStyle(.plain)
-
-                    // Share Requests Button
-                    Button {
-                        showingShareRequests = true
+                        showingSharingHub = true
                     } label: {
                         ZStack(alignment: .topTrailing) {
-                            Image(systemName: "tray.fill")
+                            Image(systemName: "person.2.fill")
                                 .font(.system(size: 18, weight: .semibold))
                                 .foregroundColor(Color("UTAustinOrange"))
                                 .frame(width: 40, height: 40)
@@ -202,11 +185,8 @@ struct TimetableView: View {
         .sheet(isPresented: $showingShareSearch) {
             TimetableShareSearchView(timetableViewModel: viewModel)
         }
-        .sheet(isPresented: $showingSharedTimetables) {
-            SharedTimetablesView()
-        }
-        .sheet(isPresented: $showingShareRequests) {
-            TimetableShareRequestsView()
+        .sheet(isPresented: $showingSharingHub) {
+            TimetableSharingHubView()
         }
     }
 }
