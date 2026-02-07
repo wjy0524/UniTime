@@ -22,6 +22,7 @@ struct CourseFormView: View {
     @State private var selectedColor: Color = .blue
     @State private var courseTimes: [CourseTime] = []
     @State private var showingAddTimeSheet = false
+    @State private var isAsyncClass: Bool = false
 
     let availableColors: [Color] = [
         .blue, .green, .purple, .orange, .red, .pink, .cyan, .indigo, .teal, .mint,
@@ -40,6 +41,7 @@ struct CourseFormView: View {
             _location = State(initialValue: course.location)
             _selectedColor = State(initialValue: course.color)
             _courseTimes = State(initialValue: course.times)
+            _isAsyncClass = State(initialValue: course.isAsync)
         }
     }
 
@@ -77,42 +79,60 @@ struct CourseFormView: View {
                     }
                 }
 
-                // Course Times
-                Section(header: Text("Class Times")) {
-                    if courseTimes.isEmpty {
-                        Text("No class times added")
+                // Async Class Toggle
+                Section(header: Text("Class Type")) {
+                    Toggle("Async Class (No specific time)", isOn: $isAsyncClass)
+                        .onChange(of: isAsyncClass) { newValue in
+                            if newValue {
+                                courseTimes = []
+                            }
+                        }
+
+                    if isAsyncClass {
+                        Text("This course has no fixed schedule and can be completed at any time.")
+                            .font(.caption)
                             .foregroundColor(.secondary)
-                            .italic()
-                    } else {
-                        ForEach(courseTimes) { time in
-                            HStack {
-                                VStack(alignment: .leading, spacing: 4) {
-                                    Text(days[time.day])
-                                        .font(.subheadline)
-                                        .bold()
-                                    Text(
-                                        "\(formatTime(time.startTime)) - \(formatTime(time.endTime))"
-                                    )
-                                    .font(.caption)
-                                    .foregroundColor(.secondary)
-                                }
+                    }
+                }
 
-                                Spacer()
+                // Course Times (only show if not async)
+                if !isAsyncClass {
+                    Section(header: Text("Class Times")) {
+                        if courseTimes.isEmpty {
+                            Text("No class times added")
+                                .foregroundColor(.secondary)
+                                .italic()
+                        } else {
+                            ForEach(courseTimes) { time in
+                                HStack {
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text(days[time.day])
+                                            .font(.subheadline)
+                                            .bold()
+                                        Text(
+                                            "\(formatTime(time.startTime)) - \(formatTime(time.endTime))"
+                                        )
+                                        .font(.caption)
+                                        .foregroundColor(.secondary)
+                                    }
 
-                                Button(role: .destructive) {
-                                    courseTimes.removeAll { $0.id == time.id }
-                                } label: {
-                                    Image(systemName: "trash")
-                                        .foregroundColor(.red)
+                                    Spacer()
+
+                                    Button(role: .destructive) {
+                                        courseTimes.removeAll { $0.id == time.id }
+                                    } label: {
+                                        Image(systemName: "trash")
+                                            .foregroundColor(.red)
+                                    }
                                 }
                             }
                         }
-                    }
 
-                    Button {
-                        showingAddTimeSheet = true
-                    } label: {
-                        Label("Add Time Slot", systemImage: "plus.circle.fill")
+                        Button {
+                            showingAddTimeSheet = true
+                        } label: {
+                            Label("Add Time Slot", systemImage: "plus.circle.fill")
+                        }
                     }
                 }
             }
@@ -141,7 +161,11 @@ struct CourseFormView: View {
     }
 
     private var isFormValid: Bool {
-        !name.isEmpty && !code.isEmpty && !courseTimes.isEmpty
+        if isAsyncClass {
+            return !name.isEmpty && !code.isEmpty
+        } else {
+            return !name.isEmpty && !code.isEmpty && !courseTimes.isEmpty
+        }
     }
 
     private func saveCourse() {
@@ -152,7 +176,8 @@ struct CourseFormView: View {
             instructor: instructor,
             location: location,
             colorHex: selectedColor.toHex(),
-            times: courseTimes
+            times: courseTimes,
+            isAsync: isAsyncClass
         )
 
         if isEditMode {

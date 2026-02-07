@@ -15,8 +15,7 @@ struct TimetableView: View {
     @State private var importType: ImportType = .json
     @State private var selectedTimeSlot: TimeSlot?
     @State private var showingShareSearch = false
-    @State private var showingShareRequests = false
-    @State private var showingSharedTimetables = false
+    @State private var showingSharingHub = false
     @StateObject private var shareViewModel = TimetableShareViewModel.shared
 
     enum ImportType {
@@ -43,28 +42,12 @@ struct TimetableView: View {
 
                     Spacer()
 
-                    // View Shared Timetables Button
+                    // Unified Sharing Hub Button
                     Button {
-                        showingSharedTimetables = true
-                    } label: {
-                        Image(systemName: "person.2.fill")
-                            .font(.system(size: 18, weight: .semibold))
-                            .foregroundColor(Color("UTAustinOrange"))
-                            .frame(width: 40, height: 40)
-                            .background(
-                                Circle()
-                                    .fill(Color(.systemBackground))
-                                    .shadow(color: .black.opacity(0.1), radius: 3, y: 2)
-                            )
-                    }
-                    .buttonStyle(.plain)
-
-                    // Share Requests Button
-                    Button {
-                        showingShareRequests = true
+                        showingSharingHub = true
                     } label: {
                         ZStack(alignment: .topTrailing) {
-                            Image(systemName: "tray.fill")
+                            Image(systemName: "person.2.fill")
                                 .font(.system(size: 18, weight: .semibold))
                                 .foregroundColor(Color("UTAustinOrange"))
                                 .frame(width: 40, height: 40)
@@ -202,11 +185,8 @@ struct TimetableView: View {
         .sheet(isPresented: $showingShareSearch) {
             TimetableShareSearchView(timetableViewModel: viewModel)
         }
-        .sheet(isPresented: $showingSharedTimetables) {
-            SharedTimetablesView()
-        }
-        .sheet(isPresented: $showingShareRequests) {
-            TimetableShareRequestsView()
+        .sheet(isPresented: $showingSharingHub) {
+            TimetableSharingHubView()
         }
     }
 }
@@ -267,6 +247,7 @@ extension TimetableView {
             let timeColumnWidth: CGFloat = 50
             let availableWidth = geometry.size.width - timeColumnWidth
             let columnWidth = availableWidth / 5
+            let asyncCourses = viewModel.courses.filter { $0.isAsync }
 
             ScrollView {
                 VStack(spacing: 0) {
@@ -285,6 +266,50 @@ extension TimetableView {
                         }
                     }
                     .padding(.vertical, 8)
+
+                    // Async row - only shown if there are async courses
+                    if !asyncCourses.isEmpty {
+                        HStack(spacing: 0) {
+                            Text("Async")
+                                .frame(width: timeColumnWidth)
+                                .font(.caption2)
+                                .foregroundColor(.secondary)
+
+                            // Async courses span across all day columns
+                            ZStack(alignment: .leading) {
+                                Rectangle()
+                                    .stroke(Color.gray.opacity(0.2))
+                                    .background(Color(white: 0.98))
+
+                                ScrollView(.horizontal, showsIndicators: false) {
+                                    HStack(spacing: 8) {
+                                        ForEach(asyncCourses) { course in
+                                            VStack(alignment: .leading, spacing: 2) {
+                                                Text(course.code)
+                                                    .bold()
+                                                    .font(.system(size: 11))
+                                                    .lineLimit(1)
+                                                Text(course.name)
+                                                    .font(.system(size: 9))
+                                                    .lineLimit(2)
+                                            }
+                                            .padding(8)
+                                            .frame(width: columnWidth * 1.2, height: 50)
+                                            .background(course.color.opacity(0.85))
+                                            .foregroundColor(.white)
+                                            .cornerRadius(6)
+                                            .onTapGesture {
+                                                viewModel.selectCourseForEditing(course)
+                                            }
+                                        }
+                                    }
+                                    .padding(.horizontal, 8)
+                                    .padding(.vertical, 5)
+                                }
+                            }
+                            .frame(width: columnWidth * 5, height: 60)
+                        }
+                    }
 
                     ForEach(hours, id: \.self) { hour in
                         HStack(spacing: 0) {
@@ -441,7 +466,6 @@ extension TimetableView {
         }
     }
 
-
     func exportJSON() {
         guard let data = viewModel.exportToJSON() else { return }
         saveFile(data: data, filename: "timetable.json", contentType: .json)
@@ -561,20 +585,34 @@ struct CourseDetailCard: View {
                     .foregroundColor(.secondary)
             }
 
-            // Time pills
-            VStack(alignment: .leading, spacing: 6) {
-                ForEach(course.times) { time in
-                    HStack(spacing: 6) {
-                        Text(dayName(time.day))
-                            .font(.caption2)
-                            .padding(.horizontal, 8)
-                            .padding(.vertical, 4)
-                            .background(course.color.opacity(0.2))
-                            .cornerRadius(6)
+            // Time pills or async indicator
+            if course.isAsync {
+                HStack(spacing: 6) {
+                    Image(systemName: "clock.badge.questionmark")
+                        .font(.caption2)
+                        .foregroundColor(course.color)
 
-                        Text("\(format(time.startTime)) - \(format(time.endTime))")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
+                    Text("Async - No fixed schedule")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                        .italic()
+                }
+                .padding(.vertical, 4)
+            } else {
+                VStack(alignment: .leading, spacing: 6) {
+                    ForEach(course.times) { time in
+                        HStack(spacing: 6) {
+                            Text(dayName(time.day))
+                                .font(.caption2)
+                                .padding(.horizontal, 8)
+                                .padding(.vertical, 4)
+                                .background(course.color.opacity(0.2))
+                                .cornerRadius(6)
+
+                            Text("\(format(time.startTime)) - \(format(time.endTime))")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
                     }
                 }
             }
@@ -604,5 +642,3 @@ struct CourseDetailCard: View {
         return String(format: "%d:%02d%@", displayHour, minute, suffix)
     }
 }
-
-
