@@ -295,41 +295,39 @@ extension TimetableView {
                                 .font(.caption2)
                                 .foregroundColor(.secondary)
 
-                            ForEach(0..<5, id: \.self) { dayIndex in
-                                ZStack {
-                                    Rectangle()
-                                        .stroke(Color.gray.opacity(0.2))
-                                        .background(Color(white: 0.98))
+                            // Async courses span across all day columns
+                            ZStack(alignment: .leading) {
+                                Rectangle()
+                                    .stroke(Color.gray.opacity(0.2))
+                                    .background(Color(white: 0.98))
 
-                                    if dayIndex == 2 {  // Show in Wednesday column
-                                        ScrollView(.horizontal, showsIndicators: false) {
-                                            HStack(spacing: 4) {
-                                                ForEach(asyncCourses) { course in
-                                                    VStack(alignment: .leading, spacing: 2) {
-                                                        Text(course.code)
-                                                            .bold()
-                                                            .font(.system(size: 10))
-                                                            .lineLimit(1)
-                                                        Text(course.name)
-                                                            .font(.system(size: 8))
-                                                            .lineLimit(1)
-                                                    }
-                                                    .padding(6)
-                                                    .frame(width: columnWidth * 0.9)
-                                                    .background(course.color.opacity(0.85))
-                                                    .foregroundColor(.white)
-                                                    .cornerRadius(4)
-                                                    .onTapGesture {
-                                                        viewModel.selectCourseForEditing(course)
-                                                    }
-                                                }
+                                ScrollView(.horizontal, showsIndicators: false) {
+                                    HStack(spacing: 8) {
+                                        ForEach(asyncCourses) { course in
+                                            VStack(alignment: .leading, spacing: 2) {
+                                                Text(course.code)
+                                                    .bold()
+                                                    .font(.system(size: 11))
+                                                    .lineLimit(1)
+                                                Text(course.name)
+                                                    .font(.system(size: 9))
+                                                    .lineLimit(2)
                                             }
-                                            .padding(.horizontal, 4)
+                                            .padding(8)
+                                            .frame(width: columnWidth * 1.2, height: 50)
+                                            .background(course.color.opacity(0.85))
+                                            .foregroundColor(.white)
+                                            .cornerRadius(6)
+                                            .onTapGesture {
+                                                viewModel.selectCourseForEditing(course)
+                                            }
                                         }
                                     }
+                                    .padding(.horizontal, 8)
+                                    .padding(.vertical, 5)
                                 }
-                                .frame(width: columnWidth, height: 60)
                             }
+                            .frame(width: columnWidth * 5, height: 60)
                         }
                     }
 
@@ -607,20 +605,34 @@ struct CourseDetailCard: View {
                     .foregroundColor(.secondary)
             }
 
-            // Time pills
-            VStack(alignment: .leading, spacing: 6) {
-                ForEach(course.times) { time in
-                    HStack(spacing: 6) {
-                        Text(dayName(time.day))
-                            .font(.caption2)
-                            .padding(.horizontal, 8)
-                            .padding(.vertical, 4)
-                            .background(course.color.opacity(0.2))
-                            .cornerRadius(6)
+            // Time pills or async indicator
+            if course.isAsync {
+                HStack(spacing: 6) {
+                    Image(systemName: "clock.badge.questionmark")
+                        .font(.caption2)
+                        .foregroundColor(course.color)
 
-                        Text("\(format(time.startTime)) - \(format(time.endTime))")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
+                    Text("Async - No fixed schedule")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                        .italic()
+                }
+                .padding(.vertical, 4)
+            } else {
+                VStack(alignment: .leading, spacing: 6) {
+                    ForEach(course.times) { time in
+                        HStack(spacing: 6) {
+                            Text(dayName(time.day))
+                                .font(.caption2)
+                                .padding(.horizontal, 8)
+                                .padding(.vertical, 4)
+                                .background(course.color.opacity(0.2))
+                                .cornerRadius(6)
+
+                            Text("\(format(time.startTime)) - \(format(time.endTime))")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
                     }
                 }
             }
