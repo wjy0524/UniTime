@@ -56,3 +56,9 @@ functions/lib/
 
 *.xcuserstate
 xcuserdata/
+
+echo "
+# Xcode user state
+*.xcuserstate
+xcuserdata/
+" >> .gitignore

@@ -37,12 +37,23 @@ struct Quad_2025_projectApp: App {
     // 🔥 글로벌 ViewModel 들
     @StateObject var gpaVM = GPAViewModel()
     @StateObject var eventVM = EventViewModel()   // ⬅️ 새로 추가
+    @StateObject private var launchVM = AppLaunchViewModel()
+    @AppStorage("forceDarkMode") private var forceDarkMode = false
 
     var body: some Scene {
         WindowGroup {
-            SplashView()
-                .environmentObject(gpaVM)
-                .environmentObject(eventVM)   // ⬅️ 캘린더 전체 공유
+            ZStack {
+                AuthGateView()
+                    .opacity(launchVM.state == .ready ? 1 : 0)
+
+                SplashView()
+                    .opacity(launchVM.state == .launching ? 1 : 0)
+                    .allowsHitTesting(launchVM.state == .launching)
+            }
+            .animation(.easeInOut(duration: 0.4), value: launchVM.state)
+            .preferredColorScheme(forceDarkMode ? .dark : .light)
+            .environmentObject(gpaVM)
+            .environmentObject(eventVM)
         }
     }
 }

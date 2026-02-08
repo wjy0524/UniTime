@@ -42,14 +42,15 @@ struct TimetableCourse: Identifiable, Codable, Equatable {
     var location: String
     var colorHex: String  // Store color as hex string for Codable
     var times: [CourseTime]
+    var isAsync: Bool  // Flag for async classes with no specific time
 
     enum CodingKeys: String, CodingKey {
-        case id, name, code, instructor, location, colorHex, times
+        case id, name, code, instructor, location, colorHex, times, isAsync
     }
 
     init(
         id: UUID = UUID(), name: String, code: String, instructor: String, location: String,
-        colorHex: String, times: [CourseTime]
+        colorHex: String, times: [CourseTime], isAsync: Bool = false
     ) {
         self.id = id
         self.name = name
@@ -58,6 +59,7 @@ struct TimetableCourse: Identifiable, Codable, Equatable {
         self.location = location
         self.colorHex = colorHex
         self.times = times
+        self.isAsync = isAsync
     }
 
     // Computed property for color
@@ -68,7 +70,7 @@ struct TimetableCourse: Identifiable, Codable, Equatable {
     // Helper to create with Color
     static func create(
         name: String, code: String, instructor: String, location: String, color: Color,
-        times: [CourseTime]
+        times: [CourseTime], isAsync: Bool = false
     ) -> TimetableCourse {
         return TimetableCourse(
             name: name,
@@ -76,7 +78,8 @@ struct TimetableCourse: Identifiable, Codable, Equatable {
             instructor: instructor,
             location: location,
             colorHex: color.toHex(),
-            times: times
+            times: times,
+            isAsync: isAsync
         )
     }
 }

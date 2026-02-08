@@ -18,7 +18,8 @@ import FirebaseFirestore
 enum NotificationNavTarget: Hashable {
     case user(uid: String)
     case post(postId: String)
-    case eventRequests 
+    case eventRequests
+    case timetableShareRequests
 }
 
 struct NotificationView: View {
@@ -54,7 +55,10 @@ struct NotificationView: View {
                     
                 case .eventRequests:
                     EventShareRequestsView()
+                case .timetableShareRequests:
+                    TimetableShareRequestsView()   // ✅ 전체 화면 push
 
+                
                 }
             }
 
@@ -151,12 +155,13 @@ struct NotificationView: View {
             if let eventId = notification.eventId {
                 navTarget = .eventRequests
                 }
+        case .timetableShareRequest:
+            navTarget = .timetableShareRequests
         
 
         // (지금은 이동 없음)
             //추후 업데이트 해야함
-        case .timetableShareRequest,
-             .timetableShareAccepted,
+        case .timetableShareAccepted,
              .timetableShareDeclined,
              .chatMessage:
             break

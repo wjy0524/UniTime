@@ -167,5 +167,21 @@ final class FriendService: ObservableObject {
         }
         return result
     }
+    
+    // FriendService.swift
+    func removeFriendFromList(uid: String) async {
+        try? await db.collection("users")
+            .document(myUid)
+            .collection("friends")
+            .document(uid)
+            .delete()
+
+        try? await db.collection("users")
+            .document(uid)
+            .collection("friends")
+            .document(myUid)
+            .delete()
+    }
+
 
 }

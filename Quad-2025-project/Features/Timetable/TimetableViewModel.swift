@@ -1,4 +1,3 @@
-
 //  TimetableViewModel.swift
 //  Quad-2025-project
 //
@@ -25,8 +24,8 @@ struct ImportedSchedule: Decodable {
 }
 
 struct ImportedMeeting: Decodable {
-    let days: [String]        // ["Monday", "Wednesday"]
-    let startTime: Int        // minutes (e.g. 540 = 9:00 AM)
+    let days: [String]  // ["Monday", "Wednesday"]
+    let startTime: Int  // minutes (e.g. 540 = 9:00 AM)
     let endTime: Int
     let location: ImportedLocation
 }
@@ -63,7 +62,8 @@ class TimetableViewModel: ObservableObject {
 
     func loadCourses() {
         if let data = UserDefaults.standard.data(forKey: userDefaultsKey),
-           let decoded = try? JSONDecoder().decode([TimetableCourse].self, from: data) {
+            let decoded = try? JSONDecoder().decode([TimetableCourse].self, from: data)
+        {
             courses = decoded
         } else {
             courses = []
@@ -120,16 +120,16 @@ class TimetableViewModel: ObservableObject {
                 }
 
                 let location =
-                    "\(importedCourse.schedule.meetings.first?.location.building ?? "") " +
-                    "\(importedCourse.schedule.meetings.first?.location.room ?? "")"
+                    "\(importedCourse.schedule.meetings.first?.location.building ?? "") "
+                    + "\(importedCourse.schedule.meetings.first?.location.room ?? "")"
 
                 let course = TimetableCourse(
-                    id: UUID(), // ✅ UUID FIX
+                    id: UUID(),  // ✅ UUID FIX
                     name: importedCourse.courseName,
                     code: "\(importedCourse.department) \(importedCourse.number)",
                     instructor: "",
                     location: location.trimmingCharacters(in: .whitespaces),
-                    colorHex: "#BF5700", // UT Austin Orange,
+                    colorHex: "#BF5700",  // UT Austin Orange,
                     times: times
                 )
 
@@ -178,7 +178,7 @@ class TimetableViewModel: ObservableObject {
         for course in courses {
             for time in course.times {
                 csv +=
-                "\(course.name),\(course.code),\(course.instructor),\(course.location),\(course.colorHex),\(time.day),\(time.startTime),\(time.endTime)\n"
+                    "\(course.name),\(course.code),\(course.instructor),\(course.location),\(course.colorHex),\(time.day),\(time.startTime),\(time.endTime)\n"
             }
         }
         return csv
@@ -187,10 +187,11 @@ class TimetableViewModel: ObservableObject {
     // MARK: - Helpers
 
     func getCourses(for day: Int, hour: Int) -> [TimetableCourse] {
-        courses.filter {
-            $0.times.contains { time in
-                time.day == day && hour == time.startTime / 60
-            }
+        courses.filter { course in
+            !course.isAsync
+                && course.times.contains { time in
+                    time.day == day && hour == time.startTime / 60
+                }
         }
     }
 

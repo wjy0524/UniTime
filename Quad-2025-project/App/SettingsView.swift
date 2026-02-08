@@ -62,7 +62,7 @@ struct SettingsView: View {
                 NavigationLink {
                     AboutAppView()
                 } label: {
-                    Label("About Quad", systemImage: "info.circle")
+                    Label("About UniTime", systemImage: "info.circle")
                 }
 
                 NavigationLink {
