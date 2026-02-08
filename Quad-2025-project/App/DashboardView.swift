@@ -421,6 +421,13 @@ extension DashboardView {
                     color: .teal,
                     destination: TimetableView()
                 )
+                
+                quickActionItem(
+                    title: "GradeCal",
+                    systemImage: "a.circle.fill",
+                    color: Color("UTAustinOrange"),
+                    destination: GradeCalView()
+                )
             }
         }
         .padding(.horizontal)

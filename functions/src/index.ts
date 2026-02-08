@@ -2,12 +2,19 @@ import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
 import OpenAI from "openai";
 import { serpSearch } from "./web/serpApi";
+import { defineSecret } from 'firebase-functions/params';
+
+// Define secrets
+const OPENAI_API_KEY = defineSecret('OPENAI_API_KEY');
+const QDRANT_API_KEY = defineSecret('QDRANT_API_KEY');
+const QDRANT_URL = defineSecret('QDRANT_URL');
 
 admin.initializeApp();
 const db = admin.firestore();
 
 // Add this line at the top with other exports
 export { scrapeEventsDaily, scrapeEventsManual } from "./scraping/hornsLinkScraper";
+export { gradeCalPredict } from "./GradeCal/GradeCalPredict";
 
 /* ======================================================
    🔹 Intent Classifier (rule-based, fast)
@@ -55,141 +62,155 @@ function buildUserContext(user: any, intents: string[]): string {
 /* ======================================================
    🔹 Cloud Function: chat
 ====================================================== */
-export const chat = functions.https.onCall(async (data, context) => {
-  const { message } = data;
-  const uid = context.auth?.uid;
+export const chat = functions
+  .runWith({
+    secrets: ['OPENAI_API_KEY', 'QDRANT_API_KEY', 'QDRANT_URL']
+  })
+  .https.onCall(async (data, context) => {
+    const { message } = data;
+    const uid = context.auth?.uid;
 
-  if (!uid) {
-    throw new functions.https.HttpsError("unauthenticated", "Login required");
-  }
-  if (!message) {
-    throw new functions.https.HttpsError("invalid-argument", "Message required");
-  }
-
-  const openaiKey = functions.config().openai?.key;
-  if (!openaiKey) {
-    throw new functions.https.HttpsError(
-      "failed-precondition",
-      "OpenAI key missing"
-    );
-  }
-
-  const openai = new OpenAI({ apiKey: openaiKey });
-
-  try {
-    /* --------------------------------------------------
-       1️⃣ Intent detection
-    -------------------------------------------------- */
-    const intents = classifyIntent(message);
-
-    /* --------------------------------------------------
-       2️⃣ Load user profile (selective)
-    -------------------------------------------------- */
-    let userContext = "";
-    const userSnap = await db.collection("users").doc(uid).get();
-
-    if (userSnap.exists) {
-      userContext = buildUserContext(userSnap.data(), intents);
+    if (!uid) {
+      throw new functions.https.HttpsError("unauthenticated", "Login required");
+    }
+    if (!message) {
+      throw new functions.https.HttpsError("invalid-argument", "Message required");
     }
 
-    const hasUserContext = Boolean(userContext);
+    // Access secrets
+    const openaiKey = OPENAI_API_KEY.value();
+    const qdrantUrl = QDRANT_URL.value();
+    const qdrantKey = QDRANT_API_KEY.value();
 
-    /* --------------------------------------------------
-       3️⃣ Create embedding
-    -------------------------------------------------- */
-    const embedding = await openai.embeddings.create({
-      model: "text-embedding-3-small",
-      input: message,
-    });
+    if (!openaiKey) {
+      throw new functions.https.HttpsError(
+        "failed-precondition",
+        "OpenAI key missing"
+      );
+    }
 
-    const queryVector = embedding.data[0].embedding;
+    const openai = new OpenAI({ apiKey: openaiKey });
 
-    /* --------------------------------------------------
-       4️⃣ RAG with Qdrant (confidence-aware)
-    -------------------------------------------------- */
-    let retrievalContext = "";
-    let hasGoodUniversityContext = false;
-    const qdrantUrl = functions.config().qdrant?.url;
-    const qdrantKey = functions.config().qdrant?.key;
+    try {
+      /* --------------------------------------------------
+         1️⃣ Intent detection
+      -------------------------------------------------- */
+      const intents = classifyIntent(message);
 
-    if (qdrantUrl && qdrantKey) {
-      try {
-        const searchResponse = await fetch(`${qdrantUrl}/collections/utdata/points/search`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "api-key": qdrantKey,
-          },
-          body: JSON.stringify({
-            vector: queryVector,
-            limit: 5,
-            with_payload: true,
-            with_vector: false,
-            score_threshold: 0.5,
-          }),
-        });
+      /* --------------------------------------------------
+         2️⃣ Load user profile (selective)
+      -------------------------------------------------- */
+      let userContext = "";
+      const userSnap = await db.collection("users").doc(uid).get();
 
-        if (searchResponse.ok) {
-          const searchResult = await searchResponse.json();
-          const results = searchResult.result || [];
-
-          // Check confidence: need 2+ results with max score >= 0.75
-          let maxScore = 0;
-          if (results.length > 0) {
-            maxScore = Math.max(...results.map((r: any) => r.score || 0));
-          }
-
-          const QDRANT_THRESHOLD = 0.75;
-          hasGoodUniversityContext = results.length >= 2 && maxScore >= QDRANT_THRESHOLD;
-
-          if (hasGoodUniversityContext) {
-            retrievalContext = results
-              .map((r: any) => `- ${r.payload.title}: ${r.payload.content}`)
-              .join("\n");
-          }
-
-          console.log(`Qdrant: ${results.length} results, maxScore: ${maxScore}, good: ${hasGoodUniversityContext}`);
-        }
-      } catch (err) {
-        console.error("Qdrant search failed:", err);
+      if (userSnap.exists) {
+        userContext = buildUserContext(userSnap.data(), intents);
       }
-    }
 
-    /* --------------------------------------------------
-       5️⃣ SerpAPI fallback (when Qdrant insufficient)
-    -------------------------------------------------- */
-    let webContext = "";
-    let usedWebSearch = false;
+      const hasUserContext = Boolean(userContext);
 
-    if (!hasGoodUniversityContext) {
-      console.log("🔎 Falling back to SerpAPI...");
-      webContext = await serpSearch(message);
-      usedWebSearch = Boolean(webContext);
-      console.log(`SerpAPI: ${usedWebSearch ? "found results" : "no results"}`);
-    }
+      /* --------------------------------------------------
+         3️⃣ Create embedding
+      -------------------------------------------------- */
+      const embedding = await openai.embeddings.create({
+        model: "text-embedding-3-small",
+        input: message,
+      });
 
-    /* --------------------------------------------------
-       6️⃣ Reasoning mode router
-    -------------------------------------------------- */
-    const reasoningMode = hasUserContext
-      ? "PERSONAL"
-      : hasGoodUniversityContext
-      ? "CAMPUS"
-      : usedWebSearch
-      ? "WEB"
-      : "GENERAL";
+      const queryVector = embedding.data[0].embedding;
 
-    console.log(`Mode: ${reasoningMode}`);
+      /* --------------------------------------------------
+         4️⃣ RAG with Qdrant (confidence-aware)
+      -------------------------------------------------- */
+      let retrievalContext = "";
+      let hasGoodUniversityContext = false;
 
-    /* --------------------------------------------------
-       7️⃣ Generate answer
-    -------------------------------------------------- */
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o",
-      messages: [
-        {
-          role: "system",
-          content: `
+      if (qdrantUrl && qdrantKey) {
+        try {
+          const searchResponse = await fetch(`${qdrantUrl}/collections/utdata/points/search`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "api-key": qdrantKey,
+            },
+            body: JSON.stringify({
+              vector: queryVector,
+              limit: 5,
+              with_payload: true,
+              with_vector: false,
+              score_threshold: 0.5,
+            }),
+          });
+
+          if (searchResponse.ok) {
+            const searchResult = await searchResponse.json();
+            const results = searchResult.result || [];
+            
+            // 👇 ADD THIS LOGGING
+            console.log("=== QDRANT DEBUG ===");
+            console.log("Total results:", results.length);
+            results.forEach((r: any, i: number) => {
+              console.log(`Result ${i + 1}: score=${r.score.toFixed(3)}, title="${r.payload?.title}"`);
+            });
+            console.log("====================");
+
+            // Check confidence: need 2+ results with max score >= 0.75
+            let maxScore = 0;
+            if (results.length > 0) {
+              maxScore = Math.max(...results.map((r: any) => r.score || 0));
+            }
+
+            const QDRANT_THRESHOLD = 0.75;
+            hasGoodUniversityContext = results.length >= 2 && maxScore >= QDRANT_THRESHOLD;
+
+            if (hasGoodUniversityContext) {
+              retrievalContext = results
+                .map((r: any) => `- ${r.payload.title}: ${r.payload.content}`)
+                .join("\n");
+            }
+
+            console.log(`Qdrant: ${results.length} results, maxScore: ${maxScore}, good: ${hasGoodUniversityContext}`);
+          }
+        } catch (err) {
+          console.error("Qdrant search failed:", err);
+        }
+      }
+
+      /* --------------------------------------------------
+         5️⃣ SerpAPI fallback (when Qdrant insufficient)
+      -------------------------------------------------- */
+      let webContext = "";
+      let usedWebSearch = false;
+
+      if (!hasGoodUniversityContext) {
+        console.log("🔎 Falling back to SerpAPI...");
+        webContext = await serpSearch(message);
+        usedWebSearch = Boolean(webContext);
+        console.log(`SerpAPI: ${usedWebSearch ? "found results" : "no results"}`);
+      }
+
+      /* --------------------------------------------------
+         6️⃣ Reasoning mode router
+      -------------------------------------------------- */
+      const reasoningMode = hasUserContext
+        ? "PERSONAL"
+        : hasGoodUniversityContext
+        ? "CAMPUS"
+        : usedWebSearch
+        ? "WEB"
+        : "GENERAL";
+
+      console.log(`Mode: ${reasoningMode}`);
+
+      /* --------------------------------------------------
+         7️⃣ Generate answer
+      -------------------------------------------------- */
+      const completion = await openai.chat.completions.create({
+        model: "gpt-4o",
+        messages: [
+          {
+            role: "system",
+            content: `
 You are an intelligent AI advisor for University of Texas at Austin students. You're like a knowledgeable upperclassman who knows more about UT.
 
 CRITICAL RULE:
@@ -237,22 +258,22 @@ CRITICAL RULES FOR WEB MODE:
 
 Remember: Students want ADVICE and INSIGHT, not Wikipedia entries. Be helpful, specific, and conversational.
           `,
-        },
-        {
-          role: "user",
-          content: message,
-        },
-      ],
-    });
+          },
+          {
+            role: "user",
+            content: message,
+          },
+        ],
+      });
 
-    return {
-      reply: completion.choices[0].message.content,
-    };
-  } catch (err) {
-    console.error("Chat error:", err);
-    throw new functions.https.HttpsError(
-      "internal",
-      "Failed to generate response"
-    );
-  }
-});
+      return {
+        reply: completion.choices[0].message.content,
+      };
+    } catch (err) {
+      console.error("Chat error:", err);
+      throw new functions.https.HttpsError(
+        "internal",
+        "Failed to generate response"
+      );
+    }
+  });
