@@ -32,7 +32,7 @@ struct LoginView: View {
     @State private var message = ""
     @State private var isLoading = false
 
-    let allowedDomains = ["@utexas.edu", "@eid.utexas.edu", "@gmail.com"]
+    let allowedDomains = ["@utexas.edu", "@eid.utexas.edu", "@gmail.com", "@my.utexas.edu"]
 
     var body: some View {
         VStack {

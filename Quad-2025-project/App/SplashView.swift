@@ -21,7 +21,10 @@ struct SplashView: View {
                     loopMode: .playOnce,
                     onFinished: nil
                 )
-                .frame(width: 220, height: 220)
+                .frame(
+                    width: AppConstants.Layout.logoSize * 1.7,
+                    height: AppConstants.Layout.logoSize * 1.7
+                )
 
                 if showTitle {
                     VStack(spacing: 6) {
@@ -38,7 +41,7 @@ struct SplashView: View {
             }
         }
         .onAppear {
-            withAnimation(.easeOut(duration: 0.5)) {
+            withAnimation(.easeOut(duration: AppConstants.Animation.quickDuration)) {
                 showTitle = true
             }
         }

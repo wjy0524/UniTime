@@ -2,8 +2,12 @@
 //  Quad-2025-project
 //
 
+
 import Foundation
 import SwiftUI
+import FirebaseAuth
+import FirebaseFirestore
+
 
 // MARK: - UT Timetable Import Models (Adapter용)
 
@@ -46,27 +50,88 @@ class TimetableViewModel: ObservableObject {
     @Published var errorMessage: String?
     @Published var showingError = false
 
-    private let userDefaultsKey = "savedCourses"
+    private let db = Firestore.firestore()
+    private var listener: ListenerRegistration?
 
     init() {
-        loadCourses()
+        observeAuthState()
     }
 
-    // MARK: - Persistence
+    deinit {
+        listener?.remove()
+    }
+    
+    private func observeAuthState() {
+        Auth.auth().addStateDidChangeListener { [weak self] _, user in
+            guard let self = self else { return }
 
-    func saveCourses() {
-        if let encoded = try? JSONEncoder().encode(courses) {
-            UserDefaults.standard.set(encoded, forKey: userDefaultsKey)
+            if user != nil {
+                self.loadCoursesFromFirebase()
+            } else {
+                self.courses = []
+                self.listener?.remove()
+            }
         }
     }
 
-    func loadCourses() {
-        if let data = UserDefaults.standard.data(forKey: userDefaultsKey),
-            let decoded = try? JSONDecoder().decode([TimetableCourse].self, from: data)
-        {
-            courses = decoded
-        } else {
-            courses = []
+
+    // MARK: - 🔥 Load from Firebase
+
+    func loadCoursesFromFirebase() {
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+
+        listener = db.collection("users")
+            .document(uid)
+            .collection("timetable")
+            .document("myCourses")
+            .addSnapshotListener { [weak self] snapshot, error in
+
+                if let error = error {
+                    self?.errorMessage = "Failed to load timetable: \(error.localizedDescription)"
+                    self?.showingError = true
+                    return
+                }
+
+                guard let data = snapshot?.data(),
+                      let coursesData = data["courses"] as? [[String: Any]] else {
+                    self?.courses = []
+                    return
+                }
+
+                do {
+                    let jsonData = try JSONSerialization.data(withJSONObject: coursesData)
+                    let decoded = try JSONDecoder().decode([TimetableCourse].self, from: jsonData)
+                    DispatchQueue.main.async {
+                        self?.courses = decoded
+                        for course in decoded {
+                                self?.joinCourseChat(course.code)
+                        }
+                    }
+                } catch {
+                    self?.errorMessage = "Failed to decode timetable."
+                    self?.showingError = true
+                }
+            }
+    }
+
+    // MARK: - 🔥 Save to Firebase
+
+    private func saveCoursesToFirebase() {
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+
+        do {
+            let encoded = try JSONEncoder().encode(courses)
+            let jsonObject = try JSONSerialization.jsonObject(with: encoded)
+
+            db.collection("users")
+                .document(uid)
+                .collection("timetable")
+                .document("myCourses")
+                .setData(["courses": jsonObject], merge: true)
+
+        } catch {
+            errorMessage = "Failed to save timetable."
+            showingError = true
         }
     }
 
@@ -74,27 +139,28 @@ class TimetableViewModel: ObservableObject {
 
     func addCourse(_ course: TimetableCourse) {
         courses.append(course)
-        saveCourses()
+        saveCoursesToFirebase()
+        joinCourseChat(course.code)
     }
 
     func updateCourse(_ course: TimetableCourse) {
         if let index = courses.firstIndex(where: { $0.id == course.id }) {
             courses[index] = course
-            saveCourses()
+            saveCoursesToFirebase()
         }
     }
 
     func deleteCourse(_ course: TimetableCourse) {
         courses.removeAll { $0.id == course.id }
-        saveCourses()
+        saveCoursesToFirebase()
     }
 
     func clearAll() {
         courses = []
-        saveCourses()
+        saveCoursesToFirebase()
     }
 
-    // MARK: - JSON Import (Adapter)
+    // MARK: - Import
 
     func importFromJSON(_ data: Data) {
         do {
@@ -124,12 +190,12 @@ class TimetableViewModel: ObservableObject {
                     + "\(importedCourse.schedule.meetings.first?.location.room ?? "")"
 
                 let course = TimetableCourse(
-                    id: UUID(),  // ✅ UUID FIX
+                    id: UUID(),
                     name: importedCourse.courseName,
                     code: "\(importedCourse.department) \(importedCourse.number)",
                     instructor: "",
                     location: location.trimmingCharacters(in: .whitespaces),
-                    colorHex: "#BF5700",  // UT Austin Orange,
+                    colorHex: "#BF5700",
                     times: times
                 )
 
@@ -137,15 +203,13 @@ class TimetableViewModel: ObservableObject {
             }
 
             courses.append(contentsOf: newCourses)
-            saveCourses()
+            saveCoursesToFirebase()
 
         } catch {
-            errorMessage = "Failed to import JSON: The data isn't in the correct format."
+            errorMessage = "Failed to import JSON."
             showingError = true
         }
     }
-
-    // MARK: - CSV Import
 
     func importFromCSV(_ data: Data) {
         guard let csvString = String(data: data, encoding: .utf8) else {
@@ -155,12 +219,13 @@ class TimetableViewModel: ObservableObject {
         }
 
         let importedCourses = CSVCourseImporter.parseCourses(from: csvString)
+
         if importedCourses.isEmpty {
-            errorMessage = "No valid courses found in CSV file"
+            errorMessage = "No valid courses found in CSV"
             showingError = true
         } else {
             courses.append(contentsOf: importedCourses)
-            saveCourses()
+            saveCoursesToFirebase()
         }
     }
 
@@ -178,7 +243,7 @@ class TimetableViewModel: ObservableObject {
         for course in courses {
             for time in course.times {
                 csv +=
-                    "\(course.name),\(course.code),\(course.instructor),\(course.location),\(course.colorHex),\(time.day),\(time.startTime),\(time.endTime)\n"
+                "\(course.name),\(course.code),\(course.instructor),\(course.location),\(course.colorHex),\(time.day),\(time.startTime),\(time.endTime)\n"
             }
         }
         return csv
@@ -188,10 +253,10 @@ class TimetableViewModel: ObservableObject {
 
     func getCourses(for day: Int, hour: Int) -> [TimetableCourse] {
         courses.filter { course in
-            !course.isAsync
-                && course.times.contains { time in
-                    time.day == day && hour == time.startTime / 60
-                }
+            !course.isAsync &&
+            course.times.contains { time in
+                time.day == day && hour == time.startTime / 60
+            }
         }
     }
 
@@ -199,8 +264,35 @@ class TimetableViewModel: ObservableObject {
         selectedCourse = course
         showingEditSheet = true
     }
-}
+    
+    private func joinCourseChat(_ code: String) {
+        guard let uid = Auth.auth().currentUser?.uid else {
+            print("❌ UID NIL")
+            return
+        }
 
+        print("🔥 joinCourseChat CALLED for:", code)
+
+        let safeCode = code.replacingOccurrences(of: " ", with: "_")
+            .uppercased()
+
+        print("🔥 safeCode:", safeCode)
+
+        let chatRef = db.collection("courseChats").document(safeCode)
+
+        chatRef.setData([
+            "courseCode": code,
+            "members": FieldValue.arrayUnion([uid]),
+            "createdAt": FieldValue.serverTimestamp()
+        ], merge: true) { error in
+            if let error = error {
+                print("❌ Firestore error:", error)
+            } else {
+                print("✅ courseChat write success")
+            }
+        }
+    }
+}
 // MARK: - Day String → Index
 
 func dayStringToIndex(_ day: String) -> Int? {
@@ -213,3 +305,5 @@ func dayStringToIndex(_ day: String) -> Int? {
     default: return nil
     }
 }
+
+

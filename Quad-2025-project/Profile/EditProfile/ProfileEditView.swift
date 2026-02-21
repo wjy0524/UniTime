@@ -75,7 +75,10 @@ extension ProfileEditView {
                     Circle().fill(Color.gray.opacity(0.3))
                 }
                 .scaledToFill()
-                .frame(width: 110, height: 110)
+                .frame(
+                    width: AppConstants.Layout.avatarSizeLarge,
+                    height: AppConstants.Layout.avatarSizeLarge
+                )
                 .clipShape(Circle())
             } else {
                 Circle()

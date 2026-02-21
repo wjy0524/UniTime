@@ -18,7 +18,10 @@ struct AboutAppView: View {
                     Image("UniTimeLogo") // 앱 아이콘 or 브랜드 이미지
                         .resizable()
                         .scaledToFit()
-                        .frame(width: 90, height: 90)
+                        .frame(
+                            width: AppConstants.Layout.avatarSizeMedium,
+                            height: AppConstants.Layout.avatarSizeMedium
+                        )
                         .cornerRadius(20)
                         .shadow(radius: 6)
                         .foregroundColor(Color("UTAustinOrange"))

@@ -22,11 +22,12 @@ struct MainTabView: View {
                             Text("Home")
                         }
                     
-                    BoardView()
-                        .environmentObject(authManager)
+                    NavigationStack {
+                            CourseChatListView()
+                        }
                         .tabItem {
-                            Image(systemName: "rectangle.grid.2x2.fill")
-                            Text("Board")
+                            Image(systemName: "bubble.left.and.bubble.right.fill")
+                            Text("Chats")
                         }
                     
                     TimetableView()

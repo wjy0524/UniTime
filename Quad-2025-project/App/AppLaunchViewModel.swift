@@ -19,6 +19,7 @@ final class AppLaunchViewModel: ObservableObject {
 
     private var minimumSplashTimePassed = false
     private var authChecked = false
+    private var authStateHandler: AuthStateDidChangeListenerHandle?
 
     init() {
         startMinimumSplashTimer()
@@ -35,9 +36,17 @@ final class AppLaunchViewModel: ObservableObject {
 
     // Firebase Auth 상태 확인
     private func checkAuthState() {
-        _ = Auth.auth().addStateDidChangeListener { _, _ in
+        authStateHandler = Auth.auth().addStateDidChangeListener { [weak self] _, _ in
+            guard let self = self else { return }
             self.authChecked = true
             self.tryFinishLaunch()
+        }
+    }
+
+    //deinit
+    deinit {
+        if let handler = authStateHandler {
+            Auth.auth().removeStateDidChangeListener(handler)
         }
     }
 
