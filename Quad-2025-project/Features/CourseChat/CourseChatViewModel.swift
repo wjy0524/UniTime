@@ -17,10 +17,11 @@ class CourseChatViewModel: ObservableObject {
     @Published var messages: [CourseMessage] = []
     @Published var messageText = ""
     @Published var currentUsername: String = ""
-    @Published var shouldAutoScroll = false
+    @Published var userCache: [String: QuadUser] = [:]
 
     // 🔥 uid : (username, updatedAt)
     @Published var typingUsers: [String: (username: String, updatedAt: Date)] = [:]
+    @Published var readStatusMap: [String: Int] = [:]
 
     // MARK: - Private
 
@@ -33,6 +34,8 @@ class CourseChatViewModel: ObservableObject {
     private var lastDocument: DocumentSnapshot?
     private let pageSize = 30
     private var isFetchingMore = false
+    private var readStatusListener: ListenerRegistration?
+
 
     var uid: String {
         Auth.auth().currentUser?.uid ?? ""
@@ -54,6 +57,30 @@ class CourseChatViewModel: ObservableObject {
         } catch {
             print("❌ Failed to load username:", error)
         }
+    }
+    
+    func startReadStatusListener(courseId: String) {
+
+        readStatusListener?.remove()
+
+        readStatusListener = db.collection("courseChats")
+            .document(courseId)
+            .collection("readStatus")
+            .addSnapshotListener { [weak self] snapshot, _ in
+
+                guard let self else { return }
+                guard let docs = snapshot?.documents else { return }
+
+                var map: [String: Int] = [:]
+
+                for doc in docs {
+                    let uid = doc.documentID
+                    let lastRead = doc.data()["lastReadIndex"] as? Int ?? 0
+                    map[uid] = lastRead
+                }
+
+                self.readStatusMap = map
+            }
     }
 
     // MARK: - Listen Messages
@@ -84,10 +111,37 @@ class CourseChatViewModel: ObservableObject {
                newest.messageIndex > self.highestLoadedIndex {
 
                 self.highestLoadedIndex = newest.messageIndex
-                self.shouldAutoScroll = true
             }
 
             self.messages = Array(reversed)
+            let senderIds = Set(reversed.map { $0.senderId })
+
+            Task {
+                for id in senderIds {
+                    await self.loadUser(uid: id)
+                }
+            }
+        
+        }
+    }
+    
+    func loadUser(uid: String) async {
+
+        if userCache[uid] != nil { return }
+
+        do {
+            let snapshot = try await db.collection("users")
+                .document(uid)
+                .getDocument()
+
+            if let user = try? snapshot.data(as: QuadUser.self) {
+                await MainActor.run {
+                    self.userCache[uid] = user
+                }
+            }
+
+        } catch {
+            print("❌ Failed to load user:", error)
         }
     }
 
@@ -120,7 +174,7 @@ class CourseChatViewModel: ObservableObject {
                     "senderId": self.uid,
                     "senderName": self.currentUsername,
                     "text": self.messageText,
-                    "timestamp": FieldValue.serverTimestamp(),
+                    "timestamp": Date(),
                     "messageIndex": newIndex
                 ], forDocument: messageRef)
 
@@ -224,7 +278,17 @@ class CourseChatViewModel: ObservableObject {
 
             let reversed = fetched.reversed()
 
+            // 🔥 메시지 추가
             self.messages.append(contentsOf: reversed)
+
+            // 🔥 중복 제거 후 유저 preload
+            let senderIds = Set(reversed.map { $0.senderId })
+
+            Task {
+                for id in senderIds {
+                    await self.loadUser(uid: id)
+                }
+            }
         }
     }
 
@@ -280,5 +344,6 @@ class CourseChatViewModel: ObservableObject {
         listener?.remove()
         typingListener?.remove()
         typingRefreshTimer?.invalidate()
+        readStatusListener?.remove()
     }
 }

@@ -22,14 +22,12 @@ struct CourseChatListView: View {
                     ForEach(vm.chats) { chat in
                         NavigationLink {
                             CourseChatView(chat: chat)
-                                .environmentObject(vm) // 🔥 중요
                         } label: {
                             chatCard(chat)
                         }
                         .buttonStyle(.plain)
-
-                        
-                    }                }
+                    }
+                }
                 .padding()
             }
             .navigationTitle("Course Chats")
