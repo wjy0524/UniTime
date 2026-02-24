@@ -56,7 +56,6 @@ struct CourseChatView: View {
         .navigationTitle(chat.courseCode)
         .onAppear {
             if let id = chat.id {
-                chatListVM.activeChatId = id
                 Task {
                     await vm.loadUsername()
                     vm.startListening(courseId: id)

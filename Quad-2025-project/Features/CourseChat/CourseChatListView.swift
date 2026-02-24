@@ -28,14 +28,7 @@ struct CourseChatListView: View {
                         }
                         .buttonStyle(.plain)
 
-                        // 🔥 이거 추가
-                        .simultaneousGesture(
-                            TapGesture().onEnded {
-                                if let id = chat.id {
-                                    vm.activeChatId = id
-                                }
-                            }
-                        )
+                        
                     }                }
                 .padding()
             }
