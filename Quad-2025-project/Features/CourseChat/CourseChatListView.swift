@@ -22,12 +22,21 @@ struct CourseChatListView: View {
                     ForEach(vm.chats) { chat in
                         NavigationLink {
                             CourseChatView(chat: chat)
+                                .environmentObject(vm) // 🔥 중요
                         } label: {
                             chatCard(chat)
                         }
                         .buttonStyle(.plain)
-                    }
-                }
+
+                        // 🔥 이거 추가
+                        .simultaneousGesture(
+                            TapGesture().onEnded {
+                                if let id = chat.id {
+                                    vm.activeChatId = id
+                                }
+                            }
+                        )
+                    }                }
                 .padding()
             }
             .navigationTitle("Course Chats")

@@ -17,4 +17,5 @@ struct CourseChat: Identifiable, Codable {
     var lastSenderId: String?
     
     var createdAt: Date?
+    var lastMessageIndex: Int?  // unread 계산용
 }

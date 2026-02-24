@@ -9,9 +9,12 @@ import FirebaseFirestore
 import Foundation
 
 struct CourseMessage: Identifiable, Codable {
-    @DocumentID var id: String?
+    @DocumentID var documentId: String?
     var senderId: String
     var senderName: String?
     var text: String
     var timestamp: Date
+    var messageIndex: Int
+    
+    var id: Int { messageIndex } //swift ui 용
 }
