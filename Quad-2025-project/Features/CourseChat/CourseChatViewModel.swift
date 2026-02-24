@@ -4,7 +4,6 @@
 //
 //  Created by Jaeyeon Won on 2/21/26.
 
-
 import FirebaseFirestore
 import FirebaseAuth
 import Foundation
@@ -12,45 +11,39 @@ import Foundation
 @MainActor
 class CourseChatViewModel: ObservableObject {
 
-    // MARK: - Published
-
     @Published var messages: [CourseMessage] = []
     @Published var messageText = ""
     @Published var currentUsername: String = ""
     @Published var userCache: [String: QuadUser] = [:]
+    @Published var replyingTo: CourseMessage? = nil
 
-    // 🔥 uid : (username, updatedAt)
     @Published var typingUsers: [String: (username: String, updatedAt: Date)] = [:]
     @Published var readStatusMap: [String: Int] = [:]
 
-    // MARK: - Private
+    // ✅ 추가
+    @Published var isLoadingMore: Bool = false
+
+    private let db = Firestore.firestore()
+
+    private var listener: ListenerRegistration?
+    private var lastDocument: DocumentSnapshot?
+
+    private let pageSize = 30
+    private var isFetchingMore = false
 
     private var typingListener: ListenerRegistration?
     private var typingRefreshTimer: Timer?
 
-    private var highestLoadedIndex: Int = 0
-    private let db = Firestore.firestore()
-    private var listener: ListenerRegistration?
-    private var lastDocument: DocumentSnapshot?
-    private let pageSize = 30
-    private var isFetchingMore = false
     private var readStatusListener: ListenerRegistration?
-
 
     var uid: String {
         Auth.auth().currentUser?.uid ?? ""
     }
 
-    // MARK: - Load Username
-
     func loadUsername() async {
         guard !uid.isEmpty else { return }
-
         do {
-            let snapshot = try await db.collection("users")
-                .document(uid)
-                .getDocument()
-
+            let snapshot = try await db.collection("users").document(uid).getDocument()
             if let name = snapshot.data()?["username"] as? String {
                 currentUsername = name
             }
@@ -58,35 +51,28 @@ class CourseChatViewModel: ObservableObject {
             print("❌ Failed to load username:", error)
         }
     }
-    
-    func startReadStatusListener(courseId: String) {
 
+    func startReadStatusListener(courseId: String) {
         readStatusListener?.remove()
 
         readStatusListener = db.collection("courseChats")
             .document(courseId)
             .collection("readStatus")
             .addSnapshotListener { [weak self] snapshot, _ in
-
                 guard let self else { return }
                 guard let docs = snapshot?.documents else { return }
 
                 var map: [String: Int] = [:]
-
                 for doc in docs {
                     let uid = doc.documentID
                     let lastRead = doc.data()["lastReadIndex"] as? Int ?? 0
                     map[uid] = lastRead
                 }
-
                 self.readStatusMap = map
             }
     }
 
-    // MARK: - Listen Messages
-
     func startListening(courseId: String) {
-
         listener?.remove()
 
         let query = db.collection("courseChats")
@@ -101,55 +87,36 @@ class CourseChatViewModel: ObservableObject {
 
             self.lastDocument = docs.last
 
-            let fetched = docs.compactMap {
-                try? $0.data(as: CourseMessage.self)
-            }
-
+            let fetched = docs.compactMap { try? $0.data(as: CourseMessage.self) }
             let reversed = fetched.reversed()
 
-            if let newest = reversed.last,
-               newest.messageIndex > self.highestLoadedIndex {
-
-                self.highestLoadedIndex = newest.messageIndex
-            }
-
             self.messages = Array(reversed)
-            let senderIds = Set(reversed.map { $0.senderId })
 
+            // sender preload
+            let senderIds = Set(reversed.map { $0.senderId })
             Task {
                 for id in senderIds {
                     await self.loadUser(uid: id)
                 }
             }
-        
         }
     }
-    
+
     func loadUser(uid: String) async {
-
         if userCache[uid] != nil { return }
-
         do {
-            let snapshot = try await db.collection("users")
-                .document(uid)
-                .getDocument()
-
+            let snapshot = try await db.collection("users").document(uid).getDocument()
             if let user = try? snapshot.data(as: QuadUser.self) {
-                await MainActor.run {
-                    self.userCache[uid] = user
-                }
+                self.userCache[uid] = user
             }
-
         } catch {
             print("❌ Failed to load user:", error)
         }
     }
 
-    // MARK: - Send Message
-
     func sendMessage(courseId: String) async {
-
-        guard !messageText.trimmingCharacters(in: .whitespaces).isEmpty else { return }
+        let trimmed = messageText.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return }
 
         let chatRef = db.collection("courseChats").document(courseId)
 
@@ -157,7 +124,6 @@ class CourseChatViewModel: ObservableObject {
             try await db.runTransaction { transaction, errorPointer -> Any? in
 
                 let chatSnapshot: DocumentSnapshot
-
                 do {
                     chatSnapshot = try transaction.getDocument(chatRef)
                 } catch {
@@ -173,13 +139,16 @@ class CourseChatViewModel: ObservableObject {
                 transaction.setData([
                     "senderId": self.uid,
                     "senderName": self.currentUsername,
-                    "text": self.messageText,
-                    "timestamp": Date(),
-                    "messageIndex": newIndex
+                    "text": trimmed,
+                    "timestamp": FieldValue.serverTimestamp(),
+                    "messageIndex": newIndex,
+                    "replyToMessageId": self.replyingTo?.documentId as Any,
+                    "replyToText": self.replyingTo?.text as Any,
+                    "replyToSenderName": self.replyingTo?.senderName as Any
                 ], forDocument: messageRef)
 
                 transaction.updateData([
-                    "lastMessage": self.messageText,
+                    "lastMessage": trimmed,
                     "lastMessageTime": FieldValue.serverTimestamp(),
                     "lastSenderId": self.uid,
                     "lastSenderName": self.currentUsername,
@@ -190,6 +159,7 @@ class CourseChatViewModel: ObservableObject {
             }
 
             messageText = ""
+            replyingTo = nil
             await markAsRead(courseId: courseId)
 
         } catch {
@@ -197,17 +167,13 @@ class CourseChatViewModel: ObservableObject {
         }
     }
 
-    // MARK: - Typing Listener
-
     func startTypingListener(courseId: String) {
-
         typingListener?.remove()
 
         typingListener = db.collection("courseChats")
             .document(courseId)
             .collection("typing")
             .addSnapshotListener { [weak self] snapshot, _ in
-
                 guard let self else { return }
 
                 var users: [String: (username: String, updatedAt: Date)] = [:]
@@ -217,17 +183,10 @@ class CourseChatViewModel: ObservableObject {
                     let username = doc.data()["username"] as? String ?? "Someone"
                     let updatedAt = doc.data()["updatedAt"] as? Timestamp
 
-                    if typingUid != self.uid,
-                       let updatedAt = updatedAt {
-
+                    if typingUid != self.uid, let updatedAt {
                         let seconds = Date().timeIntervalSince(updatedAt.dateValue())
-
-                        // 🔥 3초 이내인 것만 처음부터 저장
                         if seconds < 3 {
-                            users[typingUid] = (
-                                username: username,
-                                updatedAt: updatedAt.dateValue()
-                            )
+                            users[typingUid] = (username: username, updatedAt: updatedAt.dateValue())
                         }
                     }
                 }
@@ -235,26 +194,23 @@ class CourseChatViewModel: ObservableObject {
                 self.typingUsers = users
             }
 
-        // 🔥 1초마다 자동 정리
         typingRefreshTimer?.invalidate()
-
         typingRefreshTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
             DispatchQueue.main.async {
                 let now = Date()
-
                 self.typingUsers = self.typingUsers.filter { _, value in
                     now.timeIntervalSince(value.updatedAt) < 3
                 }
             }
         }
     }
-    
-    func loadMoreMessages(courseId: String) {
 
+    func loadMoreMessages(courseId: String) {
         guard !isFetchingMore else { return }
         guard let lastDoc = lastDocument else { return }
 
         isFetchingMore = true
+        isLoadingMore = true
 
         let query = db.collection("courseChats")
             .document(courseId)
@@ -266,24 +222,23 @@ class CourseChatViewModel: ObservableObject {
         query.getDocuments { [weak self] snapshot, _ in
             guard let self else { return }
 
-            defer { self.isFetchingMore = false }
+            defer {
+                self.isFetchingMore = false
+                self.isLoadingMore = false
+            }
 
-            guard let docs = snapshot?.documents else { return }
+            guard let docs = snapshot?.documents, !docs.isEmpty else { return }
 
             self.lastDocument = docs.last
 
-            let fetched = docs.compactMap {
-                try? $0.data(as: CourseMessage.self)
-            }
-
+            let fetched = docs.compactMap { try? $0.data(as: CourseMessage.self) }
             let reversed = fetched.reversed()
 
-            // 🔥 메시지 추가
-            self.messages.append(contentsOf: reversed)
+            // ✅ append (내림차순 쿼리를 뒤집었으니 "더 옛날"이 뒤에 붙는 구조면 UI가 꼬일 수 있음)
+            // 너의 현재 구조(최신이 아래)에서는 "옛날 메시지는 앞에" 붙는 게 정석임:
+            self.messages.insert(contentsOf: reversed, at: 0)
 
-            // 🔥 중복 제거 후 유저 preload
             let senderIds = Set(reversed.map { $0.senderId })
-
             Task {
                 for id in senderIds {
                     await self.loadUser(uid: id)
@@ -292,10 +247,7 @@ class CourseChatViewModel: ObservableObject {
         }
     }
 
-    // MARK: - Update Typing Timestamp
-
     func setTyping(courseId: String) async {
-
         guard !uid.isEmpty else { return }
         guard !currentUsername.isEmpty else { return }
 
@@ -314,14 +266,10 @@ class CourseChatViewModel: ObservableObject {
         }
     }
 
-    // MARK: - Read Status
-
     func markAsRead(courseId: String) async {
-
         guard !uid.isEmpty else { return }
 
         let chatRef = db.collection("courseChats").document(courseId)
-
         do {
             let chatSnapshot = try await chatRef.getDocument()
             let lastIndex = chatSnapshot.data()?["lastMessageIndex"] as? Int ?? 0
@@ -329,16 +277,12 @@ class CourseChatViewModel: ObservableObject {
             try await chatRef
                 .collection("readStatus")
                 .document(uid)
-                .setData([
-                    "lastReadIndex": lastIndex
-                ], merge: true)
+                .setData(["lastReadIndex": lastIndex], merge: true)
 
         } catch {
             print("❌ markAsRead error:", error)
         }
     }
-
-    // MARK: - Cleanup
 
     deinit {
         listener?.remove()

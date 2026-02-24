@@ -7,56 +7,73 @@
 
 import SwiftUI
 
+// MARK: - View
+
 struct CourseChatView: View {
 
     @StateObject var vm = CourseChatViewModel()
     @EnvironmentObject var chatListVM: CourseChatListViewModel
+
+    @State private var isAtBottom = true
+    @Environment(\.colorScheme) private var scheme
+
     let chat: CourseChat
 
     var body: some View {
-
         ScrollViewReader { proxy in
             ScrollView {
-                VStack(spacing: 2) {
-                    
-                    let messages = vm.messages
-                    
-                    ForEach(Array(zip(messages.indices, messages)), id: \.1.id) { index, msg in
-                        MessageItem(
+                LazyVStack(alignment: .leading, spacing: 0) {
+
+                    ForEach(vm.messages.indices, id: \.self) { index in
+                        let msg = vm.messages[index]
+
+                        DiscordMessageItem(
                             vm: vm,
-                            messages: messages,
+                            scheme: scheme,
+                            messages: vm.messages,
                             index: index,
                             msg: msg,
                             chatId: chat.id
                         )
+                        .id(msg.id)
                     }
-                    
-                    // 🔥 Typing Indicator
-                    typingIndicatorView()
-                    
+
+                    typingIndicatorDiscordView()
+
                     Color.clear
                         .frame(height: 1)
                         .id("BOTTOM")
+                        .onAppear { isAtBottom = true }
+                        .onDisappear { isAtBottom = false }
                 }
-                .padding(.bottom, 8)
+                .padding(.top, 8)
             }
+            .background(DiscordTheme.bg(scheme).ignoresSafeArea())
             .onChange(of: vm.messages.count) { _ in
-                withAnimation(.easeOut(duration: 0.2)) {
+                // ✅ 과거 메시지 붙이는 중이면 튀지 않기
+                if vm.isLoadingMore { return }
+
+                // ✅ 유저가 바닥에 있을 때만 새 메시지 자동 스크롤
+                if !isAtBottom { return }
+
+                withAnimation(.easeOut(duration: 0.18)) {
                     proxy.scrollTo("BOTTOM", anchor: .bottom)
                 }
+
+                // ✅ 바닥에 있을 때만 읽음 처리(원하면 유지)
                 if let id = chat.id {
-                        Task {
-                            await vm.markAsRead(courseId: id)
-                        }
-                    }
+                    Task { await vm.markAsRead(courseId: id) }
+                }
             }
-            
-        }
-        .safeAreaInset(edge: .bottom) {
-            inputBar
-                .background(.ultraThinMaterial)
         }
         .navigationTitle(chat.courseCode)
+        .toolbarColorScheme(scheme == .dark ? .dark : .light, for: .navigationBar)
+        .toolbarBackground(DiscordTheme.bg(scheme), for: .navigationBar)
+        .toolbarBackground(.visible, for: .navigationBar)
+        .safeAreaInset(edge: .bottom) {
+            discordInputBar
+                .background(DiscordTheme.bg(scheme))
+        }
         .onAppear {
             if let id = chat.id {
                 Task {
@@ -70,259 +87,301 @@ struct CourseChatView: View {
         }
     }
 
-    // MARK: - Input Bar
-
-    var inputBar: some View {
-        HStack(spacing: 8) {
-
-            TextField("Message...", text: $vm.messageText)
-                .onChange(of: vm.messageText) { _ in
-                    if let id = chat.id {
-                        Task { await vm.setTyping(courseId: id) }
-                    }
-                }
-                .padding(12)
-                .background(Color(.systemGray6))
-                .clipShape(RoundedRectangle(cornerRadius: 20))
-
-            Button {
-                if let id = chat.id {
-                    UIImpactFeedbackGenerator(style: .light).impactOccurred()
-
-                    Task {
-                        await vm.sendMessage(courseId: id)
-                    }
-                }
-            } label: {
-                Image(systemName: "paperplane.fill")
-                    .font(.system(size: 16, weight: .bold))
-                    .foregroundColor(.white)
-                    .frame(width: 40, height: 40)
-                    .background(
-                        vm.messageText.isEmpty
-                        ? Color.gray
-                        : Color("UTAustinOrange")
-                    )
-                    .clipShape(Circle())
-            }
-            .disabled(vm.messageText.isEmpty)
-        }
-        .padding()
-    }
-
     // MARK: - Typing Indicator
 
     @ViewBuilder
-    func typingIndicatorView() -> some View {
-
+    private func typingIndicatorDiscordView() -> some View {
         let names = vm.typingUsers.values.map { $0.username }
-
         if !names.isEmpty {
-            HStack {
+            HStack(spacing: 8) {
                 Text(typingText(names: names))
-                    .font(.caption)
-                    .foregroundColor(.gray)
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundColor(DiscordTheme.secondaryText(scheme))
                 Spacer()
             }
-            .padding(.horizontal)
+            .padding(.horizontal, 16)
+            .padding(.vertical, 6)
         }
     }
 
-    func typingText(names: [String]) -> String {
-        if names.count == 1 {
-            return "\(names[0]) is typing..."
-        } else if names.count == 2 {
-            return "\(names[0]) and \(names[1]) are typing..."
-        } else if names.count > 2 {
-            return "\(names[0]) and \(names.count - 1) others are typing..."
-        }
+    private func typingText(names: [String]) -> String {
+        if names.count == 1 { return "\(names[0]) is typing..." }
+        if names.count == 2 { return "\(names[0]) and \(names[1]) are typing..." }
+        if names.count > 2 { return "\(names[0]) and \(names.count - 1) others are typing..." }
         return ""
+    }
+
+    // MARK: - Input Bar
+
+    private var discordInputBar: some View {
+        VStack(spacing: 8) {
+
+            // Reply preview
+            if let replying = vm.replyingTo {
+                HStack(spacing: 10) {
+                    RoundedRectangle(cornerRadius: 2)
+                        .fill(DiscordTheme.secondaryText(scheme))
+                        .frame(width: 3, height: 34)
+
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Replying to \(replying.senderName ?? "Unknown")")
+                            .font(.system(size: 12, weight: .semibold))
+                            .foregroundColor(DiscordTheme.secondaryText(scheme))
+
+                        Text(replying.text)
+                            .font(.system(size: 13))
+                            .foregroundColor(DiscordTheme.primaryText(scheme))
+                            .lineLimit(1)
+                    }
+
+                    Spacer()
+
+                    Button {
+                        vm.replyingTo = nil
+                    } label: {
+                        Image(systemName: "xmark")
+                            .font(.system(size: 14, weight: .bold))
+                            .foregroundColor(DiscordTheme.secondaryText(scheme))
+                    }
+                }
+                .padding(.horizontal, 14)
+                .padding(.top, 10)
+            }
+
+            HStack(spacing: 10) {
+
+                Button { } label: {
+                    Image(systemName: "plus")
+                        .font(.system(size: 18, weight: .bold))
+                        .foregroundColor(DiscordTheme.secondaryText(scheme))
+                }
+
+                HStack(spacing: 10) {
+                    TextField("Message...", text: $vm.messageText)
+                        .foregroundColor(DiscordTheme.primaryText(scheme))
+                        .onChange(of: vm.messageText) { _ in
+                            if let id = chat.id {
+                                Task { await vm.setTyping(courseId: id) }
+                            }
+                        }
+
+                    Button { } label: {
+                        Image(systemName: "face.smiling")
+                            .foregroundColor(DiscordTheme.secondaryText(scheme))
+                    }
+
+                    Button { } label: {
+                        Image(systemName: "mic")
+                            .foregroundColor(DiscordTheme.secondaryText(scheme))
+                    }
+
+                    Button {
+                        guard let id = chat.id else { return }
+                        Task { await vm.sendMessage(courseId: id) }
+                    } label: {
+                        Image(systemName: "paperplane.fill")
+                            .foregroundColor(
+                                vm.messageText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+                                ? DiscordTheme.secondaryText(scheme)
+                                : (scheme == .dark ? .white : .primary)
+                            )
+                    }
+                    .disabled(vm.messageText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                }
+                .padding(.horizontal, 12)
+                .padding(.vertical, 10)
+                .background(DiscordTheme.inputBg(scheme))
+                .clipShape(RoundedRectangle(cornerRadius: 18))
+            }
+            .padding(.horizontal, 12)
+            .padding(.bottom, 10)
+        }
     }
 }
 
-struct MessageItem: View {
+// MARK: - Discord Message Row
+
+private struct DiscordMessageItem: View {
 
     let vm: CourseChatViewModel
+    let scheme: ColorScheme
+
     let messages: [CourseMessage]
     let index: Int
     let msg: CourseMessage
     let chatId: String?
 
+    // ✅ timestamp는 Date(비옵셔널)로 강제 통일
+    private var ts: Date { msg.timestamp }
+    private var prev: CourseMessage? { index > 0 ? messages[index - 1] : nil }
+
     var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
 
-        VStack(spacing: 0) {
-
-            if shouldShowDateSeparator {
-                Text(msg.timestamp.formatted(date: .abbreviated, time: .omitted))
-                    .font(.caption)
-                    .foregroundColor(.gray)
-                    .padding(.vertical, 6)
+            if showDateSeparator {
+                HStack {
+                    Rectangle().fill(DiscordTheme.divider(scheme)).frame(height: 1)
+                    Text(ts.formatted(date: .abbreviated, time: .omitted))
+                        .font(.system(size: 12, weight: .semibold))
+                        .foregroundColor(DiscordTheme.secondaryText(scheme))
+                        .padding(.horizontal, 8)
+                    Rectangle().fill(DiscordTheme.divider(scheme)).frame(height: 1)
+                }
+                .padding(.horizontal, 12)
+                .padding(.vertical, 10)
             }
 
-            messageRow
+            HStack(alignment: .top, spacing: 12) {
+
+                avatar
+
+                VStack(alignment: .leading, spacing: 4) {
+                    header
+
+                    if let replyText = msg.replyToText, !replyText.isEmpty {
+                        replyBlock(replyText: replyText, sender: msg.replyToSenderName)
+                    }
+
+                    Text(msg.text)
+                        .font(.system(size: 16))
+                        .foregroundColor(DiscordTheme.primaryText(scheme))
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+
+                Spacer(minLength: 0)
+            }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 10)
+            .background(rowBackground)
+            .contentShape(Rectangle())
+            .contextMenu {
+                Button {
+                    vm.replyingTo = msg
+                } label: {
+                    Label("Reply", systemImage: "arrowshape.turn.up.left")
+                }
+            }
         }
         .onAppear {
+            // ✅ 위에서 과거 메시지 로딩
             if index == 0, let id = chatId {
                 vm.loadMoreMessages(courseId: id)
             }
         }
     }
-    
-    var isLastMessage: Bool {
-        index == messages.count - 1
+
+    // MARK: - Grouping / separators
+
+    private var isGrouped: Bool {
+        guard let p = prev else { return false }
+        let sameSender = p.senderId == msg.senderId
+        let sameMinute = Calendar.current.isDate(p.timestamp, equalTo: ts, toGranularity: .minute)
+        return sameSender && sameMinute
     }
 
-    var isReadByAll: Bool {
-
-        guard isLastMessage else { return false }
-
-        let myIndex = msg.messageIndex
-
-        // 나 제외한 모든 유저
-        let others = vm.readStatusMap.filter { $0.key != vm.uid }
-
-        if others.isEmpty { return false }
-
-        return others.allSatisfy { $0.value >= myIndex }
-    }
-
-    var shouldShowDateSeparator: Bool {
+    private var showDateSeparator: Bool {
         if index == 0 { return true }
-
-        return !Calendar.current.isDate(
-            msg.timestamp,
-            inSameDayAs: messages[index - 1].timestamp
-        )
+        guard let p = prev else { return true }
+        return !Calendar.current.isDate(ts, inSameDayAs: p.timestamp)
     }
 
-    var messageRow: some View {
+    private var rowBackground: Color {
+        isGrouped ? Color.clear : DiscordTheme.rowHighlight(scheme)
+    }
 
-        let previousMessage = index > 0 ? messages[index - 1] : nil
+    // MARK: - Header
 
-        var isGrouped: Bool {
-            guard let previous = previousMessage else { return false }
+    private var header: some View {
+        HStack(spacing: 8) {
+            Text(msg.senderName ?? "Unknown")
+                .font(.system(size: 14, weight: .semibold))
+                .foregroundColor(DiscordTheme.primaryText(scheme))
 
-            let sameSender = previous.senderId == msg.senderId
+            Text(ts, style: .time)
+                .font(.system(size: 12))
+                .foregroundColor(DiscordTheme.secondaryText(scheme))
 
-            let sameMinute =
-                Calendar.current.isDate(
-                    previous.timestamp,
-                    equalTo: msg.timestamp,
-                    toGranularity: .minute
-                )
-
-            return sameSender && sameMinute
+            Spacer()
         }
-        let showName = previousMessage?.senderId != msg.senderId
-        
+        .opacity(isGrouped ? 0.0 : 1.0)
+        .frame(height: isGrouped ? 0 : nil)
+    }
 
-        return HStack(alignment: .bottom, spacing: 8) {
+    // MARK: - Avatar
 
-            if msg.senderId != vm.uid {
-
-                // 🔥 LEFT MESSAGE
-
-                if showName {
-                    profileImageView
-                } else {
-                    Spacer().frame(width: 32)
-                }
-
-                VStack(alignment: .leading, spacing: isGrouped ? 1 : 6) {
-
-                    if showName, let name = msg.senderName {
-                        Text(name)
-                            .font(.caption2)
-                            .foregroundColor(.gray)
-                    }
-
-                    VStack(alignment: .leading, spacing: isGrouped ? 1 : 6) {
-
-                        Text(msg.text)
-                            .padding(.horizontal, 12)
-                            .padding(.vertical, 8)
-                            .background(Color(.systemGray6))
-                            .clipShape(RoundedRectangle(cornerRadius: 14))
-                            .shadow(color: .black.opacity(0.03), radius: 2)
-
-                        if !isGrouped {
-                            Text(msg.timestamp, style: .time)
-                                .font(.caption2)
-                                .foregroundColor(.gray)
-                        }
-                    }
-                }
-
-                Spacer()
-
+    private var avatar: some View {
+        Group {
+            if isGrouped {
+                Color.clear.frame(width: 40, height: 40)
             } else {
-
-                // 🔥 RIGHT MESSAGE
-
-                Spacer()
-
-                VStack(alignment: .trailing, spacing: 2) {
-
-                    Text(msg.text)
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 8)
-                        .background(Color("UTAustinOrange"))
-                        .foregroundColor(.white)
-                        .clipShape(RoundedRectangle(cornerRadius: 14))
-                        .shadow(color: .black.opacity(0.05), radius: 2)
-
-                    if !isGrouped {
-                        Text(msg.timestamp, style: .time)
-                            .font(.caption2)
-                            .foregroundColor(.gray)
-                    }
-
-                    // 🔥 그룹 여부와 상관없이 마지막이면 표시
-                    if isLastMessage {
-                        Text(isReadByAll ? "Read" : "Sent")
-                            .font(.caption2)
-                            .foregroundColor(.gray)
-                    }
-                }
+                avatarImage
             }
         }
-        .padding(.horizontal)
     }
-    
-    var profileImageView: some View {
+
+    private var avatarImage: some View {
         Group {
             if let user = vm.userCache[msg.senderId],
                let urlString = user.profileImageURL,
                let url = URL(string: urlString) {
 
                 AsyncImage(url: url) { image in
-                    image
-                        .resizable()
-                        .scaledToFill()
+                    image.resizable().scaledToFill()
                 } placeholder: {
-                    Circle()
-                        .fill(Color.gray.opacity(0.2))
+                    placeholderAvatar
                 }
+
             } else {
-                Circle()
-                    .fill(Color.gray)
-                    .overlay(
-                        Text(initials(from: msg.senderName))
-                            .font(.caption)
-                            .foregroundColor(.white)
-                    )
+                placeholderAvatar
             }
         }
-        .frame(width: 32, height: 32)
+        .frame(width: 40, height: 40)
         .clipShape(Circle())
     }
-    
-    func initials(from name: String?) -> String {
-        guard let name = name else { return "?" }
-        let parts = name.split(separator: " ")
-        if parts.count >= 2 {
-            return "\(parts[0].prefix(1))\(parts[1].prefix(1))"
+
+    private var placeholderAvatar: some View {
+        Circle()
+            .fill(scheme == .dark ? Color.white.opacity(0.12) : Color.black.opacity(0.06))
+            .overlay(
+                Text(initials(from: msg.senderName))
+                    .font(.system(size: 13, weight: .bold))
+                    .foregroundColor(DiscordTheme.secondaryText(scheme))
+            )
+    }
+
+    // MARK: - Reply Block
+
+    private func replyBlock(replyText: String, sender: String?) -> some View {
+        HStack(spacing: 10) {
+            Image(systemName: "arrow.turn.down.right")
+                .font(.system(size: 12, weight: .semibold))
+                .foregroundColor(DiscordTheme.secondaryText(scheme))
+
+            VStack(alignment: .leading, spacing: 2) {
+                Text(sender ?? "Unknown")
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundColor(DiscordTheme.secondaryText(scheme))
+
+                Text(replyText)
+                    .font(.system(size: 12))
+                    .foregroundColor(DiscordTheme.secondaryText(scheme))
+                    .lineLimit(1)
+            }
+
+            Spacer()
         }
+        .padding(.horizontal, 10)
+        .padding(.vertical, 8)
+        .background(DiscordTheme.replyBg(scheme))
+        .clipShape(RoundedRectangle(cornerRadius: 10))
+    }
+
+    // MARK: - Helpers
+
+    private func initials(from name: String?) -> String {
+        guard let name = name, !name.isEmpty else { return "?" }
+        let parts = name.split(separator: " ")
+        if parts.count >= 2 { return "\(parts[0].prefix(1))\(parts[1].prefix(1))" }
         return String(name.prefix(2))
     }
 }

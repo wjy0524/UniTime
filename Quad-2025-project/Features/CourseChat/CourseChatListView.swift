@@ -4,11 +4,14 @@
 //
 //  Created by Jaeyeon Won on 2/21/26.
 //
-
 import SwiftUI
+
+// ✅ CourseChatView에서 쓰던 DiscordTheme를 그대로 사용한다고 가정
+// (DiscordTheme.bg(_ scheme: ColorScheme) 형태)
 
 struct CourseChatListView: View {
     @StateObject var vm = CourseChatListViewModel()
+    @Environment(\.colorScheme) private var scheme
 
     var body: some View {
         NavigationStack {
@@ -30,7 +33,10 @@ struct CourseChatListView: View {
                 }
                 .padding()
             }
+            .background(DiscordTheme.bg(scheme).ignoresSafeArea())
             .navigationTitle("Course Chats")
+            .toolbarBackground(DiscordTheme.bg(scheme), for: .navigationBar)
+            .toolbarBackground(.visible, for: .navigationBar)
         }
         .onAppear {
             vm.startListening()
@@ -42,9 +48,8 @@ struct CourseChatListView: View {
     func chatCard(_ chat: CourseChat) -> some View {
         HStack(spacing: 14) {
 
-            // Avatar
             Circle()
-                .fill(Color("UTAustinOrange").opacity(0.15))
+                .fill(Color("UTAustinOrange").opacity(scheme == .dark ? 0.18 : 0.12))
                 .frame(width: 52, height: 52)
                 .overlay(
                     Text(initials(from: chat.courseCode))
@@ -57,13 +62,14 @@ struct CourseChatListView: View {
                 HStack {
                     Text(chat.courseCode)
                         .font(.headline)
+                        .foregroundColor(DiscordTheme.primaryText(scheme))
 
                     Spacer()
 
                     if let time = chat.lastMessageTime {
                         Text(time, style: .time)
                             .font(.caption2)
-                            .foregroundColor(.secondary)
+                            .foregroundColor(DiscordTheme.secondaryText(scheme))
                     }
                 }
 
@@ -72,35 +78,30 @@ struct CourseChatListView: View {
                     if let last = chat.lastMessage {
 
                         if chat.lastSenderId == vm.uid {
-                            // 🔥 내가 보낸 메시지
                             Text("You: \(last)")
                                 .font(.subheadline)
-                                .foregroundColor(.secondary)
+                                .foregroundColor(DiscordTheme.secondaryText(scheme))
                                 .lineLimit(1)
-                        }
-                        else if let sender = chat.lastSenderName {
-                            // 🔥 다른 사람이 보낸 메시지
+                        } else if let sender = chat.lastSenderName {
                             Text("\(sender): \(last)")
                                 .font(.subheadline)
-                                .foregroundColor(.secondary)
+                                .foregroundColor(DiscordTheme.secondaryText(scheme))
                                 .lineLimit(1)
-                        }
-                        else {
+                        } else {
                             Text(last)
                                 .font(.subheadline)
-                                .foregroundColor(.secondary)
+                                .foregroundColor(DiscordTheme.secondaryText(scheme))
                                 .lineLimit(1)
                         }
 
                     } else {
                         Text("No messages yet")
                             .font(.subheadline)
-                            .foregroundColor(.secondary)
+                            .foregroundColor(DiscordTheme.secondaryText(scheme))
                     }
 
                     Spacer()
 
-                    // 🔴 UNREAD BADGE
                     if let id = chat.id,
                        let unread = vm.unreadCounts[id],
                        unread > 0 {
@@ -117,15 +118,24 @@ struct CourseChatListView: View {
 
                 Text("\(chat.members.count) members")
                     .font(.caption2)
-                    .foregroundColor(.gray)
+                    .foregroundColor(DiscordTheme.secondaryText(scheme))
             }
         }
         .padding()
         .background(
             RoundedRectangle(cornerRadius: 18)
-                .fill(Color(.systemBackground))
-                .shadow(color: .black.opacity(0.05), radius: 6, y: 3)
+                .fill(cardBg)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 18)
+                        .stroke(DiscordTheme.divider(scheme), lineWidth: scheme == .dark ? 0 : 1)
+                )
         )
+    }
+
+    private var cardBg: Color {
+        scheme == .dark
+        ? Color.white.opacity(0.06)
+        : Color.white
     }
 
     // MARK: - Empty State
@@ -134,14 +144,15 @@ struct CourseChatListView: View {
         VStack(spacing: 16) {
             Image(systemName: "bubble.left.and.bubble.right")
                 .font(.system(size: 42))
-                .foregroundColor(.gray.opacity(0.5))
+                .foregroundColor(DiscordTheme.secondaryText(scheme))
 
             Text("No Course Chats Yet")
                 .font(.headline)
+                .foregroundColor(DiscordTheme.primaryText(scheme))
 
             Text("Add a course in your timetable to automatically join a chat room.")
                 .font(.subheadline)
-                .foregroundColor(.secondary)
+                .foregroundColor(DiscordTheme.secondaryText(scheme))
                 .multilineTextAlignment(.center)
                 .padding(.horizontal)
         }
