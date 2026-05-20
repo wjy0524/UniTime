@@ -1,36 +1,50 @@
 import * as functions from "firebase-functions";
 import OpenAI from "openai";
-import * as dotenv from "dotenv";
+import { defineSecret } from "firebase-functions/params";
 
-dotenv.config();
+const OPENAI_API_KEY = defineSecret("OPENAI_API_KEY");
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+export const gradeCalPredict = functions
+  .runWith({ secrets: ["OPENAI_API_KEY"] })
+  .https.onCall(async (data, context) => {
+    if (!context.auth) {
+      throw new functions.https.HttpsError("unauthenticated", "Must be logged in");
+    }
 
-export const gradeCalPredict = functions.https.onCall(async (data, context) => {
-  if (!context.auth) {
-    throw new functions.https.HttpsError("unauthenticated", "Must be logged in");
-  }
+    const openaiKey = OPENAI_API_KEY.value();
+    if (!openaiKey) {
+      throw new functions.https.HttpsError(
+        "failed-precondition",
+        "OpenAI key missing"
+      );
+    }
 
-  const { courseContext, userQuestion } = data;
+    const openai = new OpenAI({ apiKey: openaiKey });
+    const { courseContext, userQuestion } = data;
 
-  // Use the pre-calculated weighted points directly
-  const currentWeightedPoints = courseContext.currentWeightedPoints ||
-    (courseContext.currentGrade * courseContext.totalWeightCompleted) / 100;
-  
-  const ungradedWeight = courseContext.remainingWeight;
-  
-  const ungradedItemsList = courseContext.ungradedItems?.map((item: any) =>
-    `${item.name} (${item.weight}% weight)`
-  ).join(', ') || 'None';
+    const currentWeightedPoints =
+      courseContext.currentWeightedPoints ||
+      (courseContext.currentGrade * courseContext.totalWeightCompleted) / 100;
 
-  // List graded items with their points
-  const gradedItemsList = courseContext.completedItems?.map((item: any) =>
-    `${item.name}: ${item.score.toFixed(1)}% × ${item.weight}% = ${(item.score * item.weight / 100).toFixed(2)} pts`
-  ).join('\n') || 'None';
+    const ungradedWeight = courseContext.remainingWeight;
 
-  const systemPrompt = `You are a Grade Calculator. Calculate MINIMUM scores to reach EXACTLY the target grade.
+    const ungradedItemsList =
+      courseContext.ungradedItems
+        ?.map((item: any) => `${item.name} (${item.weight}% weight)`)
+        .join(", ") || "None";
+
+    const gradedItemsList =
+      courseContext.completedItems
+        ?.map(
+          (item: any) =>
+            `${item.name}: ${item.score.toFixed(1)}% × ${item.weight}% = ${(
+              (item.score * item.weight) /
+              100
+            ).toFixed(2)} pts`
+        )
+        .join("\n") || "None";
+
+    const systemPrompt = `You are a Grade Calculator. Calculate MINIMUM scores to reach EXACTLY the target grade.
 
 CURRENT STATUS:
 - Current Weighted Points: ${currentWeightedPoints.toFixed(2)} out of 100
@@ -71,20 +85,23 @@ Scenario 2:
 - [Item]: at least [Y]%
 - [Item]: at least [Z]%`;
 
-  try {
-    const response = await openai.chat.completions.create({
-      model: "gpt-4",
-      messages: [
-        { role: "system", content: systemPrompt },
-        { role: "user", content: userQuestion }
-      ],
-      max_tokens: 300,
-      temperature: 0.05,
-    });
+    try {
+      const response = await openai.chat.completions.create({
+        model: "gpt-4",
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: userQuestion },
+        ],
+        max_tokens: 300,
+        temperature: 0.05,
+      });
 
-    return { reply: response.choices[0].message.content };
-  } catch (error) {
-    console.error("OpenAI Error:", error);
-    throw new functions.https.HttpsError("internal", "Failed to generate prediction");
-  }
-});
+      return { reply: response.choices[0].message.content };
+    } catch (error) {
+      console.error("OpenAI Error:", error);
+      throw new functions.https.HttpsError(
+        "internal",
+        "Failed to generate prediction"
+      );
+    }
+  });
